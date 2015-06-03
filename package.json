@@ -1,0 +1,18 @@
+{
+  "name": "ei",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "leonlu@outlook.com",
+  "license": "ISC",
+  "dependencies": {
+    "eventemitter3": "^1.1.0",
+    "flux": "^2.0.3",
+    "react": "^0.13.3",
+    "underscore": "^1.8.3",
+    "when": "^3.7.3"
+  }
+}
