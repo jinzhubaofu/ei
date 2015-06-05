@@ -1,0 +1,30 @@
+{
+  "name": "ei",
+  "version": "0.0.1",
+  "authors": [
+    "ludafa@outlook.com"
+  ],
+  "description": "ei",
+  "main": "src/main.js",
+  "keywords": [
+    "ei"
+  ],
+  "dependencies": {
+    "react": "0.13.3",
+    "debug": "^2.2.0",
+    "eventemitter3": "^1.1.0",
+    "flux": "^2.0.3",
+    "underscore": "^1.8.3",
+    "when": "^3.7.3"
+  },
+  "license": "MIT",
+  "ignore": [
+    "lib",
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "dep",
+    "test",
+    "tests"
+  ]
+}
