@@ -1,6 +1,6 @@
 {
   "name": "ei",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "authors": [
     "ludafa@outlook.com"
   ],
@@ -11,7 +11,7 @@
   ],
   "dependencies": {
     "react": "0.13.3",
-    "debug": "^2.2.0",
+    "visionmedia-debug": "^2.2.0",
     "eventemitter3": "^1.1.0",
     "flux": "^2.0.2",
     "underscore": "^1.8.3",
