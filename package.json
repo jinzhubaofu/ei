@@ -1,12 +1,13 @@
 {
   "name": "ei",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.2",
   "main": "lib/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "leonlu@outlook.com",
+  "author": {
+    "name": "leonlu@outlook.com"
+  },
   "license": "ISC",
   "peerDependencies": {
     "react": "0.13.3"
@@ -17,5 +18,11 @@
     "flux": "^2.0.3",
     "underscore": "^1.8.3",
     "when": "^3.7.3"
+  },
+  "readme": "readme.md",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-footer": "^1.0.5",
+    "gulp-header": "^1.2.2"
   }
 }
