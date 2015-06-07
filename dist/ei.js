@@ -574,32 +574,15 @@ define('ei/mixin/context', [
         }
     });
 });
-define('ei/mixin/layout', [
-    'require',
-    'exports',
-    'module',
-    'react',
-    './Layout'
-], function (require, exports, module) {
-    var React = require('react');
-    var Layout = require('./Layout');
-    module.exports = {
-        propTypes: { layout: React.PropTypes.object },
-        randerLayout: function (html) {
-            return Layout.render(this.props.layout, { app: html });
-        }
-    };
-});
 define('ei/mixin', [
     'require',
     'exports',
     'module',
     'underscore',
-    './mixin/context',
-    './mixin/layout'
+    './mixin/context'
 ], function (require, exports, module) {
     var u = require('underscore');
-    u.extend(exports, require('./mixin/context'), require('./mixin/layout'));
+    u.extend(exports, require('./mixin/context'));
 });
 define('ei', [
     'require',
