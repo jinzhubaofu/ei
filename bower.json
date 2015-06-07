@@ -1,6 +1,6 @@
 {
   "name": "ei",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "authors": [
     "ludafa@outlook.com"
   ],
@@ -18,6 +18,8 @@
   },
   "license": "MIT",
   "ignore": [
+    "tool",
+    "lib",
     "**/.*",
     "node_modules",
     "bower_components",
