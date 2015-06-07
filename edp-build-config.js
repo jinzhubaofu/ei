@@ -59,9 +59,23 @@ exports.getProcessors = function () {
         files: ['*.js', '!main.js']
     });
 
+    var replace = new StringReplace({
+        files: ['lib/main.js'],
+        replacements: [
+            {
+                from: /ei\/main/g,
+                to: function () {
+                    return 'ei';
+                }
+            }
+        ]
+    });
+
     return {
         'default': [
-            amdwrap, module,
+            amdwrap,
+            module,
+            replace,
             // js,
             path,
             cleaner

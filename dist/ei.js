@@ -601,7 +601,7 @@ define('ei/mixin', [
     var u = require('underscore');
     u.extend(exports, require('./mixin/context'), require('./mixin/layout'));
 });
-define('ei/main', [
+define('ei', [
     'require',
     'exports',
     'module',
