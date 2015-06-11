@@ -318,6 +318,7 @@ define('ei/Store', [
     var STORE_CLASS_POOL = {};
     var STORE_CHANGE_EVENT_NAME = 'STORE_CHANGE';
     var mixins = {
+        init: u.noop,
         setContext: function (context) {
             this.context = context;
         },
@@ -366,7 +367,9 @@ define('ei/Store', [
         debug('creating new store class %s', type);
         Store.create = function () {
             debug('create a new store instance');
-            return new Store();
+            var store = new Store();
+            store.init();
+            return store;
         };
         u.extend(Store.prototype, EventEmitter.prototype, mixins, proto);
         Store.type = type;
@@ -450,7 +453,7 @@ define('ei/App', [
             var actionContext = context.getActionContext();
             var action = route.action;
             debug('execute action');
-            return when(action.execute(actionContext));
+            return when(action.execute(actionContext, request, response));
         }).then(function () {
             debug('action executed successfully');
             debug('render the view...');
