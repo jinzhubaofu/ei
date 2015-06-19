@@ -587,7 +587,7 @@ define('ei/mixin', [
     var u = require('underscore');
     u.extend(exports, require('./mixin/context'));
 });
-define('ei', [
+define('ei/main', [
     'require',
     'exports',
     'module',
@@ -612,4 +612,12 @@ define('ei', [
     ei.config = function (options) {
     };
     module.exports = ei;
+});
+/**
+ * @file amd wrap
+ * @author leon<lupengyu@baidu.com>
+ */
+
+define('ei', ['ei/main'], function (main) {
+    return main;
 });

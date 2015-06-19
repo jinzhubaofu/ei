@@ -59,23 +59,48 @@ exports.getProcessors = function () {
         files: ['*.js', '!main.js']
     });
 
-    var replace = new StringReplace({
-        files: ['lib/main.js'],
-        replacements: [
-            {
-                from: /ei\/main/g,
-                to: function () {
-                    return 'ei';
-                }
-            }
-        ]
-    });
+
+    /**
+     * 添加版权声明的构建器
+     *
+     * @constructor
+     * @param {Object} options 初始化参数
+     */
+    function MainModule(options) {
+        AbstractProcessor.call(this, options);
+    }
+
+    util.inherits(MainModule, AbstractProcessor);
+
+    MainModule.prototype.name = 'MainModule';
+
+    /**
+     * 构建处理
+     *
+     * @param {FileInfo} file 文件信息对象
+     * @param {ProcessContext} processContext 构建环境对象
+     * @param {Function} callback 处理完成回调函数
+     */
+    MainModule.prototype.process = function (file, processContext, callback) {
+        file.setData(''
+            + file.data
+            + '\n'
+            + fs.readFileSync(__dirname + '/tool/main.js', 'utf8')
+        );
+
+        callback();
+    };
+
+
 
     return {
         'default': [
             amdwrap,
             module,
-            replace,
+            new MainModule({
+                files: ['lib/main.js']
+            }),
+            // replace,
             // js,
             path,
             cleaner
