@@ -505,14 +505,11 @@ define('ei/Action', [
         }
         return id;
     };
-    exports.create = function (proto) {
-        if (!u.isObject(proto)) {
-            throw new Error('create a Action with a object option');
-        }
-        if (!u.isFunction(proto.execute)) {
-            throw new Error('Action must have a execute method');
-        }
-        return new Action(proto);
+    Action.prototype.execute = function (dispatcher, payload) {
+        dispatcher.dispatch(this, payload);
+    };
+    exports.create = function (options) {
+        return new Action(options);
     };
 });
 define('ei/mixin/context', [
