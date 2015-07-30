@@ -78,6 +78,12 @@ describe('Emitter', function () {
         expect(spy1).toHaveBeenCalled();
         expect(spy2).not.toHaveBeenCalled();
 
+        emitter.off('a', spy2);
+
+        emitter.emit('a');
+        expect(spy1).toHaveBeenCalled();
+        expect(spy2).not.toHaveBeenCalled();
+
     });
 
     it('off clear listeners of a event type', function () {
@@ -130,6 +136,34 @@ describe('Emitter', function () {
         emitter.emit('hehe', 2222);
 
         expect(spy).not.toHaveBeenCalledWith(2222);
+
+    });
+
+    it('trigger * handler', function () {
+
+        var emitter = new Emitter();
+
+        var spy = jasmine.createSpy();
+
+        emitter.on('*', spy);
+
+        emitter.emit('hehe', 123);
+
+        expect(spy).toHaveBeenCalledWith(123);
+
+    });
+
+    it('can get current event while event dispatching', function () {
+
+        var emitter = new Emitter();
+
+        emitter.on('a', function () {
+
+            expect(this.getCurrentEvent()).toBe('a');
+
+        });
+
+        emitter.emit('a');
 
     });
 
