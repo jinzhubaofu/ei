@@ -1,0 +1,31 @@
+@require 'nib'
+
+.todo
+
+    display flex
+    align-items: center
+
+    &:first-child
+        border-top 1px solid #ddd
+
+    height: 60px
+    padding: 0 10px
+    line-height @height
+    border-bottom 1px solid #ddd
+
+    >.state
+        order 1
+        width: 30px
+        text-align: center
+
+        >.icon
+            font-size 24px
+            color #888
+
+        >.icon-xuanzhong
+            color rgb(0, 159, 147)
+
+    >.content
+        order 2
+        flex-grow: 2;
+

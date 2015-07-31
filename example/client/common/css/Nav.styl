@@ -1,0 +1,31 @@
+@require nib
+
+.nav
+    display: flex
+    height: 25px
+    padding: 29px 10px 10px
+    line-height: @height
+    align-items: center
+    justify-content: space-around
+
+
+    > .title
+        font-size: 18px
+        flex-grow: 2
+        order: 2
+        text-align: center
+
+
+    > .button
+        width: 25px
+        height: 25px
+        flex-grow: 0
+        text-align: center
+
+        &.left
+            order: 1
+
+        &.right
+            order: 3
+
+
