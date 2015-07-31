@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: locator.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: locator.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file 定位器
+ *
+ * 负责提供客户端上的url变化事件
+ * 还可以通过pushState添加历史记录，修改location
+ *
+ * @author Leon(leon@outlook.com)
+ * @module locator
+ */
+
+var events = require('./events');
+var env = require('./env');
+var Emitter = require('./Emitter');
+var invariant = require('./util/invariant');
+var url = require('./url');
+
+/**
+ * 当前客户端是否支持历史api
+ *
+ * @private
+ * @return {boolean}
+ */
+function isHistorySupported() {
+    return !!window.history;
+}
+
+var locator = {
+
+    /**
+     * 开始侦听浏览器的前进/后退事件
+     *
+     * @public
+     * @method module:locator.start
+     * @return {module:locator}
+     */
+    start: function () {
+
+        window.onpopstate = onHistoryChange;
+
+        return this;
+
+    },
+
+
+    /**
+     * 停止浏览器的前进/后退事件
+     *
+     * @public
+     * @method module:locator.stop
+     * @return {module:locator}
+     */
+    stop: function () {
+
+        window.onpopstate = null;
+
+        return this;
+
+    },
+
+    /**
+     * 对当前页面进行跳转操作
+     *
+     * @public
+     * @method module:locator.redirect
+     * @param {!string} path 跳转到的新地址
+     * @param {?Object} query query参数
+     * @return {boolean} 是否是pushState跳转
+     * @fires module:events~locator.redirect
+     */
+    redirect: function (path, query) {
+
+        invariant(env.isClient, 'redirect cannot run on server');
+
+        var uri = url.makeUrl(path, query);
+
+        if (isHistorySupported()) {
+
+            events.emit('locator.redirect');
+
+            history.pushState(
+                null,
+                window.title,
+                uri
+            );
+
+            this.emit('redirect', path, query);
+
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+};
+
+/**
+ * 页面发生了前进/后退事件处理函数
+ *
+ * @private
+ * @param {Object} e popstate事件
+ * @fires module:locator~redirect
+ */
+function onHistoryChange(e) {
+
+    var uri = url.parse(location.href);
+
+    locator.emit('redirect', uri.path, uri.query);
+
+}
+
+module.exports = Emitter.enable(locator);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ei.html">ei</a></li><li><a href="module-env.html">env</a></li><li><a href="module-events.html">events</a></li><li><a href="module-locator.html">locator</a></li><li><a href="module-resource.html">resource</a></li><li><a href="module-url.html">url</a></li></ul><h3>Classes</h3><ul><li><a href="App.html">App</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContextConnector.html">ContextConnector</a></li><li><a href="ContextProvider.html">ContextProvider</a></li><li><a href="Emitter.html">Emitter</a></li><li><a href="Page.html">Page</a></li><li><a href="Router.html">Router</a></li></ul><h3>Events</h3><ul><li><a href="module-events.html#~event:app-bootstrap">app-bootstrap</a></li><li><a href="module-events.html#~event:app-load-page-on-client">app-load-page-on-client</a></li><li><a href="module-events.html#~event:app-load-page-on-server">app-load-page-on-server</a></li><li><a href="module-events.html#~event:app-page-bootstrap">app-page-bootstrap</a></li><li><a href="module-events.html#~event:app-page-bootstrap-succeed">app-page-bootstrap-succeed</a></li><li><a href="module-events.html#~event:app-page-loaded">app-page-loaded</a></li><li><a href="module-events.html#~event:app-page-switch-succeed">app-page-switch-succeed</a></li><li><a href="module-events.html#~event:app-ready">app-ready</a></li><li><a href="module-events.html#~event:app-request">app-request</a></li><li><a href="module-events.html#~event:app-response-in-html">app-response-in-html</a></li><li><a href="module-events.html#~event:app-response-in-json">app-response-in-json</a></li><li><a href="module-events.html#~event:app-route">app-route</a></li><li><a href="module-events.html#~event:app-route-failed">app-route-failed</a></li><li><a href="module-events.html#~event:app-route-succeed">app-route-succeed</a></li><li><a href="module-events.html#~event:page-dispatch">page-dispatch</a></li><li><a href="module-event.html#~event:page-dispose">page-dispose</a></li></ul><h3>Global</h3><ul><li><a href="global.html#routes">routes</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Fri Jul 31 2015 21:12:48 GMT+0800 (CST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

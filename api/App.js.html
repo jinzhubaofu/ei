@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: App.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: App.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file App
+ * @author Leon(leon@outlook.com)
+ */
+
+var Promise = require('es6-promise').Promise;
+var u = require('underscore');
+
+var invariant = require('./util/invariant');
+var locator = require('./locator');
+var events = require('./events');
+var Router = require('./Router');
+var env = require('./env');
+var url = require('./url');
+
+/**
+ * App
+ *
+ * @constructor
+ * @param {!Object} options 参数
+ * @param {Array.Object} options.routes 路由配置
+ */
+function App(options) {
+
+    invariant(options, 'App need options');
+    invariant(options.routes, 'App need routes');
+
+    u.extend(this, options);
+
+    /**
+     * 路由器
+     *
+     * @member {module:Router}
+     */
+    this.router = new Router(this.routes);
+
+}
+
+/**
+ * 启动App
+ *
+ * 此方法只能在client端使用，并且不会调用Page的`getInitialState()`方法加载资源
+ * 因此，只适合同构状态下，有同步的数据支持时使用
+ *
+ *
+ * @public
+ *
+ * @param {*} initialState 初始状态
+ *
+ * @fires module:events~app-bootstrap
+ * @fires module:events~app-ready
+ *
+ * @return {Promise}
+ */
+App.prototype.bootstrap = function (initialState) {
+
+    invariant(env.isClient, 'app-should bootstrap on client only');
+
+    /**
+     * @event module:events~app-bootstrap
+     */
+    events.emit('app-bootstrap');
+
+    // 启动locator侦听浏览器的前进/后退事件
+    locator.start().on('redirect', u.bind(this.onLocatorRedirect, this));
+
+    var me = this;
+
+    var request = url.parse(location.href);
+    var route = this.route(request);
+
+    return route
+
+        ? Promise.reject({
+            status: 404
+        })
+
+        : me
+
+            // 加载页面模块
+            .loadPage(route.page)
+
+            // 通过初始数据直接启动页面
+            .then(function (Page) {
+
+                // 由于这里是客户端的逻辑，那么就记录一下当前页面
+                var page = me.page = new Page(initialState);
+
+                page.render(document.getElementById(me.main));
+
+                /**
+                 * @event module:events~app-ready
+                 */
+                events.emit('app-ready');
+
+            });
+
+};
+
+/**
+ * 当client端页面地址发生变化时的处理函数
+ *
+ * @private
+ *
+ * @param {!string} path  当前页面的path
+ * @param {Object}  query query参数
+ * @return {Promise}
+ */
+App.prototype.onLocatorRedirect = function (path, query) {
+
+    var request = {
+        path: path,
+        query: query
+    };
+
+    var me = this;
+
+    // 执行请求处理
+    return me
+        .execute(request)
+        .then(function (result) {
+
+            // 我们不需要因为要考虑页面间替换时，而去复用同一个Page实例
+            // 只要直接生成新的页面实例，渲染即可
+            // react会帮我们做对同一种ReactComponent渲染优化
+
+            // 如果当前有一个正在展现的页面，
+            // 那么把它销毁掉
+            if (me.page) {
+                me.page.dispose();
+            }
+
+            // 由于这里是客户端的逻辑，那么就记录一下当前页面
+            var page = me.page = result.page;
+
+            page.render(document.getElementById(me.main));
+
+            /**
+             * @event module:events~app-page-switch-succeed
+             */
+            events.emit('app-page-switch-succeed');
+
+        });
+
+};
+
+
+/**
+ * 处理一个请求
+ *
+ * @param {!Object}  request      请求
+ * @param {?*}       initialState 初始数据状态
+ * @return {Promise}
+ *
+ * @fires module:events~app-request
+ * @fires module:events~app-get-initial-state
+ * @fires module:events~app-get-initial-state-succeed
+ * @fires module:events~app-get-initial-state-failed
+ * @fires module:events~app-response-in-json
+ * @fires module:events~app-response-in-html
+ * @fires module:events~app-page-loaded
+ * @fires module:events~app-page-bootstrap
+ * @fires module:events~app-page-bootstrap-succeed
+ */
+App.prototype.execute = function (request) {
+
+    /**
+     * @event module:events~app-request
+     */
+    events.emit('app-request');
+
+    var route = this.route(request);
+
+    if (!route) {
+        return Promise.reject({
+            status: 404
+        });
+    }
+
+    var page;
+
+    return this
+
+        // 加载页面模块
+        .loadPage(route.page)
+
+        // 加载初始化数据
+        .then(function (Page) {
+
+            // 我们不需要因为要考虑页面间替换时，而去复用同一个Page实例
+            // 只要直接生成新的页面实例，渲染即可
+            // react会帮我们做对同一种ReactComponent渲染优化
+
+            page = new Page();
+            return page.getInitialState(request);
+
+        })
+
+        // 渲染视图
+        .then(function (state) {
+
+            // 这里看一下是不是server端在处理ajax请求
+            // 这种情况应该返回当前的数据即可
+            if (env.isServer &amp;&amp; request.xhr) {
+
+                /**
+                 * @event module:events~app-response-in-json
+                 */
+                events.emit('app-response-in-json');
+
+                return {
+                    state: state,
+                    route: route
+                };
+
+            }
+
+            /**
+             * @event module:events~app-response-in-html
+             */
+            events.emit('app-response-in-html');
+
+            /**
+             * @event module:events~app-page-bootstrap
+             */
+            events.emit('app-page-bootstrap');
+
+            // 初始化页面，触发页面的第一次数据剪裁
+            page.init(state);
+
+            /**
+             * @event module:events~app-page-bootstrap-succeed
+             */
+            events.emit('app-page-bootstrap-succeed');
+
+            return {
+                page: page,
+                route: route
+            };
+
+        })
+        ['catch'](function (error) {
+            events.emit('app-execute-error', error);
+            throw error;
+        });
+
+};
+
+/**
+ * 根目录路径
+ *
+ * @public
+ *
+ * @param {!string} basePath 根目录路径
+ *
+ * @return {module:App}
+ */
+App.prototype.setBasePath = function (basePath) {
+    this.basePath = basePath;
+    return this;
+};
+
+/**
+ * 加载Page类
+ *
+ * @protected
+ *
+ * @param {!string} page 页面模块路径
+ *
+ * @return {Promise}
+ *
+ * @fires module:events~app-page-loaded
+ * @fires module:events~app-load-page-on-server
+ * @fires module:events~app-load-page-on-client
+ */
+App.prototype.loadPage = function (page) {
+
+    var pool = this.pool;
+
+    if (pool &amp;&amp; pool[page]) {
+
+        /**
+         * @event module:events~app-page-loaded
+         */
+        events.emit('app-page-loaded');
+
+        return Promise.resolve(pool[page]);
+    }
+
+    return env.isServer ? this.resolveServerModule(page) : this.resolveClientModule(page);
+
+};
+
+/**
+ * 服务器端加载Page模块
+ *
+ * @private
+ *
+ * @param {string} moduleId Page模块id
+ *
+ * @return {Promise}
+ */
+App.prototype.resolveServerModule = function (moduleId) {
+
+    /**
+     * @event module:events~app-load-page-on-server
+     */
+    events.emit('app-load-page-on-server', moduleId);
+
+    var basePath = this.basePath;
+
+    invariant(basePath, 'ei need a basePath to resolve your page');
+
+    var path = basePath + '/' + moduleId;
+
+    var Page = require(path);
+
+    var pool = this.pool;
+
+    if (!pool) {
+        pool = this.pool = {};
+    }
+
+    pool[moduleId] = Page;
+
+    return Promise.resolve(Page);
+
+};
+
+/**
+ * 在客户端上加载Page模块
+ *
+ * @private
+ *
+ * @param {string} moduleId Page模块id
+ *
+ * @return {Promise}
+ */
+App.prototype.resolveClientModule = function (moduleId) {
+
+    /**
+     * @event module:events~app-load-page-on-client
+     */
+    events.emit('app-load-page-on-client');
+
+    return new Promise(function (resolve, reject) {
+
+        window.require([moduleId], function (Page) {
+            resolve(Page);
+        });
+
+    });
+
+};
+
+/**
+ * 路由
+ *
+ * @protected
+ *
+ * @param {!Object} request 请求
+ *
+ * @return {?Object}
+ *
+ * @fires module:events~app-route-succeed
+ * @fires module:events~app-route-succeed
+ * @fires module:events~app-route-failed
+ */
+App.prototype.route = function (request) {
+
+    /**
+     * @event module:events~app-route
+     */
+    events.emit('app-route');
+
+    var config = this.router.route(request);
+
+    if (config) {
+
+        /**
+         * @event module:events~app-route-succeed
+         */
+        events.emit('app-route-succeed');
+
+    }
+    else {
+
+        /**
+         * @event module:events~app-route-failed
+         */
+        events.emit('app-route-failed');
+    }
+
+    return config;
+
+};
+
+module.exports = App;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ei.html">ei</a></li><li><a href="module-env.html">env</a></li><li><a href="module-events.html">events</a></li><li><a href="module-locator.html">locator</a></li><li><a href="module-resource.html">resource</a></li><li><a href="module-url.html">url</a></li></ul><h3>Classes</h3><ul><li><a href="App.html">App</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContextConnector.html">ContextConnector</a></li><li><a href="ContextProvider.html">ContextProvider</a></li><li><a href="Emitter.html">Emitter</a></li><li><a href="Page.html">Page</a></li><li><a href="Router.html">Router</a></li></ul><h3>Events</h3><ul><li><a href="module-events.html#~event:app-bootstrap">app-bootstrap</a></li><li><a href="module-events.html#~event:app-load-page-on-client">app-load-page-on-client</a></li><li><a href="module-events.html#~event:app-load-page-on-server">app-load-page-on-server</a></li><li><a href="module-events.html#~event:app-page-bootstrap">app-page-bootstrap</a></li><li><a href="module-events.html#~event:app-page-bootstrap-succeed">app-page-bootstrap-succeed</a></li><li><a href="module-events.html#~event:app-page-loaded">app-page-loaded</a></li><li><a href="module-events.html#~event:app-page-switch-succeed">app-page-switch-succeed</a></li><li><a href="module-events.html#~event:app-ready">app-ready</a></li><li><a href="module-events.html#~event:app-request">app-request</a></li><li><a href="module-events.html#~event:app-response-in-html">app-response-in-html</a></li><li><a href="module-events.html#~event:app-response-in-json">app-response-in-json</a></li><li><a href="module-events.html#~event:app-route">app-route</a></li><li><a href="module-events.html#~event:app-route-failed">app-route-failed</a></li><li><a href="module-events.html#~event:app-route-succeed">app-route-succeed</a></li><li><a href="module-events.html#~event:page-dispatch">page-dispatch</a></li><li><a href="module-event.html#~event:page-dispose">page-dispose</a></li></ul><h3>Global</h3><ul><li><a href="global.html#routes">routes</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Fri Jul 31 2015 21:12:48 GMT+0800 (CST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

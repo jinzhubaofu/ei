@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Page.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Page.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file 页面
+ * @author Leon(leon@outlook.com)
+ *
+ * @requires underscore
+ * @requires react
+ */
+
+var u = require('underscore');
+var React = require('react');
+
+var ContextProvider = require('./component/ConextProvider');
+var Context = require('./Context');
+var componseReducer = require('./util/composeReducer');
+var invariant = require('./util/invariant');
+
+var events = require('./events');
+
+/**
+ * 页面
+ *
+ * @constructor
+ * @param {*} initialState 初始数据状态
+ */
+function Page(initialState) {
+
+    this.context = new Context(
+        initialState,
+        componseReducer(this.reducer)
+    );
+
+}
+
+/** @lends Page.prototype */
+var PagePrototype = {
+
+    /**
+     * 初始化
+     *
+     * 此方法只会被调用一次
+     *
+     * 处理请求的过程中，在页面实例化后，会被调用到此方法
+     *
+     * 此方法会派发一个init动作，并附带有getInitialState方法所返回的数据
+     *
+     * init动作提供给页面的初始数据剪裁的时机
+     *
+     * 但是只有在execute的情况下才会被调用，
+     * 我们在bootstrap时传入的initialState是已经是剪裁好的数据
+     * 也就是在server端预渲染后向client端同步数据状态的场景
+     *
+     *
+     * @TODO 通过page的stage来保证此动作只能触发一次
+     *
+     * @public
+     * @return {module:Page}
+     */
+    init: function () {
+
+        this.dispatch({
+            type: 'init',
+            data: this.getState()
+        });
+
+        return this;
+
+    },
+
+    /**
+     * 使用当前上下文中的数据，创建一个可提渲染使用的react元素
+     *
+     * @public
+     *
+     * @return {ReactElement}
+     */
+    createElement: function () {
+
+        var view = this.view;
+
+        return React.createElement(
+            ContextProvider,
+            {
+                ei: this.context
+            },
+            function () {
+                return React.createElement(view);
+            }
+        );
+
+    },
+
+    /**
+     * 使用当前的上下文中的数据，将页面渲染到指定的元素
+     *
+     * 只能在客户端使用
+     *
+     * @public
+     *
+     * @param {Element} target DOM元素
+     *
+     * @return {module:Page}
+     */
+    render: function (target) {
+
+        React.render(this.createElement(), target);
+
+        return this;
+    },
+
+    /**
+     * 使用当前的上下文中的数据，将页面渲染成字符串
+     *
+     * @public
+     *
+     * @return {string}
+     */
+    renderToString: function () {
+        return React.renderToString(this.createElement());
+    },
+
+    /**
+     * 返回当前上下文中的所有数据
+     *
+     * 此方法用于将服务器端的页面数据，同步到客户端上
+     *
+     * @public
+     *
+     * @return {*}
+     */
+    getState: function () {
+        return this.context.getState();
+    },
+
+    /**
+     * 派发一个动作，激活相应的数据剪切和视图更新
+     *
+     * @public
+     *
+     * @method module:Page#dispatch
+     *
+     * @param {(Object | Function)} action 动作
+     *
+     * @return {Object}
+     *
+     * @fires module:events~page-dispatch
+     */
+    dispatch: function (action) {
+
+        /**
+         * @event module:events~page-dispatch
+         * @param {(Object | Function)} action 动作
+         */
+        events.emit('page-dispatch', action);
+
+        this.context.dispatch(action);
+
+        return action;
+
+    },
+
+    /**
+     * 获取页面初始数据
+     *
+     * 页面在启动时，一般都会需要通过操作资源来获取数据作为初始数据
+     *
+     * 并且，这个过程一般还需要使用当前`请求`来完成决策
+     *
+     * 在app中接收到请求后会加载路由中指定的Page模块，将其实例化后，执行此方法
+     *
+     * @todo page需要有一个状态标识，new / inited / rendered / disposed
+     *
+     * @public
+     *
+     * @param {Object} request 请求
+     *
+     * @return {Promise}
+     */
+    getInitialState: function (request) {
+        return {};
+    },
+
+    /**
+     * 销毁页面
+     *
+     * @return {module:Page}
+     */
+    dispose: function () {
+
+        /**
+         * @event module:event~page-dispose
+         */
+        events.emit('page-dispose');
+
+        // @TODO 补充销毁时的必要处理
+
+        return this;
+    }
+
+};
+
+/**
+ * 生成Page子类
+ *
+ * @param {!Object} proto 扩展Page的配置
+ * @return {Function}
+ */
+Page.extend = function (proto) {
+
+    invariant(proto, 'create Page need options');
+
+    invariant(proto.reducer, 'Pager must have a reducer');
+
+    invariant(proto.view, 'Pager must have a view');
+
+    function SubPage(initialState) {
+        Page.call(this, initialState);
+    }
+
+    u.extend(SubPage.prototype, PagePrototype, proto);
+
+    return SubPage;
+
+};
+
+module.exports = Page;
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ei.html">ei</a></li><li><a href="module-env.html">env</a></li><li><a href="module-events.html">events</a></li><li><a href="module-locator.html">locator</a></li><li><a href="module-resource.html">resource</a></li><li><a href="module-url.html">url</a></li></ul><h3>Classes</h3><ul><li><a href="App.html">App</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContextConnector.html">ContextConnector</a></li><li><a href="ContextProvider.html">ContextProvider</a></li><li><a href="Emitter.html">Emitter</a></li><li><a href="Page.html">Page</a></li><li><a href="Router.html">Router</a></li></ul><h3>Events</h3><ul><li><a href="module-events.html#~event:app-bootstrap">app-bootstrap</a></li><li><a href="module-events.html#~event:app-load-page-on-client">app-load-page-on-client</a></li><li><a href="module-events.html#~event:app-load-page-on-server">app-load-page-on-server</a></li><li><a href="module-events.html#~event:app-page-bootstrap">app-page-bootstrap</a></li><li><a href="module-events.html#~event:app-page-bootstrap-succeed">app-page-bootstrap-succeed</a></li><li><a href="module-events.html#~event:app-page-loaded">app-page-loaded</a></li><li><a href="module-events.html#~event:app-page-switch-succeed">app-page-switch-succeed</a></li><li><a href="module-events.html#~event:app-ready">app-ready</a></li><li><a href="module-events.html#~event:app-request">app-request</a></li><li><a href="module-events.html#~event:app-response-in-html">app-response-in-html</a></li><li><a href="module-events.html#~event:app-response-in-json">app-response-in-json</a></li><li><a href="module-events.html#~event:app-route">app-route</a></li><li><a href="module-events.html#~event:app-route-failed">app-route-failed</a></li><li><a href="module-events.html#~event:app-route-succeed">app-route-succeed</a></li><li><a href="module-events.html#~event:page-dispatch">page-dispatch</a></li><li><a href="module-event.html#~event:page-dispose">page-dispose</a></li></ul><h3>Global</h3><ul><li><a href="global.html#routes">routes</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Fri Jul 31 2015 21:12:48 GMT+0800 (CST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
