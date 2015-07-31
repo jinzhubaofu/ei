@@ -793,6 +793,8 @@ module.exports = Hello;
 
 [api文档](http://jinzhubaofu.github.io/ei/api)
 
+[测试覆盖率](http://jinzhubaofu.github.io/ei/coverage/lcov-report/index.html)
+
 ### thanks & Inspired
 
 [react](https://github.com/facebook/react)
