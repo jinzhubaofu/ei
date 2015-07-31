@@ -788,3 +788,14 @@ module.exports = Hello;
 2. promise：es6-promise
 3. 日志: ei-logger
 
+
+### 相关链接
+
+[api文档](http://jinzhubaofu.github.io/ei/api)
+
+### thanks & Inspired
+
+[react](https://github.com/facebook/react)
+[flux](https://github.com/facebook/flux)
+[redux](https://github.com/gaearon/redux)
+[ReactiveX](http://reactivex.io/)
