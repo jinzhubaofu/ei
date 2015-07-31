@@ -109,6 +109,8 @@ exports.getProcessors = function () {
 };
 
 exports.exclude = [
+    'coverage',
+    'example',
     'node_modules',
     '.*',
     '*.json',
