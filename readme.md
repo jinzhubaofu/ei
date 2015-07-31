@@ -62,8 +62,11 @@ var state2 = reducer(state1, action);
 
 
 > 我们非常希望可以通过 `state1` === `state2` 这种简单的方法来判断数据是否发生了变化，只要（只有）数据发生变化，我们才会通知`view`(react)来完成视图上的更新。
-> 因此，这里非常适合使用`Immutable`数据结构来管理`state`。（如果不用可能会蛋疼。。。）
+
+> 因此，这里非常适合使用`Immutable`数据结构来管理`state`。
+
 > 这种行为在`ei`中是默认行为，`ei`会自动`state1` === `state2`的方式来检测`state`的变化，并将变化即时地通知给`react`。
+
 > 如果你的视图不更新了，那么请检查`reduce`返回的结果是不是同一个对象。请确保当数据需要发生变化时 `state1` !== `state2`。
 
 由于，`ei`中所有的数据都存放在`state`中，因此我们只需要一个顶级的`reducer`就作为入口即可。
@@ -103,7 +106,7 @@ var reducer = function (state, action) {
 
 ```
 
-因此，我们不再需要`flux`中`store`的`waitFor`方法，我们只需要按逻辑执行不同的子`reducer`即可。举个例子：
+因此，我们不再需要`flux`中`store`在`register`回调中使用`dispatcher.waitFor`方法来完成依赖，我们只需要按逻辑执行不同的子`reducer`即可。举个例子：
 
 ```js
 
@@ -121,7 +124,9 @@ var reducer = function (state, action) {
 
     state = a(state, action);
 
-    return needWaitForA(state, action);
+    state = needWaitForA(state, action);
+
+    return state;
 
 };
 
@@ -132,7 +137,7 @@ var reducer = function (state, action) {
 
 ### dispatch
 
-为了使 `state` / `action` / `reducer`可以结合在一起，正常工作，我们引入了`dispatch`。 `dispatch`用来连接 `state` / `action`/ `reducer`。
+为了使 `state` / `action` / `reducer`可以结合在一起正常工作，我们引入了`dispatch`。 `dispatch`用来连接 `state` / `action`/ `reducer`。
 
 当系统接收到一个`action`时，我们找到`store`，取得它的当前`state`，再将`state`和`action`传入`reducer`。最后，将`reducer`的返回结果写回到`store`中。
 
@@ -180,7 +185,7 @@ dispatch(function (dispatch, state) {
 
 ### ActionCreator
 
-出于重复复用`action`的目的，我们提出`ActionCreator`的概念。每个`ActionCreator`是一种`action`的工厂(action factory)。
+出于重复利用`action`的目的，我们提出`ActionCreator`的概念。每个`ActionCreator`是一种`action`的工厂(action factory)。
 
 这它是一个函数，接收的参数格式不限，但返回值必须是一个`action`或者是一个`function`。
 
@@ -302,11 +307,144 @@ function doB(count) {
 
 即使是在spa(single page application，单页面应用)中，其为用户提供的基本感知还是一个基于多个页面的程序，只不过这些页面是虚拟的。
 
-`ei`所提供的`Page`是同构的，它既可以在服务器端渲染成了一段html，也可以成为在spa应用中的一个虚拟页面。`ei`也提供了基础的spa支持。
+`ei`所提供的`Page`是同构的，它既可以在服务器端渲染成了一段html，也可以成为在spa应用中的一个虚拟页面。
+
+`ei`也提供了基础的spa支持。详见[App](#App)
+
+实际上，在`ei`中`Page`和`Context`一对一的关系，既一个`Page`实例持有一个`Context`实例。
+
+### App
+
+在`ei`中，`App`是一个应用的概念。`ei`的`App`是同构的，在服务器端可以以html格式输出多个页面，也可以在浏览器端内实现spa。
+
+我们可以这样得到一个`App`实例：
+
+```js
+
+var ei = require('ei');
+
+var app = ei({
+
+    routes: [{
+        path: '/a',
+        page: 'iso/IndexPage'
+    }]
+
+});
+
+```
+
+可以在服务器端绑定到一个`express`应用上，例如：
+
+```js
+
+var express = require('express');
+var ei = require('ei');
+
+var app = express();
+
+var eiApp = ei({
+
+    // 路由配置
+    // 在调用eiApp.execute(request)对请求进行处理时，
+    // 首先会使用此处设定的path进行路由匹配，找到相应的Page来进行下一步的处理
+    // 如果路由配置不存在，则Promise会进入reject状态
+    routes: [{
+        path: '/a',
+        page: 'iso/IndexPage',
+        template: 'some/template'
+    }]
+
+});
+
+app.use(function (req, res, next) {
+
+    eiApp
+        .execute(req)
+        .then(function (result) {
+
+            // result的结构是这样的
+            {
+                // 路由配置
+                route: route,
+
+                // 当前的页面
+                page: page
+
+            }
+
+            // 可以从page中取出所有的数据
+            var state = page.getState();
+
+            // 还可以把page渲染成html
+            var html = page.renderToString();
+
+
+            // 如果请求是ajax，那么可以直接以state作为响应
+            if (req.xhr) {
+                res.status(200).send(state);
+                return
+            }
+
+            // 如果不是ajax，那可以输出为一段html
+            // 这样可以灵活地将page的内容输出到指定的位置
+            // 还可以灵活地输出同步数据, 比如这样
+            // <script>window.data = {%data|json%}</script>
+            res.render(route.template, {
+
+                html: html,
+
+                data: data
+
+            });
+
+        }, function (error) {
+
+            // 在整个处理过程中，发生任何错误都会在此处回调，以供处理
+
+        });
+
+});
+
+```
+
+或者在浏览器端使用，例如：
+
+```js
+
+var ei = require('ei');
+
+var app = ei({
+
+    // 在浏览器端需要指定一个main元素，作为react渲染的根结点
+    main: document.getElementById('app'),
+
+    // 与服器端同一样的路由配置
+    routes: [{
+        path: '/a',
+        page: 'iso/IndexPage',
+        template: 'some/template'
+    }]
+
+});
+
+
+var data = window.data;
+
+// 直接使用同步数据进行初始化
+// 此时，app会接管window.onpopstate事件，
+// 浏览器在前进/后退时会把当前的url转化为一个`request`对象
+// 与服务器端相同，使用app.execute(request)对其进行处理
+// 此时一个多页面网站就成功地转化成了一个spa网站
+app.bootstrap(data);
+
+window.data = null;
+
+```
 
 ### Resource
 
-`Resource`是对系统外部资源的一种描述。一般来讲，我们会在`ActionCreator`中使用它，例如：
+`Resource`是对系统外部资源的一种描述。通常我们会在`ActionCreator`中使用它，例如：
 
 
 ```js
@@ -403,4 +541,250 @@ Resource.register('count', {
 
 ```
 
+
+## 与React相关
+
+### child context 机制
+
+这是`React`的一个隐藏功能，官网上并没有它的明确文档。原因是目前的实现机制并不理想，不久的将来将会被替换成另一个机制。
+
+这里提到的两种机制是：
+
+1. 基于`owner`的context机制
+2. 基于`parent`的context机制
+
+目前的实现机制是第1种，将会被替换成第2种。`React`在开发模式中会对这两种模式进行检查，一个组件的`owner`和`parent`不一致，并且使用了`context`，那么你会得到一条警告。也就是说，目前我们可以做到的最好情况就是使ReactElement的`owner`与`parent`保持一致。
+
+> owner 是创建这个ReactElement的ReactElement
+
+> parent 是指在DOM层级上的parentNode
+
+> 更多的资料可以[看这里](https://www.tildedave.com/2014/11/15/introduction-to-contexts-in-react-js.html)
+
+如果没有context，那我们会遇到一个非常麻烦的问题：组件的数据，必须在父级组件通过`props`来传递。这样就导致父级组件需要知道所有的数据，并且一层一层地传递下去。
+
+通过context机制，我们可以非常容易地取到最顶层组件的数据，中间的任意多层组件都不需要关心数据是如何传递了。`ei`中就是通过context机制来解决数据逐层传递的问题的。
+
+但是`React`对context的使用提出了要求，第一点：
+
+必须明确地声明一个可以提供context的组件，并且要求它必须描述它能提供的context类型，同时实现获取context的函数，即：
+
+```js
+
+var ContextProvider = React.createClass({
+
+    // 必须有
+    childContextTypes: {
+        context: React.propTypes.object.isRequired
+    },
+
+    // 必须有
+    getChildContext: function () {
+        return {
+            context: {}
+        };
+    },
+
+    render: function () {}
+
+});
+
+
+```
+
+
+第二点：使用context的组件也必须明确地描述contextTypes，即：
+
+```js
+
+var ContextUser = React.createClass({
+
+    contextTypes: {
+        context: React.propTypes.object.isRequired
+    },
+
+    render: function () {}
+
+});
+
+```
+
+对，就是这样的喵。
+
+这个我们可以通过两个`mixin`来解决，比如contextProviderMixin和contextUserMixin，但是`ei`使用的是[high order component](https://medium.com/@dan_abramov/mixins-are-dead-long-live-higher-order-components-94a0d2f9e750)的方法。`ei`提供了两个组件，`ContextProvider`和`ContextConnector`分别替代`contextProviderMixin`和`contextUserMixin`。 下边我们分别描述一下：
+
+### `ContextProvider`
+
+`ContextProvider`是由`ei`提供的上下文提供包装组件，大概的原理是这样的：
+
+```js
+
+
+// 假设这个是你的顶层组件
+var YourTopLevelComponent = React.createClass({
+
+    render: function () {}
+
+});
+
+// `ei`的`ContextProvider`简化版本
+var ContextProvider = React.createClass({
+
+    // 必须有
+    childContextTypes: {
+        context: React.propTypes.object.isRequired
+    },
+
+    // 必须有
+    getChildContext: function () {
+        return {
+            // 这个是你想要共享的context，它来自输入参数
+            context: this.props.context
+        };
+    },
+
+    render: function () {
+        // 这里这么做的原因是为了避免我们前边刚刚讲到的`owner`与`parent`不一致的问题
+        return this.props.children();
+    }
+
+});
+
+// 在生成ReactElement时，是这样的
+
+var element = React.createElement(
+
+    ContextProvider,
+    {
+        // 这个会被作为context提供给子组件使用
+        context: {}
+    },
+    // 这里这么做的原因是为了避免我们前边刚刚讲到的`owner`与`parent`不一致的问题
+    function () {
+        return React.createElement(YourTopLevelComponent);
+    }
+);
+
+```
+
+当然，在`ei`中，我们不需要大家来写这些代码，只需要这样做就可以了：
+
+```js
+
+var ei = require('ei');
+
+var IndexPage = ei.Page.extend({
+
+    // `ei`会自动对`view`进行`ContextProvider`包装，提供完整的`ei`上下文
+    // 通过`ei`的上下文，可以完成从`store`取数据和`dispatch`动作
+    view: React.createClass({
+
+        render: function () {}
+
+    }),
+
+    reducer: function () {}
+
+});
+
+```
+
+### `ContextConnector`
+
+前边我们讲了如何提供上下文，接下来我们讲一下如何访问上下文
+
+其实原理是类似的，也是通过封装组件的方式完成的。
+
+在`ei`中可以很方便地将一个野生组件转化为可以使用上下文的组件：
+
+```js
+
+var ei = require('ei');
+
+var Hello = React.createClass({
+
+    render: function () {
+
+        return (
+
+            // 我们绑定的`ActionCreator`
+            // 点击时我们就可以派发动作了
+            <div onClick={this.props.add}>
+
+                // 我们选取的数据
+                {this.props.name}
+
+            </div>
+
+        );
+
+    }
+
+});
+
+var selector = {
+
+    // 选取`store`中的属性`name`，注入到Hello的props中
+    name: function (store) {
+        return store.name;
+    }
+
+};
+
+var actions = {
+
+    // 这是一个`ActionCreator`
+    // 在Hello被实例化为，这个`ActionCreator`将成为`Hello`的`props.add`
+    // 执行这个方法，将会将返回的动作派发给`reducer`
+    add: function () {
+
+        return {
+            type: 'ADD'
+        };
+
+    }
+
+};
+
+Hello = ei.connect(
+    Hello,
+    selectors,
+    actions
+);
+
+module.exports = Hello;
+
+```
+
+
+## 编码建议
+
+### 目录安排
+
+我们建议在src目录下使用这样的一个目录安排：
+
+```
+
+- dep          // 存放client端依赖包
+- node_modules // 存放server端依赖包
+- src
+    - client   // 此目录下存放浏览器代码，Client Resource / 启动脚本等
+    - server   // 此目录下存放服务器代码，Server Resource / server(express) / server模板 / server配置
+    - iso      // 此目录下存放同构代码，Page / Component / Reducer
+
+```
+
+### cjs or amd?
+
+由于`nodejs`和浏览器上对于脚本资源获取方式上存在巨大不同，所以我们习惯上是在`nodejs`使用cjs格式的模块，而在浏览器端我们习惯使用amd格式的模块。
+
+我们建议全部使用cjs的格式编写源码，通过构建工具将client和iso目录下所有的源码从cjs包装成amd格式（这个非常简单，因为amd规范中强调了需要支持cjs格式，所以常见的amd加载器[requirejs](http://requirejs.org/)和[esl](https://github.com/ecomfe/esl)都只需要将cjs代码包装一下define函数，完美使用了）
+
+### 依赖包的选取
+
+建议直接选取可以同时运行在client/server端的依赖包，例如
+
+1. http请求：axios / superagent
+2. promise：es6-promise
+3. 日志: ei-logger
 
