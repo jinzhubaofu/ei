@@ -3,7 +3,9 @@
   "version": "0.0.12",
   "main": "lib/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "./node_modules/.bin/fecs lib --type=js",
+    "coverage": "JASMINE_CONFIG_PATH=test/jasmine.json ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine",
+    "test": "JASMINE_CONFIG_PATH=test/jasmine.json ./node_modules/.bin/jasmine"
   },
   "author": {
     "name": "leonlu@outlook.com"
@@ -14,10 +16,13 @@
     "react": "0.13.3"
   },
   "dependencies": {
-    "debug": "^2.2.0",
-    "flux": "^2.0.2",
-    "underscore": "^1.8.3",
-    "when": "^3.7.3"
+    "es6-promise": "^2.3.0",
+    "underscore": "^1.8.3"
   },
-  "readme": "readme.md"
+  "readme": "readme.md",
+  "devDependencies": {
+    "fecs": "^0.3.9",
+    "istanbul": "^0.3.15",
+    "jasmine": "^2.3.1"
+  }
 }
