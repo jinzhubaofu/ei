@@ -31,31 +31,39 @@ describe('composeReducer', function () {
 
     it('will return a composed function', function () {
 
-        var reducers = {
-            a: function (state, action) {
+        function A() {
 
+            this.a = function (state, action) {
                 return state + 1;
+            };
 
-            },
-
-            b: function (state, action) {
-
+            this.b = function (state, action) {
                 return state - 1;
+            };
 
-            }
+        }
+
+        A.prototype.c = function (state, action) {
+            return state * 2;
         };
+
+        var reducers = new A();
+
+        expect(u.has(reducers, 'c')).toBe(false);
 
         var reducer = composeReducer(reducers);
 
         var state = {
             a: 1,
-            b: 1
+            b: 1,
+            c: 5
         };
 
         var nextState = reducer(state, {});
 
         expect(nextState.a).toBe(2);
         expect(nextState.b).toBe(0);
+        expect(nextState.c).toBe(5);
 
     });
 
@@ -72,10 +80,16 @@ describe('composeReducer', function () {
 
         var reducer = composeReducer(reducers);
 
-        var state = {
-            a: 1,
-            b: 1
+        var State = function () {
+
+            this.a = 1;
+            this.b = 2;
+
         };
+
+        State.prototype.c = 5;
+
+        var state = new State();
 
         var nextState = reducer(state, {});
 
