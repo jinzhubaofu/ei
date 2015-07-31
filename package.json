@@ -1,6 +1,6 @@
 {
   "name": "ei",
-  "version": "0.0.12",
+  "version": "1.0.0-rc",
   "main": "lib/main.js",
   "scripts": {
     "lint": "./node_modules/.bin/fecs lib --type=js",
@@ -8,7 +8,7 @@
     "test": "JASMINE_CONFIG_PATH=test/jasmine.json ./node_modules/.bin/jasmine"
   },
   "author": {
-    "name": "leonlu@outlook.com"
+    "name": "ludafa@outlook.com"
   },
   "repository": "https://github.com/jinzhubaofu/ei",
   "license": "ISC",
