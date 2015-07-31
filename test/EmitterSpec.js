@@ -3,8 +3,6 @@
  * @author Leon(leon@outlook.com)
  */
 
-/*eslint-env node*/
-
 var Emitter = require('../lib/Emitter');
 var u = require('underscore');
 
