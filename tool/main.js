@@ -1,6 +1,6 @@
 /**
- * @file amd wrap
- * @author leon<lupengyu@baidu.com>
+ * @file ei
+ * @author Leon(leon@outlook.com)
  */
 
 define('ei', ['ei/main'], function (main) {
