@@ -611,7 +611,7 @@ var ContextUser = React.createClass({
 
 对，就是这样的喵。
 
-这个我们可以通过两个`mixin`来解决，比如contextProviderMixin和contextUserMixin，但是`ei`使用的是[high order component](https://medium.com/@dan_abramov/mixins-are-dead-long-live-higher-order-components-94a0d2f9e750)的方法。`ei`提供了两个组件，`ContextProvider`和`ContextConnector`分别替代`contextProviderMixin`和`contextUserMixin`。 下边我们分别描述一下：
+这个我们可以通过两个`mixin`来解决，比如contextProviderMixin和contextUserMixin，但是`ei`使用的是[higher order component](https://medium.com/@dan_abramov/mixins-are-dead-long-live-higher-order-components-94a0d2f9e750)的方法。`ei`提供了两个组件，`ContextProvider`和`ContextConnector`分别替代`contextProviderMixin`和`contextUserMixin`。 下边我们分别描述一下：
 
 ### `ContextProvider`
 
@@ -644,7 +644,7 @@ var ContextProvider = React.createClass({
     },
 
     render: function () {
-        // 这里这么做的原因是为了避免我们前边刚刚讲到的`owner`与`parent`不一致的问题
+        // 这里这么做是为了避免我们前边刚刚讲到的`owner`与`parent`不一致的问题
         return this.props.children();
     }
 
@@ -683,7 +683,10 @@ var IndexPage = ei.Page.extend({
 
     }),
 
+    // 你的reducer在这里
     reducer: function () {}
+
+    // 你只需要关注上边这两个属性
 
 });
 
@@ -746,6 +749,7 @@ var actions = {
 
 };
 
+// 只需要在这里使用`ei`提供的`connect`方法即可
 Hello = ei.connect(
     Hello,
     selectors,
@@ -778,7 +782,7 @@ module.exports = Hello;
 
 由于`nodejs`和浏览器上对于脚本资源获取方式上存在巨大不同，所以我们习惯上是在`nodejs`使用cjs格式的模块，而在浏览器端我们习惯使用amd格式的模块。
 
-我们建议全部使用cjs的格式编写源码，通过构建工具将client和iso目录下所有的源码从cjs包装成amd格式（这个非常简单，因为amd规范中强调了需要支持cjs格式，所以常见的amd加载器[requirejs](http://requirejs.org/)和[esl](https://github.com/ecomfe/esl)都只需要将cjs代码包装一下define函数，完美使用了）
+我们建议全部使用cjs的格式编写源码，通过构建工具将client和iso目录下所有的源码从cjs包装成amd格式（这个非常简单，因为amd规范中强调了需要支持cjs格式，所以常见的amd加载器[requirejs](http://requirejs.org/)和[esl](https://github.com/ecomfe/esl)都只需要将cjs代码包装一下define函数，就可以完美使用了）
 
 ### 依赖包的选取
 
