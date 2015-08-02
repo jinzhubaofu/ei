@@ -5,6 +5,7 @@
   "scripts": {
     "lint": "./node_modules/.bin/fecs lib --type=js",
     "coverage": "JASMINE_CONFIG_PATH=test/jasmine.json ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine",
+    "travis-coverage": "JASMINE_CONFIG_PATH=test/jasmine.json ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test": "JASMINE_CONFIG_PATH=test/jasmine.json ./node_modules/.bin/jasmine"
   },
   "author": {
@@ -21,6 +22,7 @@
   },
   "readme": "readme.md",
   "devDependencies": {
+    "coveralls": "^2.11.3",
     "fecs": "^0.3.9",
     "istanbul": "^0.3.15",
     "jasmine": "^2.3.1"
