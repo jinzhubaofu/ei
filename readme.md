@@ -1,5 +1,7 @@
 # efe isomorphic framework
 
+[![Build Status](https://travis-ci.org/jinzhubaofu/ei.svg?branch=master)](https://travis-ci.org/jinzhubaofu/ei)
+
 简洁的flux同构框架
 
 ## 特点
