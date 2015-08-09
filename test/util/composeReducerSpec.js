@@ -38,7 +38,7 @@ describe('composeReducer', function () {
             };
 
             this.b = function (state, action) {
-                return state - 1;
+                return 100;
             };
 
         }
@@ -49,21 +49,22 @@ describe('composeReducer', function () {
 
         var reducers = new A();
 
-        expect(u.has(reducers, 'c')).toBe(false);
-
         var reducer = composeReducer(reducers);
+
+        expect(u.isFunction(reducer)).toBe(true);
 
         var state = {
             a: 1,
-            b: 1,
-            c: 5
+            c: 5,
+            d: 6
         };
 
         var nextState = reducer(state, {});
 
         expect(nextState.a).toBe(2);
-        expect(nextState.b).toBe(0);
+        expect(nextState.b).toBe(100);
         expect(nextState.c).toBe(5);
+        expect(nextState.d).toBe(6);
 
     });
 
