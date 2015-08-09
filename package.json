@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "./node_modules/.bin/fecs lib --type=js",
     "coverage": "JASMINE_CONFIG_PATH=test/jasmine.json ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine",
-    "travis-coverage": "JASMINE_CONFIG_PATH=test/jasmine.json ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "coveralls": "JASMINE_CONFIG_PATH=test/jasmine.json ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test": "JASMINE_CONFIG_PATH=test/jasmine.json ./node_modules/.bin/jasmine"
   },
   "author": {
