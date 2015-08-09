@@ -336,11 +336,11 @@ define('ei/App', [
         var me = this;
         var request = url.parse(location.href);
         var route = this.route(request);
-        return route ? Promise.reject({ status: 404 }) : me.loadPage(route.page).then(function (Page) {
+        return route ? me.loadPage(route.page).then(function (Page) {
             var page = me.page = new Page(initialState);
             page.render(document.getElementById(me.main));
             events.emit('app-ready');
-        });
+        }) : Promise.reject({ status: 404 });
     };
     App.prototype.onLocatorRedirect = function (path, query) {
         var request = {
@@ -462,10 +462,10 @@ define('ei/Context', [
 ], function (require, exports, module) {
     var u = require('underscore');
     var invariant = require('./util/invariant');
-    function Context(initialValue, reducer) {
+    function Context(initialState, reducer) {
         invariant(u.isFunction(reducer), 'Context need a reducer');
         this.reducer = reducer;
-        this.store = initialValue;
+        this.store = initialState == null ? {} : initialState;
         this.dispatch = u.bind(this.dispatch, this);
         this.getState = u.bind(this.getState, this);
         this.listeners = [];
@@ -564,10 +564,10 @@ define('ei/Page', [
         this.context = new Context(initialState, componseReducer(this.reducer));
     }
     var PagePrototype = {
-        init: function () {
+        init: function (initialState) {
             this.dispatch({
                 type: 'init',
-                data: this.getState()
+                data: initialState
             });
             return this;
         },
