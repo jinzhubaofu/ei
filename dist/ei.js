@@ -520,20 +520,16 @@ define('ei/util/composeReducer', [
             return u.extendOwn(finalReducer, reducer);
         }, {});
         return function (state, action) {
+            var nextState = u.clone(state);
             var isChanged = false;
-            var nextState = {};
-            for (var name in state) {
-                if (!u.has(state, name)) {
+            for (var name in reducers) {
+                if (!u.has(reducers, name)) {
                     continue;
                 }
-                if (u.has(reducers, name)) {
-                    var value = state[name];
-                    var nextValue = nextState[name] = reducers[name](value, action);
-                    if (nextValue !== value) {
-                        isChanged = true;
-                    }
-                } else {
-                    nextState[name] = state[name];
+                var value = state[name];
+                var nextValue = nextState[name] = reducers[name](value, action);
+                if (nextValue !== value) {
+                    isChanged = true;
                 }
             }
             return isChanged ? nextState : state;
