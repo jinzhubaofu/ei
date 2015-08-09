@@ -453,20 +453,40 @@ define('ei/component/ConextProvider', [
     });
     module.exports = ContextProvider;
 });
+define('ei/util/composeMiddleware', [
+    'require',
+    'exports',
+    'module',
+    'underscore'
+], function (require, exports, module) {
+    var u = require('underscore');
+    function composeMiddleware(context, middlewares) {
+        var dispatch = u.bind(context.dispatch, context);
+        return middlewares && middlewares.length ? u.reduce(middlewares.reverse(), function (next, middleware, index) {
+            return function (action) {
+                return middleware(context.getState(), action, next);
+            };
+        }, dispatch) : dispatch;
+    }
+    ;
+    module.exports = composeMiddleware;
+});
 define('ei/Context', [
     'require',
     'exports',
     'module',
     'underscore',
+    './util/composeMiddleware',
     './util/invariant'
 ], function (require, exports, module) {
     var u = require('underscore');
+    var composeMiddleware = require('./util/composeMiddleware');
     var invariant = require('./util/invariant');
-    function Context(initialState, reducer) {
+    function Context(initialState, reducer, middlewares) {
         invariant(u.isFunction(reducer), 'Context need a reducer');
         this.reducer = reducer;
         this.store = initialState == null ? {} : initialState;
-        this.dispatch = u.bind(this.dispatch, this);
+        this.dispatch = composeMiddleware(this, middlewares);
         this.getState = u.bind(this.getState, this);
         this.listeners = [];
     }
@@ -523,9 +543,6 @@ define('ei/util/composeReducer', [
             var nextState = u.clone(state);
             var isChanged = false;
             for (var name in reducers) {
-                if (!u.has(reducers, name)) {
-                    continue;
-                }
                 var value = state[name];
                 var nextValue = nextState[name] = reducers[name](value, action);
                 if (nextValue !== value) {
@@ -557,7 +574,7 @@ define('ei/Page', [
     var invariant = require('./util/invariant');
     var events = require('./events');
     function Page(initialState) {
-        this.context = new Context(initialState, componseReducer(this.reducer));
+        this.context = new Context(initialState, componseReducer(this.reducer), this.middlewares);
     }
     var PagePrototype = {
         init: function (initialState) {
