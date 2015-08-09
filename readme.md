@@ -1,6 +1,7 @@
 # efe isomorphic framework
 
 [![Build Status](https://travis-ci.org/jinzhubaofu/ei.svg?branch=master)](https://travis-ci.org/jinzhubaofu/ei)
+[![Coverage Status](https://coveralls.io/repos/jinzhubaofu/ei/badge.svg?branch=master&service=github)](https://coveralls.io/github/jinzhubaofu/ei?branch=master)
 
 简洁的flux同构框架
 
