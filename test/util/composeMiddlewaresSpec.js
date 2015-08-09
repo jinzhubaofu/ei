@@ -53,9 +53,7 @@ describe('composeMiddleware', function () {
             },
             function (state, action, next) {
                 spy2(action);
-                console.log('before dispatch');
                 var result = next(action);
-                console.log('after dispatch');
                 return result;
             }
         ];
@@ -63,7 +61,6 @@ describe('composeMiddleware', function () {
         var context = {
             dispatch: function (action) {
                 spy3(action);
-                console.log('origin dispatch', action);
                 return action;
             },
             getState: function () {
