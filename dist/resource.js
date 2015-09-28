@@ -1,9 +1,9 @@
 define('ei/resource', [
+    'require',
     'exports',
-    './babelHelpers',
+    'module',
     './Container'
-], function (exports) {
-    var babelHelpers = require('./babelHelpers');
+], function (require, exports, module) {
     var Container = require('./Container');
     var container = new Container();
     exports.register = function (type, resource) {

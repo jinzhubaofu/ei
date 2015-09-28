@@ -1,8 +1,8 @@
 define('ei/env', [
+    'require',
     'exports',
-    './babelHelpers'
-], function (exports) {
-    var babelHelpers = require('./babelHelpers');
+    'module'
+], function (require, exports, module) {
     try {
         exports.isServer = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
     } catch (e) {

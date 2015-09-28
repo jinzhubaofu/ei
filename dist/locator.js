@@ -1,13 +1,13 @@
 define('ei/locator', [
+    'require',
     'exports',
-    './babelHelpers',
+    'module',
     './events',
     './env',
     './Emitter',
     './util/invariant',
     './url'
-], function (exports) {
-    var babelHelpers = require('./babelHelpers');
+], function (require, exports, module) {
     var events = require('./events');
     var env = require('./env');
     var Emitter = require('./Emitter');
@@ -17,54 +17,55 @@ define('ei/locator', [
         return !!window.history;
     }
     var hashLocator = {
-        start: function start() {
+        start: function () {
             window.onhashchange = onHashChange;
         },
-        stop: function stop() {
+        stop: function () {
             window.onhashchange = null;
         },
-        redirect: function redirect(url) {
+        redirect: function (url) {
             location.hash = url;
         }
     };
     var historyLocator = {
-        start: function start() {
+        start: function () {
             window.onpopstate = onHistoryChange;
         },
-        stop: function stop() {
+        stop: function () {
             window.onpopstate = null;
         },
-        redirect: function redirect(url) {
+        redirect: function (url) {
             history.pushState(null, window.title, url);
         }
     };
     var locator = {
-        setMode: function setMode(mode) {
+        setMode: function (mode) {
             this.mode = isHistorySupported() ? mode || 'history' : 'hash';
             return this;
         },
-        start: function start(mode) {
-            var locator = this.locator = !isHistorySupported() || mode === 'hash' ? hashLocator : historyLocator;
+        start: function (mode) {
+            this.setMode(mode);
+            var locator = this.mode === 'hash' ? hashLocator : historyLocator;
             locator.start();
             return this;
         },
-        stop: function stop() {
+        stop: function () {
             this.locator.stop();
             return this;
         },
-        redirect: function redirect(path, query) {
+        redirect: function (path, query) {
             invariant(env.isClient, 'redirect cannot run on server');
             events.emit('locator.redirect');
             this.locator.redirect(url.makeUrl(path, query));
             this.emit('redirect', path, query);
         },
-        createRequestFromLocation: function createRequestFromLocation() {
+        createRequestFromLocation: function () {
             var uri = this.mode === 'hash' ? location.hash.slice(1) : location.href;
             return url.parse(uri);
         }
     };
     function onHashChange() {
-        var uri = url.pasre(location.hash.slice(1));
+        var uri = url.parse(location.hash.slice(1));
         locator.emit('redirect', uri.path, uri.query);
     }
     function onHistoryChange(e) {

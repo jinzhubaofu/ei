@@ -1,9 +1,9 @@
 define('ei/component/ContextConnector', [
+    'require',
     'exports',
-    '../babelHelpers',
+    'module',
     'react'
-], function (exports) {
-    var babelHelpers = require('../babelHelpers');
+], function (require, exports, module) {
     var React = require('react');
     var ContextConnector = React.createClass({
         displayName: 'ContextConnector',
@@ -12,25 +12,25 @@ define('ei/component/ContextConnector', [
             children: React.PropTypes.func.isRequired,
             select: React.PropTypes.func.isRequired
         },
-        getDataFromContext: function getDataFromContext() {
+        getDataFromContext: function () {
             return this.props.select(this.context.ei.store);
         },
-        getInitialState: function getInitialState() {
+        getInitialState: function () {
             return { data: this.getDataFromContext() };
         },
-        componentDidMount: function componentDidMount() {
+        componentDidMount: function () {
             this.context.ei.addChangeListener(this.onStoreChange);
         },
-        componentWillUnmount: function componentWillUnmount() {
+        componentWillUnmount: function () {
             this.context.ei.removeChangeListener(this.onStoreChange);
         },
-        shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+        shouldComponentUpdate: function (nextProps, nextState) {
             return this.state.data !== nextState;
         },
-        onStoreChange: function onStoreChange() {
+        onStoreChange: function () {
             this.setState({ data: this.getDataFromContext() });
         },
-        render: function render() {
+        render: function () {
             return this.props.children(this.state.data, this.context.ei.dispatch);
         }
     });

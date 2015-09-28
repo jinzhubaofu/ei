@@ -1,11 +1,11 @@
 define('ei/Context', [
+    'require',
     'exports',
-    './babelHelpers',
+    'module',
     'underscore',
     './util/composeMiddleware',
     './util/invariant'
-], function (exports) {
-    var babelHelpers = require('./babelHelpers');
+], function (require, exports, module) {
     var u = require('underscore');
     var composeMiddleware = require('./util/composeMiddleware');
     var invariant = require('./util/invariant');

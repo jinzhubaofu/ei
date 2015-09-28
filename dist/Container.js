@@ -1,11 +1,11 @@
 define('ei/Container', [
+    'require',
     'exports',
-    './babelHelpers',
+    'module',
     'underscore'
-], function (exports) {
-    var babelHelpers = require('./babelHelpers');
+], function (require, exports, module) {
     var u = require('underscore');
-    var Container = function Container() {
+    var Container = function () {
         this.boundCallbacks = {};
         this.singletonCallbacks = {};
         this.instantiatedSingletons = {};

@@ -1,14 +1,14 @@
 define('ei/Reducer', [
+    'require',
     'exports',
-    './babelHelpers',
+    'module',
     'underscore',
     './Dispatcher'
-], function (exports) {
-    var babelHelpers = require('./babelHelpers');
+], function (require, exports, module) {
     var u = require('underscore');
     var Dispatcher = require('./Dispatcher');
     var mixins = {
-        bindAction: function bindAction(ActionCreator) {
+        bindAction: function (ActionCreator) {
             Dispatcher.addActionListener(ActionCreator.type, this);
             return this;
         }

@@ -1,13 +1,13 @@
 define('ei/util/connect', [
+    'require',
     'exports',
-    '../babelHelpers',
+    'module',
     'react',
     'underscore',
     '../component/ContextConnector',
     './bindActions',
     './bindSelectors'
-], function (exports) {
-    var babelHelpers = require('../babelHelpers');
+], function (require, exports, module) {
     var React = require('react');
     var u = require('underscore');
     var ContextConnector = require('../component/ContextConnector');
@@ -17,7 +17,7 @@ define('ei/util/connect', [
         var ContextFixer = React.createClass({
             displayName: 'ContextFixer',
             select: bindSelectors(selector),
-            render: function render() {
+            render: function () {
                 var props = this.props;
                 return React.createElement(ContextConnector, { select: this.select }, function (state, dispatch) {
                     return React.createElement(Component, u.extendOwn({}, state, props, actions ? bindActions(dispatch, actions) : null));

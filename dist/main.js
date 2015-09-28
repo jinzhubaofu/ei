@@ -1,6 +1,7 @@
 define('ei/main', [
+    'require',
     'exports',
-    './babelHelpers',
+    'module',
     './App',
     './Page',
     './Container',
@@ -9,8 +10,7 @@ define('ei/main', [
     './resource',
     './util/composeReducer',
     './util/connect'
-], function (exports) {
-    var babelHelpers = require('./babelHelpers');
+], function (require, exports, module) {
     exports.App = require('./App');
     exports.Page = require('./Page');
     exports.Container = require('./Container');

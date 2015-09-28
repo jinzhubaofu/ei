@@ -1,9 +1,9 @@
 define('ei/util/invariant', [
+    'require',
     'exports',
-    '../babelHelpers'
-], function (exports) {
-    var babelHelpers = require('../babelHelpers');
-    var invariant = function invariant(condition, format, a, b, c, d, e, f) {
+    'module'
+], function (require, exports, module) {
+    var invariant = function (condition, format, a, b, c, d, e, f) {
         if (condition) {
             return;
         }

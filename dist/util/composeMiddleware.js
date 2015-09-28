@@ -1,9 +1,9 @@
 define('ei/util/composeMiddleware', [
+    'require',
     'exports',
-    '../babelHelpers',
+    'module',
     'underscore'
-], function (exports) {
-    var babelHelpers = require('../babelHelpers');
+], function (require, exports, module) {
     var u = require('underscore');
     function composeMiddleware(context, middlewares) {
         var dispatch = u.bind(context.dispatch, context);

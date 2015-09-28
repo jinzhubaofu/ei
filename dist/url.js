@@ -1,9 +1,9 @@
 define('ei/url', [
+    'require',
     'exports',
-    './babelHelpers',
+    'module',
     'underscore'
-], function (exports) {
-    var babelHelpers = require('./babelHelpers');
+], function (require, exports, module) {
     var u = require('underscore');
     var parts = [
         {

@@ -22,30 +22,34 @@ exports.getProcessors = function () {
         to: 'dist'
     });
 
-    var babel = new BabelProcessor({
-        files: ['lib/**/*.js'],
-        compileOptions: {
-            stage: 0,
-            modules: 'amd',
-            compact: false,
-            ast: false,
-            blacklist: ['strict'],
-            externalHelpers: true,
-            moduleId: '',
-            getModuleId: function (filename) {
-                return filename.replace('lib/', '');
-            }
-        }
+    // var babel = new BabelProcessor({
+    //     files: ['lib/**/*.js'],
+    //     compileOptions: {
+    //         stage: 0,
+    //         modules: 'commonStrict',
+    //         compact: false,
+    //         ast: false,
+    //         blacklist: ['strict'],
+    //         externalHelpers: true,
+    //         moduleId: '',
+    //         getModuleId: function (filename) {
+    //             return filename.replace('lib/', '');
+    //         }
+    //     }
+    // });
+
+    var amdWrapper = new AmdWrapper({
+        files: ['lib/**/*.js']
     });
 
     return {
         'default': [
-            babel,
+            amdWrapper,
             module,
             // mainModule,
             // replace,
             // js,
-            path,
+            path
             // cleaner
         ]
     };
@@ -88,7 +92,7 @@ exports.exclude = [
     '*.swp'
 ];
 
-exports.injectProcessor = function ( processors ) {
+exports.injectProcessor = function (processors) {
 
     /* eslint-disable guard-for-in */
     for (var key in processors) {
@@ -96,7 +100,7 @@ exports.injectProcessor = function ( processors ) {
     }
 
     global.AmdWrapper = require('./tool/AmdWrapper.js');
-    global.MainModule = require('./tool/MainModule.js');
-    global.BabelProcessor = require('./tool/BabelProcessor.js');
+    // global.MainModule = require('./tool/MainModule.js');
+    // global.BabelProcessor = require('./tool/BabelProcessor.js');
 
 };

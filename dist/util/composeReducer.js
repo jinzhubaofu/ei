@@ -1,9 +1,9 @@
 define('ei/util/composeReducer', [
+    'require',
     'exports',
-    '../babelHelpers',
+    'module',
     'underscore'
-], function (exports) {
-    var babelHelpers = require('../babelHelpers');
+], function (require, exports, module) {
     var u = require('underscore');
     function composeReducer(reducers) {
         if (u.isFunction(reducers)) {

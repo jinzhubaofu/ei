@@ -58,7 +58,6 @@ describe('locator', function () {
 
         expect(spy).toHaveBeenCalledWith('/test', {a: '1'});
 
-
     });
 
     it('redirect will trigger error thrown on server', function () {

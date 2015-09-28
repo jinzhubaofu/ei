@@ -1,16 +1,16 @@
 define('ei/Emitter', [
+    'require',
     'exports',
-    './babelHelpers',
+    'module',
     'underscore'
-], function (exports) {
-    var babelHelpers = require('./babelHelpers');
+], function (require, exports, module) {
     var EMITTER_LISTENER_POOL_ATTR = '__listeners__';
     var EMITTER_CURRENT_EVENT_ATTR = '__event__';
     var u = require('underscore');
     function Emitter() {
     }
     var mixins = {
-        on: function on(name, handler) {
+        on: function (name, handler) {
             var pool = this[EMITTER_LISTENER_POOL_ATTR];
             if (!pool) {
                 pool = this[EMITTER_LISTENER_POOL_ATTR] = {};
@@ -22,7 +22,7 @@ define('ei/Emitter', [
             listeners.push(handler);
             return this;
         },
-        off: function off(name, handler) {
+        off: function (name, handler) {
             var pool = this[EMITTER_LISTENER_POOL_ATTR];
             if (!pool) {
                 return this;
@@ -47,16 +47,16 @@ define('ei/Emitter', [
             }
             return this;
         },
-        once: function once(name, handler) {
+        once: function (name, handler) {
             var me = this;
-            var onceHandler = function onceHandler() {
+            var onceHandler = function () {
                 me.off(name, onceHandler);
                 return handler.apply(me, arguments);
             };
             me.on(name, onceHandler);
             return this;
         },
-        emit: function emit(name) {
+        emit: function (name) {
             var pool = this[EMITTER_LISTENER_POOL_ATTR];
             if (!pool) {
                 return this;
@@ -72,10 +72,10 @@ define('ei/Emitter', [
             this[EMITTER_CURRENT_EVENT_ATTR] = null;
             return this;
         },
-        getCurrentEvent: function getCurrentEvent() {
+        getCurrentEvent: function () {
             return this[EMITTER_CURRENT_EVENT_ATTR];
         },
-        destroyEvents: function destroyEvents() {
+        destroyEvents: function () {
             var pool = this[EMITTER_LISTENER_POOL_ATTR];
             if (pool) {
                 for (var type in pool) {

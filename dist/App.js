@@ -1,6 +1,7 @@
 define('ei/App', [
+    'require',
     'exports',
-    './babelHelpers',
+    'module',
     'es6-promise',
     'underscore',
     './util/invariant',
@@ -9,8 +10,7 @@ define('ei/App', [
     './Router',
     './env',
     './url'
-], function (exports) {
-    var babelHelpers = require('./babelHelpers');
+], function (require, exports, module) {
     var Promise = require('es6-promise').Promise;
     var u = require('underscore');
     var invariant = require('./util/invariant');
@@ -28,15 +28,21 @@ define('ei/App', [
     App.prototype.bootstrap = function (initialState) {
         invariant(env.isClient, 'app-should bootstrap on client only');
         events.emit('app-bootstrap');
-        locator.start().on('redirect', u.bind(this.onLocatorRedirect, this));
+        locator.start(this.mode).on('redirect', u.bind(this.onLocatorRedirect, this));
         var me = this;
-        var request = url.parse(location.href);
+        var request = locator.createRequestFromLocation();
         var route = this.route(request);
-        return route ? me.loadPage(route.page).then(function (Page) {
+        if (!route) {
+            return Promise.reject({ status: 404 });
+        }
+        return me.loadPage(route.page).then(function (Page) {
             var page = me.page = new Page(initialState);
-            page.render(document.getElementById(me.main));
+            page.render(me.main);
             events.emit('app-ready');
-        }) : Promise.reject({ status: 404 });
+        })['catch'](function (error) {
+            events.emit('app-execute-error', error);
+            throw error;
+        });
     };
     App.prototype.onLocatorRedirect = function (path, query) {
         var request = {
@@ -49,7 +55,7 @@ define('ei/App', [
                 me.page.dispose();
             }
             var page = me.page = result.page;
-            page.render(document.getElementById(me.main));
+            page.render(me.main);
             events.emit('app-page-switch-succeed');
         });
     };
@@ -111,6 +117,9 @@ define('ei/App', [
     };
     App.prototype.resolveClientModule = function (moduleId) {
         events.emit('app-load-page-on-client');
+        if (!moduleId) {
+            return Promise.reject(new Error('need page module id'));
+        }
         return new Promise(function (resolve, reject) {
             window.require([moduleId], function (Page) {
                 resolve(Page);

@@ -1,8 +1,8 @@
 define('ei/Router', [
+    'require',
     'exports',
-    './babelHelpers'
-], function (exports) {
-    var babelHelpers = require('./babelHelpers');
+    'module'
+], function (require, exports, module) {
     function Router(routes) {
         this.routes = routes || [];
     }

@@ -1,10 +1,10 @@
 define('ei/util/bindActions', [
+    'require',
     'exports',
-    '../babelHelpers',
+    'module',
     'underscore',
     './invariant'
-], function (exports) {
-    var babelHelpers = require('../babelHelpers');
+], function (require, exports, module) {
     var u = require('underscore');
     var invariant = require('./invariant');
     function bindActions(dispatch, actions) {

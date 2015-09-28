@@ -1,9 +1,9 @@
 define('ei/ActionCreator', [
+    'require',
     'exports',
-    './babelHelpers',
+    'module',
     'underscore'
-], function (exports) {
-    var babelHelpers = require('./babelHelpers');
+], function (require, exports, module) {
     var u = require('underscore');
     var ACTION_ATTR = 'EI_ACTION_TAG';
     var ACTION_TAG = 'EI_ACTION';
