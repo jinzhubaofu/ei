@@ -8,12 +8,10 @@ var u = require('underscore');
 
 describe('locator', function () {
 
-
     beforeEach(function () {
 
         var history = {
             pushState: function () {
-
             }
         };
 
@@ -23,7 +21,7 @@ describe('locator', function () {
         };
 
         global.location = {
-            href: 'http://www.baidu.com/test?a=1'
+            href: 'http://www.baidu.com/test?a=1#b=2'
         };
 
         global.history = history;
@@ -50,9 +48,7 @@ describe('locator', function () {
 
     it('will fire redirect event while history changed', function () {
 
-
         locator.start();
-
 
         var spy = jasmine.createSpy();
 
@@ -93,17 +89,14 @@ describe('locator', function () {
                 pushState: spy
             };
 
-
             var redirectSpy = jasmine.createSpy('redirect');
 
             locator.on('redirect', redirectSpy);
 
-            var redirected = locator.redirect('/test', {a: 1});
+            locator.redirect('/test', {a: 1});
 
             expect(spy).toHaveBeenCalledWith(null, window.title, '/test?a=1');
             expect(redirectSpy).toHaveBeenCalledWith('/test', {a: 1});
-
-            expect(redirected).toBe(true);
 
             env.isServer = isServer;
             env.isClient = !isServer;
@@ -126,11 +119,9 @@ describe('locator', function () {
 
         locator.on('redirect', spy);
 
-        var redirected = locator.redirect('/test', {a: 1});
+        locator.redirect('/test', {a: 1});
 
-        expect(spy).not.toHaveBeenCalled();
-
-        expect(redirected).toBe(false);
+        expect(spy).toHaveBeenCalled();
 
         env.isServer = isServer;
         env.isClient = !isServer;
