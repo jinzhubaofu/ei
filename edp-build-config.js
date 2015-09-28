@@ -1,109 +1,52 @@
+/**
+ * @file ei edp build config
+ * @author leon(ludafa@outlook.com)
+ */
+
+require('babel/register');
+
 exports.input = __dirname;
-exports.output = require('path').resolve(__dirname, 'dist');
+exports.output = require('path').resolve(__dirname, 'output');
+
+/* globals LessCompiler, CssCompressor, JsCompressor, PathMapper, AmdWrapper, AbstractProcessor */
+/* globals AddCopyright, ModuleCompiler, TplMerge, BabelProcessor, MainModule, OutputCleaner */
 
 exports.getProcessors = function () {
-
-    /**
-     * @file 添加版权声明的构建器
-     * @author zhanglili[otakustay@gmail.com]
-     */
-    var util = require('util');
-    var fs = require('fs');
-    var path = require('path');
-
-    var copyright = '';
-
-    /**
-     * 添加版权声明的构建器
-     *
-     * @constructor
-     * @param {Object} options 初始化参数
-     */
-    function AmdWrap(options) {
-        AbstractProcessor.call(this, options);
-    }
-    util.inherits(AmdWrap, AbstractProcessor);
-
-    AmdWrap.DEFAULT_OPTIONS = {
-        name: 'amdwrap',
-        files: ['*.js']
-    };
-
-    /**
-     * 构建处理
-     *
-     * @param {FileInfo} file 文件信息对象
-     * @param {ProcessContext} processContext 构建环境对象
-     * @param {Function} callback 处理完成回调函数
-     */
-    AmdWrap.prototype.process = function (file, processContext, callback) {
-        var data = 'define(function (require, exports, module) {\n' + file.data + '\n})';
-        file.setData(data);
-        callback && callback();
-    };
-
-    var amdwrap = new AmdWrap();
 
     var module = new ModuleCompiler({
         bizId: 'ei'
     });
-
-    var js = new JsCompressor();
 
     var path = new PathMapper({
         from: 'lib',
         to: 'dist'
     });
 
-    var cleaner = new OutputCleaner({
-        files: ['*.js', '!main.js']
+    var babel = new BabelProcessor({
+        files: ['lib/**/*.js'],
+        compileOptions: {
+            stage: 0,
+            modules: 'amd',
+            compact: false,
+            ast: false,
+            blacklist: ['strict'],
+            externalHelpers: true,
+            moduleId: '',
+            getModuleId: function (filename) {
+                return filename.replace('lib/', '');
+            }
+        }
     });
-
-
-    /**
-     * 添加版权声明的构建器
-     *
-     * @constructor
-     * @param {Object} options 初始化参数
-     */
-    function MainModule(options) {
-        AbstractProcessor.call(this, options);
-    }
-
-    util.inherits(MainModule, AbstractProcessor);
-
-    MainModule.prototype.name = 'MainModule';
-
-    /**
-     * 构建处理
-     *
-     * @param {FileInfo} file 文件信息对象
-     * @param {ProcessContext} processContext 构建环境对象
-     * @param {Function} callback 处理完成回调函数
-     */
-    MainModule.prototype.process = function (file, processContext, callback) {
-        file.setData(''
-            + file.data
-            + '\n'
-            + fs.readFileSync(__dirname + '/tool/main.js', 'utf8')
-        );
-
-        callback();
-    };
-
-
 
     return {
         'default': [
-            amdwrap,
+            babel,
             module,
-            new MainModule({
-                files: ['lib/main.js']
-            }),
+            // mainModule,
             // replace,
             // js,
             path,
-            cleaner
+            // cleaner
         ]
     };
 };
@@ -146,7 +89,14 @@ exports.exclude = [
 ];
 
 exports.injectProcessor = function ( processors ) {
-    for ( var key in processors ) {
-        global[ key ] = processors[ key ];
+
+    /* eslint-disable guard-for-in */
+    for (var key in processors) {
+        global[key] = processors[key];
     }
+
+    global.AmdWrapper = require('./tool/AmdWrapper.js');
+    global.MainModule = require('./tool/MainModule.js');
+    global.BabelProcessor = require('./tool/BabelProcessor.js');
+
 };

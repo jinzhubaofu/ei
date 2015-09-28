@@ -18,7 +18,8 @@
     "bower_components",
     "dep",
     "test",
-    "tests"
+    "tests",
+    "output"
   ],
   "dependencies": {
     "react": "~0.13.3",

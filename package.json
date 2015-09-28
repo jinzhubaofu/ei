@@ -22,6 +22,7 @@
   },
   "readme": "readme.md",
   "devDependencies": {
+    "babel": "^5.8.23",
     "coveralls": "^2.11.3",
     "fecs": "^0.3.9",
     "istanbul": "^0.3.15",
