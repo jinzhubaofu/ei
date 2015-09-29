@@ -45,7 +45,7 @@ define('ei/locator', [
         },
         start: function (mode) {
             this.setMode(mode);
-            var locator = this.mode === 'hash' ? hashLocator : historyLocator;
+            var locator = this.locator = this.mode === 'hash' ? hashLocator : historyLocator;
             locator.start();
             return this;
         },
