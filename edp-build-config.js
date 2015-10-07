@@ -22,21 +22,21 @@ exports.getProcessors = function () {
         to: 'dist'
     });
 
-    // var babel = new BabelProcessor({
-    //     files: ['lib/**/*.js'],
-    //     compileOptions: {
-    //         stage: 0,
-    //         modules: 'commonStrict',
-    //         compact: false,
-    //         ast: false,
-    //         blacklist: ['strict'],
-    //         externalHelpers: true,
-    //         moduleId: '',
-    //         getModuleId: function (filename) {
-    //             return filename.replace('lib/', '');
-    //         }
-    //     }
-    // });
+    var babel = new BabelProcessor({
+        files: ['lib/**/*.js'],
+        compileOptions: {
+            stage: 0,
+            modules: 'common',
+            compact: false,
+            ast: false,
+            blacklist: ['strict'],
+            externalHelpers: true,
+            moduleId: '',
+            getModuleId: function (filename) {
+                return filename.replace('lib/', '');
+            }
+        }
+    });
 
     var amdWrapper = new AmdWrapper({
         files: ['lib/**/*.js']
@@ -44,6 +44,7 @@ exports.getProcessors = function () {
 
     return {
         'default': [
+            babel,
             amdWrapper,
             module,
             // mainModule,
@@ -101,6 +102,6 @@ exports.injectProcessor = function (processors) {
 
     global.AmdWrapper = require('./tool/AmdWrapper.js');
     // global.MainModule = require('./tool/MainModule.js');
-    // global.BabelProcessor = require('./tool/BabelProcessor.js');
+    global.BabelProcessor = require('./tool/BabelProcessor.js');
 
 };

@@ -33,22 +33,25 @@ Babel.prototype.process = function (file, processContext, callback) {
         : babelHelperRelativePath;
 
     var filePath = file.path;
-    var prefix = 'var babelHelpers = require("' + babelHelperRelativePath + '");\n'
 
     var result = babel.transform(
-        prefix + file.data,
+        file.data,
         {
             ...this.compileOptions,
             filename: file.path
         }
     );
 
-    file.setData(result.code);
+    if (result.metadata.usedHelpers.length) {
+        var prefix = 'var babelHelpers = require("' + babelHelperRelativePath + '");\n'
+        file.setData(prefix + result.code);
+        processContext.usedHelpers = _.union(
+            processContext.usedHelpers,
+            result.metadata.usedHelpers
+        );
 
-    processContext.usedHelpers = _.union(
-        processContext.usedHelpers,
-        result.metadata.usedHelpers
-    );
+        console.log(processContext.usedHelpers);
+    }
 
     processContext.addFileLink(filePath, file.outputPath);
 

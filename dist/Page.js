@@ -9,7 +9,8 @@ define('ei/Page', [
     './Context',
     './util/composeReducer',
     './util/invariant',
-    './events'
+    './events',
+    './Emitter'
 ], function (require, exports, module) {
     var u = require('underscore');
     var React = require('react');
@@ -20,13 +21,20 @@ define('ei/Page', [
     var invariant = require('./util/invariant');
     var events = require('./events');
     function Page(initialState) {
-        this.context = new Context(initialState, componseReducer(this.reducer), this.middlewares);
+        this.initialize(initialState);
     }
-    var PagePrototype = {
+    Page.prototype = {
+        constructor: Page,
+        initialize: function (initialState) {
+            this.context = new Context(initialState, componseReducer(this.reducer), u.map(this.middlewares, function (middlewareCreator) {
+                return middlewareCreator(this);
+            }, this));
+        },
+        middlewares: [],
         init: function (initialState) {
             this.dispatch({
-                type: 'init',
-                data: initialState
+                type: 'INIT',
+                payload: initialState
             });
             return this;
         },
@@ -48,6 +56,7 @@ define('ei/Page', [
         },
         dispatch: function (action) {
             events.emit('page-dispatch', action);
+            this.emit('dispatch');
             this.context.dispatch(action);
             return action;
         },
@@ -56,9 +65,11 @@ define('ei/Page', [
         },
         dispose: function () {
             events.emit('page-dispose');
+            this.emit('dispose');
             return this;
         }
     };
+    require('./Emitter').enable(Page);
     Page.extend = function (proto) {
         invariant(proto, 'create Page need options');
         invariant(proto.reducer, 'Pager must have a reducer');
@@ -66,7 +77,7 @@ define('ei/Page', [
         function SubPage(initialState) {
             Page.call(this, initialState);
         }
-        u.extend(SubPage.prototype, PagePrototype, proto);
+        u.extend(SubPage.prototype, Page.prototype, proto);
         return SubPage;
     };
     module.exports = Page;

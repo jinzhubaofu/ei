@@ -80,9 +80,13 @@ define('ei/url', [
         result.query = parseQuery(result.search);
         return result;
     };
-    exports.makeUrl = function (path, query) {
-        return '' + path + '?' + u.map(query, function (key, name) {
+    exports.makeQueryString = function (query) {
+        return u.map(query, function (key, name) {
             return encodeURIComponent(name) + '=' + encodeURIComponent(key);
         }).join('&');
+    };
+    exports.makeUrl = function (path, query) {
+        var querystring = exports.makeQueryString(query);
+        return path + (querystring ? '?' + querystring : '');
     };
 });

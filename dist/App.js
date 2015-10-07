@@ -8,8 +8,7 @@ define('ei/App', [
     './locator',
     './events',
     './Router',
-    './env',
-    './url'
+    './env'
 ], function (require, exports, module) {
     var Promise = require('es6-promise').Promise;
     var u = require('underscore');
@@ -18,7 +17,6 @@ define('ei/App', [
     var events = require('./events');
     var Router = require('./Router');
     var env = require('./env');
-    var url = require('./url');
     function App(options) {
         invariant(options, 'App need options');
         invariant(options.routes, 'App need routes');
@@ -28,7 +26,7 @@ define('ei/App', [
     App.prototype.bootstrap = function (initialState) {
         invariant(env.isClient, 'app-should bootstrap on client only');
         events.emit('app-bootstrap');
-        locator.start(this.mode).on('redirect', u.bind(this.onLocatorRedirect, this));
+        locator.init(this.mode).start().on('redirect', u.bind(this.onLocatorRedirect, this));
         var me = this;
         var request = locator.createRequestFromLocation();
         var route = this.route(request);
@@ -36,7 +34,13 @@ define('ei/App', [
             return Promise.reject({ status: 404 });
         }
         return me.loadPage(route.page).then(function (Page) {
-            var page = me.page = new Page(initialState);
+            var page = new Page(initialState);
+            return initialState == null ? Promise.resolve(page.getInitialState(request)).then(function (state) {
+                page.init(state);
+                return page;
+            }) : page;
+        }).then(function (page) {
+            me.page = page;
             page.render(me.main);
             events.emit('app-ready');
         })['catch'](function (error) {
@@ -50,11 +54,20 @@ define('ei/App', [
             query: query
         };
         var me = this;
-        return me.execute(request).then(function (result) {
-            if (me.page) {
+        var route = this.route(request);
+        if (!route) {
+            return;
+        }
+        return me.loadPage(route.page).then(function (Page) {
+            var page = me.page instanceof Page ? me.page : new Page();
+            return Promise.resolve(page.getInitialState(request)).then(function (state) {
+                return page.init(state);
+            });
+        }).then(function (page) {
+            if (me.page && me.page !== page) {
                 me.page.dispose();
+                me.page = page;
             }
-            var page = me.page = result.page;
             page.render(me.main);
             events.emit('app-page-switch-succeed');
         });

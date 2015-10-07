@@ -1,0 +1,17 @@
+define('ei/babelHelpers', [
+    'require',
+    'exports',
+    'module'
+], function (require, exports, module) {
+    (function (root, factory) {
+        if (typeof define === 'function' && define.amd) {
+            define(['exports'], factory);
+        } else if (typeof exports === 'object') {
+            factory(exports);
+        } else {
+            factory(root.babelHelpers = {});
+        }
+    }(this, function (global) {
+        var babelHelpers = global;
+    }));
+});
