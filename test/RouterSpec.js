@@ -25,18 +25,18 @@ describe('Router', function () {
 
         var router = new Router(routes);
 
-        var route = router.route({path: '/a'});
+        var route = router.route({pathname: '/a'});
 
         expect(u.isObject(route)).toBe(true);
         expect(route.name).toBe('aaaa');
 
-        route = router.route({path: '/b'});
+        route = router.route({pathname: '/b'});
 
         expect(route).toBe(void 0);
 
         route = router
             .addRoute({path: '/b', name: 'bbbb'})
-            .route({path: '/b'});
+            .route({pathname: '/b'});
 
         expect(u.isObject(route)).toBe(true);
         expect(route.name).toBe('bbbb');

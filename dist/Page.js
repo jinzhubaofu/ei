@@ -4,7 +4,6 @@ define('ei/Page', [
     'module',
     'underscore',
     'react',
-    'react-dom',
     './component/ConextProvider',
     './Context',
     './util/composeReducer',
@@ -14,7 +13,6 @@ define('ei/Page', [
 ], function (require, exports, module) {
     var u = require('underscore');
     var React = require('react');
-    var ReactDOM = require('react-dom');
     var ContextProvider = require('./component/ConextProvider');
     var Context = require('./Context');
     var componseReducer = require('./util/composeReducer');
@@ -25,45 +23,42 @@ define('ei/Page', [
     }
     Page.prototype = {
         constructor: Page,
-        initialize: function (initialState) {
+        initialize: function initialize(initialState) {
             this.context = new Context(initialState, componseReducer(this.reducer), u.map(this.middlewares, function (middlewareCreator) {
                 return middlewareCreator(this);
             }, this));
         },
         middlewares: [],
-        init: function (initialState) {
+        init: function init(initialState) {
             this.dispatch({
                 type: 'INIT',
                 payload: initialState
             });
             return this;
         },
-        createElement: function () {
+        createElement: function createElement() {
             var view = this.view;
             return React.createElement(ContextProvider, { ei: this.context }, function () {
                 return React.createElement(view);
             });
         },
-        render: function (target) {
-            ReactDOM.render(this.createElement(), target);
-            return this;
-        },
-        renderToString: function () {
-            return ReactDOM.renderToString(this.createElement());
-        },
-        getState: function () {
+        getState: function getState() {
             return this.context.getState();
         },
-        dispatch: function (action) {
+        setState: function setState(state) {
+            this.context.setState(state);
+            return this;
+        },
+        dispatch: function dispatch(action) {
             events.emit('page-dispatch', action);
             this.emit('dispatch');
             this.context.dispatch(action);
             return action;
         },
-        getInitialState: function (request) {
+        getInitialState: function getInitialState(request) {
             return {};
         },
-        dispose: function () {
+        dispose: function dispose() {
             events.emit('page-dispose');
             this.emit('dispose');
             return this;

@@ -9,7 +9,7 @@ define('ei/Router', [
     Router.prototype.route = function (request) {
         for (var i = this.routes.length - 1; i >= 0; i--) {
             var route = this.routes[i];
-            if (route.path === request.path) {
+            if (route.path === request.pathname) {
                 return route;
             }
         }

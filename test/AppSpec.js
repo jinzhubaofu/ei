@@ -53,14 +53,14 @@ describe('App', function () {
         });
 
         var request = {
-            path: '/a'
+            pathname: '/a'
         };
 
         var route = app.route(request);
 
         expect(route.name).toBe('a');
 
-        request.path = '/b';
+        request.pathname = '/b';
 
         route = app.route(request);
 
@@ -144,7 +144,7 @@ describe('App', function () {
 
         }, function (error) {
 
-            console.error(error);
+            // console.error(error);
 
         });
 

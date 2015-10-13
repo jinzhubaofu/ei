@@ -5,7 +5,7 @@ define('ei/Container', [
     'underscore'
 ], function (require, exports, module) {
     var u = require('underscore');
-    var Container = function () {
+    var Container = function Container() {
         this.boundCallbacks = {};
         this.singletonCallbacks = {};
         this.instantiatedSingletons = {};

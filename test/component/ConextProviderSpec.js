@@ -5,6 +5,7 @@
 
 var ContextProvider = require('../../lib/component/ConextProvider.js');
 var React = require('react');
+var ReactDOM = require('react-dom/server');
 
 describe('ContextProvider', function () {
 
@@ -43,7 +44,7 @@ describe('ContextProvider', function () {
             }
         );
 
-        var string = React.renderToStaticMarkup(provider);
+        var string = ReactDOM.renderToStaticMarkup(provider);
 
 
         expect(string).toBe('<div></div>');

@@ -17,7 +17,7 @@ define('ei/util/connect', [
         var ContextFixer = React.createClass({
             displayName: 'ContextFixer',
             select: bindSelectors(selector),
-            render: function () {
+            render: function render() {
                 var props = this.props;
                 return React.createElement(ContextConnector, { select: this.select }, function (state, dispatch) {
                     return React.createElement(Component, u.extendOwn({}, state, props, actions ? bindActions(dispatch, actions) : null));

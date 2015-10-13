@@ -94,55 +94,55 @@ describe('Page', function () {
         expect(spy).toHaveBeenCalled();
 
     });
+    // TODO: 补充新的render测试
+    // it('`renderToString`', function () {
 
-    it('`renderToString`', function () {
+    //     var spy = jasmine.createSpy('reducer');
 
-        var spy = jasmine.createSpy('reducer');
+    //     var SomePage = Page.extend({
 
-        var SomePage = Page.extend({
+    //         reducer: spy,
 
-            reducer: spy,
+    //         view: connect(
+    //             React.createClass({
 
-            view: connect(
-                React.createClass({
+    //                 render: function () {
 
-                    render: function () {
+    //                     expect(u.isFunction(this.props.add)).toBe(true);
 
-                        expect(u.isFunction(this.props.add)).toBe(true);
+    //                     return React.createElement(
+    //                         'div',
+    //                         null,
+    //                         this.props.name
+    //                     );
 
-                        return React.createElement(
-                            'div',
-                            null,
-                            this.props.name
-                        );
+    //                 }
 
-                    }
+    //             }),
+    //             true,
+    //             {
+    //                 add: function () {
+    //                     return {
+    //                         type: 'add'
+    //                     };
+    //                 }
+    //             }
+    //         )
 
-                }),
-                true,
-                {
-                    add: function () {
-                        return {
-                            type: 'add'
-                        };
-                    }
-                }
-            )
+    //     });
 
-        });
+    //     var page = new SomePage({
 
-        var page = new SomePage({
+    //         name: 'ludafa'
 
-            name: 'ludafa'
+    //     });
 
-        });
+    //     var string = page.renderToString();
 
-        var string = page.renderToString();
-
-        expect(string).toMatch(/<div[^>]*?>ludafa<\/div>/);
+    //     expect(string).toMatch(/<div[^>]*?>ludafa<\/div>/);
 
 
-    });
+    // });
 
 
 });

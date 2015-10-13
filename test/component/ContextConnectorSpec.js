@@ -6,6 +6,7 @@
 var ConextProvider = require('../../lib/component/ConextProvider.js');
 var ContextConnector = require('../../lib/component/ContextConnector.js');
 var React = require('react');
+var ReactDOM = require('react-dom/server');
 
 describe('ContextConnector', function () {
 
@@ -48,7 +49,7 @@ describe('ContextConnector', function () {
             }
         );
 
-        var string = React.renderToStaticMarkup(provider);
+        var string = ReactDOM.renderToStaticMarkup(provider);
 
 
         expect(string).toBe('<div>ludafa</div>');

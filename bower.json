@@ -1,6 +1,6 @@
 {
   "name": "ei",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "authors": [
     "ludafa@outlook.com"
   ],
@@ -22,7 +22,7 @@
     "output"
   ],
   "dependencies": {
-    "react": "~0.13.3",
+    "react": "0.14.0",
     "underscore": "~1.8.3",
     "es6-promise": "~2.2.0"
   }

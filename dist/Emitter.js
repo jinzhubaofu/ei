@@ -10,7 +10,7 @@ define('ei/Emitter', [
     function Emitter() {
     }
     var mixins = {
-        on: function (name, handler) {
+        on: function on(name, handler) {
             var pool = this[EMITTER_LISTENER_POOL_ATTR];
             if (!pool) {
                 pool = this[EMITTER_LISTENER_POOL_ATTR] = {};
@@ -22,7 +22,7 @@ define('ei/Emitter', [
             listeners.push(handler);
             return this;
         },
-        off: function (name, handler) {
+        off: function off(name, handler) {
             var pool = this[EMITTER_LISTENER_POOL_ATTR];
             if (!pool) {
                 return this;
@@ -47,16 +47,16 @@ define('ei/Emitter', [
             }
             return this;
         },
-        once: function (name, handler) {
+        once: function once(name, handler) {
             var me = this;
-            var onceHandler = function () {
+            var onceHandler = function onceHandler() {
                 me.off(name, onceHandler);
                 return handler.apply(me, arguments);
             };
             me.on(name, onceHandler);
             return this;
         },
-        emit: function (name) {
+        emit: function emit(name) {
             var pool = this[EMITTER_LISTENER_POOL_ATTR];
             if (!pool) {
                 return this;
@@ -72,10 +72,10 @@ define('ei/Emitter', [
             this[EMITTER_CURRENT_EVENT_ATTR] = null;
             return this;
         },
-        getCurrentEvent: function () {
+        getCurrentEvent: function getCurrentEvent() {
             return this[EMITTER_CURRENT_EVENT_ATTR];
         },
-        destroyEvents: function () {
+        destroyEvents: function destroyEvents() {
             var pool = this[EMITTER_LISTENER_POOL_ATTR];
             if (pool) {
                 for (var type in pool) {

@@ -13,6 +13,5 @@ define('ei/util/composeMiddleware', [
             };
         }, dispatch) : dispatch;
     }
-    ;
     module.exports = composeMiddleware;
 });

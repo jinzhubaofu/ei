@@ -5,7 +5,6 @@ define('ei/App', [
     'es6-promise',
     'underscore',
     './util/invariant',
-    './locator',
     './events',
     './Router',
     './env'
@@ -13,7 +12,6 @@ define('ei/App', [
     var Promise = require('es6-promise').Promise;
     var u = require('underscore');
     var invariant = require('./util/invariant');
-    var locator = require('./locator');
     var events = require('./events');
     var Router = require('./Router');
     var env = require('./env');
@@ -23,81 +21,41 @@ define('ei/App', [
         u.extend(this, options);
         this.router = new Router(this.routes);
     }
-    App.prototype.bootstrap = function (initialState) {
-        invariant(env.isClient, 'app-should bootstrap on client only');
-        events.emit('app-bootstrap');
-        locator.init(this.mode).start().on('redirect', u.bind(this.onLocatorRedirect, this));
-        var me = this;
-        var request = locator.createRequestFromLocation();
-        var route = this.route(request);
-        if (!route) {
-            return Promise.reject({ status: 404 });
-        }
-        return me.loadPage(route.page).then(function (Page) {
-            var page = new Page(initialState);
-            return initialState == null ? Promise.resolve(page.getInitialState(request)).then(function (state) {
-                page.init(state);
-                return page;
-            }) : page;
-        }).then(function (page) {
-            me.page = page;
-            page.render(me.main);
-            events.emit('app-ready');
-        })['catch'](function (error) {
-            events.emit('app-execute-error', error);
-            throw error;
-        });
-    };
-    App.prototype.onLocatorRedirect = function (path, query) {
-        var request = {
-            path: path,
-            query: query
-        };
-        var me = this;
-        var route = this.route(request);
-        if (!route) {
-            return;
-        }
-        return me.loadPage(route.page).then(function (Page) {
-            var page = me.page instanceof Page ? me.page : new Page();
-            return Promise.resolve(page.getInitialState(request)).then(function (state) {
-                return page.init(state);
-            });
-        }).then(function (page) {
-            if (me.page && me.page !== page) {
-                me.page.dispose();
-                me.page = page;
-            }
-            page.render(me.main);
-            events.emit('app-page-switch-succeed');
-        });
-    };
-    App.prototype.execute = function (request) {
+    App.prototype.execute = function (request, initialState, needRawState) {
         events.emit('app-request');
-        var route = this.route(request);
+        var me = this;
+        var route = me.route(request);
         if (!route) {
             return Promise.reject({ status: 404 });
         }
-        var page;
-        return this.loadPage(route.page).then(function (Page) {
-            page = new Page();
-            return page.getInitialState(request);
-        }).then(function (state) {
-            if (env.isServer && request.xhr) {
-                events.emit('app-response-in-json');
+        return me.loadPage(route.page).then(function (Page) {
+            var page = env.isClient && me.page instanceof Page ? me.page : new Page(initialState);
+            return Promise.resolve(initialState == null ? page.getInitialState(request) : initialState).then(function (state) {
+                if (needRawState) {
+                    events.emit('app-response-in-json');
+                    return {
+                        state: state,
+                        route: route
+                    };
+                }
+                events.emit('app-response-in-html');
+                if (initialState == null) {
+                    page.init(state);
+                    events.emit('app-page-bootstrap');
+                }
+                if (env.isClient) {
+                    if (me.page && me.page !== page) {
+                        me.page.dispose();
+                        events.emit('app-page-switch-succeed');
+                    }
+                    me.page = page;
+                }
+                events.emit('app-page-entered');
                 return {
-                    state: state,
+                    page: page,
                     route: route
                 };
-            }
-            events.emit('app-response-in-html');
-            events.emit('app-page-bootstrap');
-            page.init(state);
-            events.emit('app-page-bootstrap-succeed');
-            return {
-                page: page,
-                route: route
-            };
+            });
         })['catch'](function (error) {
             events.emit('app-execute-error', error);
             throw error;
@@ -145,7 +103,7 @@ define('ei/App', [
         if (config) {
             events.emit('app-route-succeed');
         } else {
-            events.emit('app-route-failed');
+            events.emit('app-route-failed', request);
         }
         return config;
     };

@@ -42,16 +42,18 @@ Babel.prototype.process = function (file, processContext, callback) {
         }
     );
 
+    var code = result.code;
+
     if (result.metadata.usedHelpers.length) {
-        var prefix = 'var babelHelpers = require("' + babelHelperRelativePath + '");\n'
-        file.setData(prefix + result.code);
+        var prefix = 'var babelHelpers = require("' + babelHelperRelativePath + '");\n';
+        code = prefix + code;
         processContext.usedHelpers = _.union(
             processContext.usedHelpers,
             result.metadata.usedHelpers
         );
-
-        console.log(processContext.usedHelpers);
     }
+
+    file.setData(code);
 
     processContext.addFileLink(filePath, file.outputPath);
 
@@ -61,9 +63,13 @@ Babel.prototype.process = function (file, processContext, callback) {
 
 Babel.prototype.afterAll = function (processContext) {
 
+    if (!processContext.usedHelpers.length) {
+        return;
+    }
+
     var usedHelpers = babel.buildExternalHelpers(
         processContext.usedHelpers,
-        'umd'
+        'var'
     );
 
     var baseDir = processContext.baseDir;
@@ -71,7 +77,9 @@ Babel.prototype.afterAll = function (processContext) {
     var fullPath = path.join(baseDir, relativePath);
 
     var helperFile = new FileInfo({
-        data: usedHelpers,
+        data: ''
+            + usedHelpers
+            + '\nmodule.exports = babelHelpers;',
         extname: 'js',
         path: relativePath,
         fullPath: fullPath,

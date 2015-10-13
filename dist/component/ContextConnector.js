@@ -12,25 +12,25 @@ define('ei/component/ContextConnector', [
             children: React.PropTypes.func.isRequired,
             select: React.PropTypes.func.isRequired
         },
-        getDataFromContext: function () {
+        getDataFromContext: function getDataFromContext() {
             return this.props.select(this.context.ei.store);
         },
-        getInitialState: function () {
+        getInitialState: function getInitialState() {
             return { data: this.getDataFromContext() };
         },
-        componentDidMount: function () {
+        componentDidMount: function componentDidMount() {
             this.context.ei.addChangeListener(this.onStoreChange);
         },
-        componentWillUnmount: function () {
+        componentWillUnmount: function componentWillUnmount() {
             this.context.ei.removeChangeListener(this.onStoreChange);
         },
-        shouldComponentUpdate: function (nextProps, nextState) {
+        shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
             return this.state.data !== nextState;
         },
-        onStoreChange: function () {
+        onStoreChange: function onStoreChange() {
             this.setState({ data: this.getDataFromContext() });
         },
-        render: function () {
+        render: function render() {
             return this.props.children(this.state.data, this.context.ei.dispatch);
         }
     });

@@ -8,7 +8,7 @@ define('ei/Reducer', [
     var u = require('underscore');
     var Dispatcher = require('./Dispatcher');
     var mixins = {
-        bindAction: function (ActionCreator) {
+        bindAction: function bindAction(ActionCreator) {
             Dispatcher.addActionListener(ActionCreator.type, this);
             return this;
         }

@@ -3,7 +3,7 @@ define('ei/util/invariant', [
     'exports',
     'module'
 ], function (require, exports, module) {
-    var invariant = function (condition, format, a, b, c, d, e, f) {
+    var invariant = function invariant(condition, format, a, b, c, d, e, f) {
         if (condition) {
             return;
         }

@@ -16,10 +16,12 @@ define('ei/util/composeReducer', [
             var nextState = u.clone(state);
             var isChanged = false;
             for (var name in reducers) {
-                var value = state[name];
-                var nextValue = nextState[name] = reducers[name](value, action);
-                if (nextValue !== value) {
-                    isChanged = true;
+                if (reducers.hasOwnProperty(name)) {
+                    var value = state[name];
+                    var nextValue = nextState[name] = reducers[name](value, action);
+                    if (nextValue !== value) {
+                        isChanged = true;
+                    }
                 }
             }
             return isChanged ? nextState : state;
