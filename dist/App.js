@@ -22,6 +22,7 @@ define('ei/App', [
         this.router = new Router(this.routes);
     }
     App.prototype.execute = function (request, initialState, needRawState) {
+        invariant(env.isServer, 'App.execute() must run on server');
         events.emit('app-request');
         var me = this;
         var route = me.route(request);
@@ -29,7 +30,7 @@ define('ei/App', [
             return Promise.reject({ status: 404 });
         }
         return me.loadPage(route.page).then(function (Page) {
-            var page = env.isClient && me.page instanceof Page ? me.page : new Page(initialState);
+            var page = new Page(initialState);
             return Promise.resolve(initialState == null ? page.getInitialState(request) : initialState).then(function (state) {
                 if (needRawState) {
                     events.emit('app-response-in-json');
@@ -42,13 +43,6 @@ define('ei/App', [
                 if (initialState == null) {
                     page.init(state);
                     events.emit('app-page-bootstrap');
-                }
-                if (env.isClient) {
-                    if (me.page && me.page !== page) {
-                        me.page.dispose();
-                        events.emit('app-page-switch-succeed');
-                    }
-                    me.page = page;
                 }
                 events.emit('app-page-entered');
                 return {
