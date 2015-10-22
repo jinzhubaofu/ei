@@ -5,3 +5,9 @@ bower.json
 coverage
 dist
 .bower.json
+test
+tool
+.coeralls.yml
+.travis.yml
+edp-build-config.js
+module.conf
