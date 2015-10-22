@@ -4,7 +4,7 @@ define('ei/Page', [
     'module',
     'underscore',
     'react',
-    './component/ConextProvider',
+    './component/ContextProvider',
     './Context',
     './util/composeReducer',
     './util/invariant',
@@ -13,7 +13,7 @@ define('ei/Page', [
 ], function (require, exports, module) {
     var u = require('underscore');
     var React = require('react');
-    var ContextProvider = require('./component/ConextProvider');
+    var ContextProvider = require('./component/ContextProvider');
     var Context = require('./Context');
     var componseReducer = require('./util/composeReducer');
     var invariant = require('./util/invariant');
@@ -38,9 +38,7 @@ define('ei/Page', [
         },
         createElement: function createElement() {
             var view = this.view;
-            return React.createElement(ContextProvider, { ei: this.context }, function () {
-                return React.createElement(view);
-            });
+            return React.createElement(ContextProvider, { ei: this.context }, React.createElement(view));
         },
         getState: function getState() {
             return this.context.getState();

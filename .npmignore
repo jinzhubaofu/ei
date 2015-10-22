@@ -3,3 +3,5 @@ src
 gulefile.js
 bower.json
 coverage
+dist
+.bower.json

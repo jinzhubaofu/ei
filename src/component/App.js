@@ -3,8 +3,8 @@
  * @author leon(ludafa@outlook.com)
  */
 
-import React from 'react';
-import Router from '../App';
+let React = require('react');
+let Router = require('../App');
 
 class App extends React.Component {
 
@@ -41,4 +41,4 @@ App.childContextTypes = {
     app: PropTypes.object.isRequired
 };
 
-export default App;
+module.exports = App;

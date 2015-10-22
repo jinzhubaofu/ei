@@ -7,10 +7,8 @@ define('ei/component/Page', [
     'es6-promise'
 ], function (require, exports, module) {
     var babelHelpers = require('../babelHelpers');
-    Object.defineProperty(exports, '__esModule', { value: true });
-    var _react = require('react');
-    var _react2 = babelHelpers.interopRequireDefault(_react);
-    var _es6Promise = require('es6-promise');
+    var React = require('react');
+    var Promise = require('es6-promise').Promise;
     var Page = function (_React$Component) {
         babelHelpers.inherits(Page, _React$Component);
         function Page(props) {
@@ -38,13 +36,13 @@ define('ei/component/Page', [
                     } else {
                         content = this.renderLoading();
                     }
-                    return _react2['default'].createElement('div', { className: 'ui-page' }, content);
+                    return React.createElement('div', { className: 'ui-page' }, content);
                 }
             },
             {
                 key: 'renderLoading',
                 value: function renderLoading() {
-                    return _react2['default'].createElement('span', null, 'loading...');
+                    return React.createElement('span', null, 'loading...');
                 }
             },
             {
@@ -100,7 +98,7 @@ define('ei/component/Page', [
                             page.setState(initialState);
                             return page;
                         }
-                        return _es6Promise.Promise.resolve(page.getInitialState(request)).then(function (state) {
+                        return Promise.resolve(page.getInitialState(request)).then(function (state) {
                             page.init(state);
                             return page;
                         });
@@ -145,8 +143,8 @@ define('ei/component/Page', [
             }
         ]);
         return Page;
-    }(_react2['default'].Component);
-    var PropTypes = _react2['default'].PropTypes;
+    }(React.Component);
+    var PropTypes = React.PropTypes;
     Page.contextTypes = { app: PropTypes.object.isRequired };
     Page.propTypes = {
         request: PropTypes.shape({
@@ -156,6 +154,5 @@ define('ei/component/Page', [
         }).isRequired,
         initialState: PropTypes.any
     };
-    exports['default'] = Page;
-    module.exports = exports['default'];
+    module.exports = Page;
 });

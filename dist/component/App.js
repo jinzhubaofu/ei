@@ -7,17 +7,14 @@ define('ei/component/App', [
     '../App'
 ], function (require, exports, module) {
     var babelHelpers = require('../babelHelpers');
-    Object.defineProperty(exports, '__esModule', { value: true });
-    var _react = require('react');
-    var _react2 = babelHelpers.interopRequireDefault(_react);
-    var _App = require('../App');
-    var _App2 = babelHelpers.interopRequireDefault(_App);
+    var React = require('react');
+    var Router = require('../App');
     var App = function (_React$Component) {
         babelHelpers.inherits(App, _React$Component);
         function App(props) {
             babelHelpers.classCallCheck(this, App);
             babelHelpers.get(Object.getPrototypeOf(App.prototype), 'constructor', this).call(this, props);
-            this.app = new _App2['default']({ routes: this.props.routes });
+            this.app = new Router({ routes: this.props.routes });
         }
         babelHelpers.createClass(App, [
             {
@@ -40,10 +37,9 @@ define('ei/component/App', [
             }
         ]);
         return App;
-    }(_react2['default'].Component);
-    var PropTypes = _react2['default'].PropTypes;
+    }(React.Component);
+    var PropTypes = React.PropTypes;
     App.propTypes = { routes: PropTypes.array.isRequired };
     App.childContextTypes = { app: PropTypes.object.isRequired };
-    exports['default'] = App;
-    module.exports = exports['default'];
+    module.exports = App;
 });

@@ -14,16 +14,22 @@ exports.output = require('path').resolve(__dirname, 'output');
 exports.getProcessors = function () {
 
     var module = new ModuleCompiler({
-        bizId: 'ei'
+        bizId: 'ei',
+        files: ['src/**/*.js']
     });
 
-    var path = new PathMapper({
-        from: 'lib',
+    var amdPath = new PathMapper({
+        from: 'src',
         to: 'dist'
     });
 
+    var cmdPath = new PathMapper({
+        from: 'src',
+        to: 'lib'
+    });
+
     var babel = new BabelProcessor({
-        files: ['lib/**/*.js'],
+        files: ['src/**/*.js'],
         compileOptions: {
             stage: 0,
             modules: 'common',
@@ -38,20 +44,18 @@ exports.getProcessors = function () {
         }
     });
 
-    var amdWrapper = new AmdWrapper({
-        files: ['lib/**/*.js']
-    });
+    var amdWrapper = new AmdWrapper();
 
     return {
-        'default': [
+        amd: [
             babel,
             amdWrapper,
             module,
-            // mainModule,
-            // replace,
-            // js,
-            path
-            // cleaner
+            amdPath
+        ],
+        cmd: [
+            babel,
+            cmdPath
         ]
     };
 };

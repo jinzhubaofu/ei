@@ -31,7 +31,7 @@ AmdWrapper.DEFAULT_OPTIONS = {
  * @param {Function} callback 处理完成回调函数
  */
 AmdWrapper.prototype.process = function (file, processContext, callback) {
-    var data = 'define(function (require, exports, module) {\n' + file.data + '\n})';
+    var data = 'define(function (require, exports, module) {\n' + file.data + '\n});';
     file.setData(data);
     callback && callback();
 };

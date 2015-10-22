@@ -1,7 +1,6 @@
 
 var babel = require('babel');
 var path = require('path');
-var _ = require('underscore');
 
 function Babel(options) {
     AbstractProcessor.call(this, options);
@@ -47,10 +46,10 @@ Babel.prototype.process = function (file, processContext, callback) {
     if (result.metadata.usedHelpers.length) {
         var prefix = 'var babelHelpers = require("' + babelHelperRelativePath + '");\n';
         code = prefix + code;
-        processContext.usedHelpers = _.union(
-            processContext.usedHelpers,
-            result.metadata.usedHelpers
-        );
+        processContext.usedHelpers = [
+            ...processContext.usedHelpers,
+            ...result.metadata.usedHelpers
+        ];
     }
 
     file.setData(code);
@@ -73,7 +72,7 @@ Babel.prototype.afterAll = function (processContext) {
     );
 
     var baseDir = processContext.baseDir;
-    var relativePath = path.relative(baseDir, 'lib/babelHelpers.js');
+    var relativePath = path.relative(baseDir, 'src/babelHelpers.js');
     var fullPath = path.join(baseDir, relativePath);
 
     var helperFile = new FileInfo({

@@ -9,7 +9,7 @@
 var u = require('underscore');
 var React = require('react');
 
-var ContextProvider = require('./component/ConextProvider');
+var ContextProvider = require('./component/ContextProvider');
 var Context = require('./Context');
 var componseReducer = require('./util/composeReducer');
 var invariant = require('./util/invariant');

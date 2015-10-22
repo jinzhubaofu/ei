@@ -3,8 +3,8 @@
  * @author leon(ludafa@outlook.com)
  */
 
-import React from 'react';
-import {Promise} from 'es6-promise';
+let React = require('react');
+let Promise = require('es6-promise').Promise;
 
 class Page extends React.Component {
 
@@ -197,4 +197,4 @@ Page.propTypes = {
     initialState: PropTypes.any
 };
 
-export default Page;
+module.exports = Page;
