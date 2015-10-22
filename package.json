@@ -1,6 +1,6 @@
 {
   "name": "ei",
-  "version": "1.2.3",
+  "version": "1.2.2",
   "main": "lib/main.js",
   "scripts": {
     "lint": "./node_modules/.bin/fecs lib --type=js",
