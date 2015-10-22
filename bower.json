@@ -22,7 +22,13 @@
     "output",
     "coverage",
     "lib",
-    "src"
+    "src",
+    "test",
+    ".coeralls.yml",
+    ".travis.yml",
+    "edp-build-config.js",
+    "module.conf",
+    "example"
   ],
   "dependencies": {
     "react": "~0.14.0",
