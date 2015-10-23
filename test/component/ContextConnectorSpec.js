@@ -3,7 +3,7 @@
  * @author Leon(leon@outlook.com)
  */
 
-var ConextProvider = require('../../lib/component/ConextProvider.js');
+var ContextProvider = require('../../lib/component/ContextProvider.js');
 var ContextConnector = require('../../lib/component/ContextConnector.js');
 var React = require('react');
 var ReactDOM = require('react-dom/server');
@@ -40,7 +40,7 @@ describe('ContextConnector', function () {
         };
 
         var provider = React.createElement(
-            ConextProvider,
+            ContextProvider,
             {
                 ei: context
             },

@@ -3,7 +3,7 @@
  * @author Leon(leon@outlook.com)
  */
 
-var ContextProvider = require('../../lib/component/ConextProvider.js');
+var ContextProvider = require('../../lib/component/ContextProvider.js');
 var React = require('react');
 var ReactDOM = require('react-dom/server');
 
