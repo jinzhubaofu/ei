@@ -34,7 +34,10 @@ define('ei/Context', [
         var nextState = this.reduce(this.store, action);
         this.setState(nextState);
         for (var listeners = this.listeners.slice(), i = 0, len = listeners.length; i < len; ++i) {
-            listeners[i]();
+            var listener = listeners[i];
+            if (this.listeners.indexOf(listener) !== -1) {
+                listener();
+            }
         }
         return action;
     };

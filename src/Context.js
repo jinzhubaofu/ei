@@ -100,8 +100,16 @@ Context.prototype.dispatch = function (action) {
 
     this.setState(nextState);
 
+    // 这里这么干有几点原因
+    // 1: 一定要从0开始遍历、回调。这是因为 listener 的添加顺序是父组件在前，子组件在后。
+    // 而我们通知回调（通知有数据更新）也需要从父组件到子组件。子组件可能在父组件处理数据变更后就被卸载掉了，再回调它是没有意义的。
+    // 2: 一定要对 listener 的存在性做确认。这是为了解决上边提到的情况，父组件数据变更后卸载了子组件；
+    // 子组件的数据变更侦听函数实际上已经被移除了。此时不应该再触发它的执行。
     for (var listeners = this.listeners.slice(), i = 0, len = listeners.length; i < len; ++i) {
-        listeners[i]();
+        var listener = listeners[i];
+        if (this.listeners.indexOf(listener) !== -1) {
+            listener();
+        }
     }
 
     return action;
