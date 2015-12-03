@@ -8,7 +8,8 @@
     "coveralls": "JASMINE_CONFIG_PATH=test/jasmine.json ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test": "JASMINE_CONFIG_PATH=test/jasmine.json ./node_modules/.bin/jasmine",
     "build:amd": "sh tool/build-amd.sh",
-    "build:cmd": "sh tool/build-cmd.sh"
+    "build:cmd": "sh tool/build-cmd.sh",
+    "precommit": "npm test"
   },
   "author": {
     "name": "ludafa@outlook.com"
