@@ -15,17 +15,15 @@ describe('ContextConnector', function () {
         var View = React.createClass({
 
             render: function () {
-                return React.createElement(
-                    ContextConnector,
-                    {
-                        select: function (store) {
-                            return store;
-                        }
-                    },
-                    function (state, dispatch) {
-                        return React.createElement('div', null, state.name);
-                    }
-                );
+
+                const {actionA, actionB, name} = this.props;
+
+                expect(typeof actionA).toBe('function');
+                expect(typeof actionB).toBe('function');
+                expect(name).toBe('ludafa');
+
+                return <div>{name}</div>;
+
             }
 
         });
@@ -35,24 +33,33 @@ describe('ContextConnector', function () {
                 name: 'ludafa'
             },
             dispatch: function () {
-
             }
         };
 
-        var provider = React.createElement(
-            ContextProvider,
-            {
-                ei: context
-            },
-            function () {
-                return React.createElement(View);
-            }
+        var string = ReactDOM.renderToStaticMarkup(
+            <ContextProvider ei={context}>
+                <div>
+                    <ContextConnector
+                        selector={(store) => {
+                            expect(store).toBe(context.store);
+                            return store;
+                        }}
+                        actions={{
+                            actionA() {
+
+                            },
+                            actionB() {
+
+                            }
+                        }}>
+                        <View />
+                    </ContextConnector>
+                </div>
+            </ContextProvider>
         );
 
-        var string = ReactDOM.renderToStaticMarkup(provider);
 
-
-        expect(string).toBe('<div>ludafa</div>');
+        expect(string).toBe('<div><div>ludafa</div></div>');
 
     });
 

@@ -20,7 +20,7 @@ let React = require('react');
  * @class
  * @extends ReactComponent
  */
-class ContextProvider extends React.Component {
+const ContextProvider = React.createClass({
 
     /**
      * 获取子控件上下文
@@ -32,7 +32,7 @@ class ContextProvider extends React.Component {
         return {
             ei: this.props.ei
         };
-    }
+    },
 
     /**
      * 渲染
@@ -43,9 +43,9 @@ class ContextProvider extends React.Component {
         return this.props.children;
     }
 
-}
+});
 
-let {PropTypes} = React;
+const {PropTypes} = React;
 
 /**
  * 子控件上下文属性类型描述符

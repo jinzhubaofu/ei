@@ -4,12 +4,10 @@
  * @requires react
  */
 
-var React = require('react');
+const React = require('react');
 
-var u = require('underscore');
-
-var bindActions = require('../util/bindActions');
-var bindSelectors = require('../util/bindSelectors');
+const bindActions = require('../util/bindActions');
+const bindSelectors = require('../util/bindSelectors');
 
 /**
  * `ei`上下文连接组件
@@ -18,13 +16,11 @@ var bindSelectors = require('../util/bindSelectors');
  *
  * @constructor
  */
-class ContextConnector extends React.Component {
+const ContextConnector = React.createClass({
 
-    constructor(props, context) {
+    getInitialState() {
 
-        super(props);
-
-        this.onStoreChange = u.bind(this.onStoreChange, this);
+        const {props, context} = this;
 
         this.select = bindSelectors(props.selector);
 
@@ -32,30 +28,29 @@ class ContextConnector extends React.Component {
             data: this.getDataFromContext(context)
         };
 
-    }
+    },
 
     getDataFromContext(context) {
         return this.select(context.ei.store, this.props.children.props);
-    }
-
+    },
 
     componentDidMount() {
         this.context.ei.addChangeListener(this.onStoreChange);
-    }
+    },
 
     componentWillUnmount() {
         this.context.ei.removeChangeListener(this.onStoreChange);
-    }
+    },
 
     shouldComponentUpdate(nextProps, nextState) {
         return this.state.data !== nextState;
-    }
+    },
 
     onStoreChange() {
         this.setState({
             data: this.getDataFromContext(this.context)
         });
-    }
+    },
 
     render() {
 
@@ -77,9 +72,9 @@ class ContextConnector extends React.Component {
 
     }
 
-}
+});
 
-let {PropTypes} = React;
+const {PropTypes} = React;
 
 ContextConnector.contextTypes = {
     ei: PropTypes.object.isRequired

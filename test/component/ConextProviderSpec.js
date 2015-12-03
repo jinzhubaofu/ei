@@ -3,9 +3,11 @@
  * @author Leon(leon@outlook.com)
  */
 
-var ContextProvider = require('../../lib/component/ContextProvider.js');
-var React = require('react');
-var ReactDOM = require('react-dom/server');
+const ContextProvider = require('../../lib/component/ContextProvider.js');
+const React = require('react');
+const ReactDOM = require('react-dom/server');
+const PropTypes = React.PropTypes;
+const Context = require('../../src/Context.js');
 
 describe('ContextProvider', function () {
 
@@ -24,7 +26,20 @@ describe('ContextProvider', function () {
 
         var View = React.createClass({
 
+            contextTypes: {
+                ei: PropTypes.object.isRequired
+            },
+
             render: function () {
+
+                expect(typeof this.context.ei).toBe('object');
+
+                const {ei} = this.context;
+                const {dispatch, store} = ei;
+
+                expect(typeof dispatch).toBe('function');
+                expect(typeof store).toBe('object');
+
                 return React.createElement('div');
             }
 
@@ -35,13 +50,14 @@ describe('ContextProvider', function () {
             {
                 ei: context
             },
-            function (state, dispatch1) {
+            React.createElement(View)
+            // function (state, dispatch1) {
 
-                expect(state).toBe(store);
-                expect(dispatch1).toBe(dispatch);
+            //     expect(state).toBe(store);
+            //     expect(dispatch1).toBe(dispatch);
 
-                return React.createElement(View);
-            }
+            //     return React.createElement(View);
+            // }
         );
 
         var string = ReactDOM.renderToStaticMarkup(provider);

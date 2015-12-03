@@ -3,8 +3,6 @@
  * @author leon(ludafa@outlook.com)
  */
 
-require('babel/register');
-
 exports.input = __dirname;
 exports.output = require('path').resolve(__dirname, 'output');
 
@@ -28,21 +26,7 @@ exports.getProcessors = function () {
         to: 'lib'
     });
 
-    var babel = new BabelProcessor({
-        files: ['src/**/*.js'],
-        compileOptions: {
-            stage: 0,
-            modules: 'common',
-            compact: false,
-            ast: false,
-            blacklist: ['strict'],
-            externalHelpers: true,
-            moduleId: '',
-            getModuleId: function (filename) {
-                return filename.replace('lib/', '');
-            }
-        }
-    });
+    var babel = new BabelProcessor();
 
     var amdWrapper = new AmdWrapper();
 
