@@ -9,7 +9,8 @@
     "test": "JASMINE_CONFIG_PATH=test/support/jasmine.json ./node_modules/.bin/jasmine",
     "build:amd": "sh tool/build-amd.sh",
     "build:cmd": "sh tool/build-cmd.sh",
-    "precommit": "npm run lint && npm test"
+    "precommit": "npm run lint && npm test",
+    "prepublish": "npm run lint && npm test && npm run build:cmd"
   },
   "author": {
     "name": "ludafa@outlook.com"
