@@ -102,10 +102,10 @@ const mixins = {
 
         var me = this;
 
-        var onceHandler = function () {
+        function onceHandler() {
             me.off(name, onceHandler);
             return handler.apply(me, arguments);
-        };
+        }
 
         me.on(name, onceHandler);
 
@@ -122,7 +122,7 @@ const mixins = {
      * @param {...*}   args 事件附带参数
      * @return {module:Emitter}
      */
-    emit: function (name) {
+    emit: function (name, ...args) {
 
         var pool = this[EMITTER_LISTENER_POOL_ATTR];
 
@@ -142,10 +142,7 @@ const mixins = {
         this[EMITTER_CURRENT_EVENT_ATTR] = name;
 
         for (var i = 0, len = listeners.length; i < len; ++i) {
-            listeners[i].apply(
-                this,
-                u.toArray(arguments).slice(1)
-            );
+            listeners[i].apply(this, args);
         }
 
         this[EMITTER_CURRENT_EVENT_ATTR] = null;

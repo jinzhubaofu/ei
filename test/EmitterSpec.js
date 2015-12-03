@@ -3,7 +3,7 @@
  * @author Leon(leon@outlook.com)
  */
 
-var Emitter = require('../lib/Emitter');
+var Emitter = require('../src/Emitter');
 var u = require('underscore');
 
 describe('Emitter', function () {

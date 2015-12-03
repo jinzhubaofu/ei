@@ -4,7 +4,7 @@
  */
 
 var u = require('underscore');
-var composeMiddleware = require('../../lib/util/composeMiddleware.js');
+var composeMiddleware = require('../../src/util/composeMiddleware.js');
 
 describe('composeMiddleware', function () {
 

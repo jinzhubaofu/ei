@@ -4,7 +4,7 @@
  */
 
 var u = require('underscore');
-var Router = require('../lib/Router.js');
+var Router = require('../src/Router.js');
 
 describe('Router', function () {
 

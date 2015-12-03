@@ -4,7 +4,7 @@
  */
 
 var u = require('underscore');
-var bindActions = require('../../lib/util/bindActions');
+var bindActions = require('../../src/util/bindActions');
 
 describe('bindActions', function () {
 

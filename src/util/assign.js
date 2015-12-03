@@ -11,7 +11,7 @@ module.exports = Object.assign || function (target, ...sources) {
         throw new Error('assign target cannot be null');
     }
 
-    for (const i = 0, len = sources.length; i < len; ++i) {
+    for (let i = 0, len = sources.length; i < len; ++i) {
 
         const source = sources[i];
 

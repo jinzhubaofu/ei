@@ -3,7 +3,7 @@
  * @author Leon(leon@outlook.com)
  */
 
-var env = require('../lib/env.js');
+var env = require('../src/env.js');
 
 describe('env', function () {
 

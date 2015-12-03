@@ -3,7 +3,7 @@
  * @author Leon(leon@outlook.com)
  */
 
-var Page = require('../../lib/Page');
+var Page = require('../../src/Page');
 
 var React = require('react');
 

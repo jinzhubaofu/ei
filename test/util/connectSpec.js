@@ -5,9 +5,9 @@
 
 var u = require('underscore');
 var React = require('react');
-var Page = require('../../lib/Page.js');
+var Page = require('../../src/Page.js');
 
-var connect = require('../../lib/util/connect.js');
+var connect = require('../../src/util/connect.js');
 
 describe('connect', function () {
 

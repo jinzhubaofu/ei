@@ -24,7 +24,7 @@ const ContextConnector = React.createClass({
 
         this.select = bindSelectors(props.selector);
 
-        this.state = {
+        return {
             data: this.getDataFromContext(context)
         };
 

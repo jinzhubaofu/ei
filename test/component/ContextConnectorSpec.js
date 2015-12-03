@@ -3,8 +3,8 @@
  * @author Leon(leon@outlook.com)
  */
 
-var ContextProvider = require('../../lib/component/ContextProvider.js');
-var ContextConnector = require('../../lib/component/ContextConnector.js');
+var ContextProvider = require('../../src/component/ContextProvider.js');
+var ContextConnector = require('../../src/component/ContextConnector.js');
 var React = require('react');
 var ReactDOM = require('react-dom/server');
 

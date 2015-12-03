@@ -4,7 +4,7 @@
  */
 
 var u = require('underscore');
-var composeReducer = require('../../lib/util/composeReducer');
+var composeReducer = require('../../src/util/composeReducer');
 
 describe('composeReducer', function () {
 

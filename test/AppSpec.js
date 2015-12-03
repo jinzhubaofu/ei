@@ -3,10 +3,10 @@
  * @author Leon(leon@outlook.com)
  */
 
-var App = require('../lib/App');
+var App = require('../src/App');
 var u = require('underscore');
 
-var Router = require('../lib/Router');
+var Router = require('../src/Router');
 
 
 describe('App', function () {

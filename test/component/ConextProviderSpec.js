@@ -3,7 +3,7 @@
  * @author Leon(leon@outlook.com)
  */
 
-const ContextProvider = require('../../lib/component/ContextProvider.js');
+const ContextProvider = require('../../src/component/ContextProvider.js');
 const React = require('react');
 const ReactDOM = require('react-dom/server');
 const PropTypes = React.PropTypes;

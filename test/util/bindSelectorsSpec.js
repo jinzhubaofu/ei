@@ -4,7 +4,7 @@
  */
 
 var u = require('underscore');
-var bindSelectors = require('../../lib/util/bindSelectors.js');
+var bindSelectors = require('../../src/util/bindSelectors.js');
 
 describe('bindSelectors', function () {
 

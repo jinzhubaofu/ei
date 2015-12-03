@@ -3,7 +3,7 @@
  * @author Leon(leon@outlook.com)
  */
 
-var Context = require('../lib/Context.js');
+var Context = require('../src/Context.js');
 var u = require('underscore');
 
 describe('Context', function () {
