@@ -32,7 +32,6 @@
   ],
   "dependencies": {
     "react": "~0.14.0",
-    "underscore": "~1.8.3",
     "es6-promise": "~2.2.0"
   }
 }
