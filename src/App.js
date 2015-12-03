@@ -4,7 +4,6 @@
  */
 
 var Promise = require('es6-promise').Promise;
-var u = require('underscore');
 
 var invariant = require('./util/invariant');
 var events = require('./events');
@@ -18,12 +17,16 @@ var env = require('./env');
  * @param {!Object} options 参数
  * @param {Array.Object} options.routes 路由配置
  */
-function App(options) {
+function App(options = {}) {
 
     invariant(options, 'App need options');
     invariant(options.routes, 'App need routes');
 
-    u.extend(this, options);
+    for (const name in options) {
+        if (options.hasOwnProperty(name)) {
+            this[name] = options[name];
+        }
+    }
 
     /**
      * 路由器

@@ -3,10 +3,10 @@
  * @author Leon(leon@outlook.com)
  */
 
-var EMITTER_LISTENER_POOL_ATTR = '__listeners__';
-var EMITTER_CURRENT_EVENT_ATTR = '__event__';
+const EMITTER_LISTENER_POOL_ATTR = '__listeners__';
+const EMITTER_CURRENT_EVENT_ATTR = '__event__';
 
-var u = require('underscore');
+const assign = require('./util/assign');
 
 /**
  * Emitter
@@ -17,7 +17,7 @@ function Emitter() {}
 
 
 /** @lends Emitter.prototype */
-var mixins = {
+const mixins = {
 
     /**
      * 添加事件处理函数
@@ -29,13 +29,13 @@ var mixins = {
      */
     on: function (name, handler) {
 
-        var pool = this[EMITTER_LISTENER_POOL_ATTR];
+        let pool = this[EMITTER_LISTENER_POOL_ATTR];
 
         if (!pool) {
             pool = this[EMITTER_LISTENER_POOL_ATTR] = {};
         }
 
-        var listeners = pool[name];
+        let listeners = pool[name];
 
         if (!listeners) {
             listeners = pool[name] = [];
@@ -193,7 +193,7 @@ var mixins = {
 
 };
 
-u.extend(Emitter.prototype, mixins);
+assign(Emitter.prototype, mixins);
 
 /**
  * 激活一个对象，使它获得Emitter的所有技能
@@ -207,11 +207,11 @@ u.extend(Emitter.prototype, mixins);
  */
 Emitter.enable = function (target) {
 
-    if (u.isFunction(target)) {
+    if (typeof target === 'function') {
         target = target.prototype;
     }
 
-    return u.extend(target, mixins);
+    return assign(target, mixins);
 
 };
 

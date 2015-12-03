@@ -20,8 +20,7 @@
     "react": "~0.14.0"
   },
   "dependencies": {
-    "es6-promise": "^2.3.0",
-    "underscore": "^1.8.3"
+    "es6-promise": "^2.3.0"
   },
   "readme": "readme.md",
   "devDependencies": {
@@ -35,6 +34,7 @@
     "fecs": "^0.4.16",
     "istanbul": "^0.4.1",
     "jasmine": "^2.3.2",
-    "pre-commit": "^1.1.2"
+    "pre-commit": "^1.1.2",
+    "underscore": "^1.8.3"
   }
 }

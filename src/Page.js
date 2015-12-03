@@ -6,15 +6,15 @@
  * @requires react
  */
 
-var u = require('underscore');
-var React = require('react');
+const assign = require('./util/assign');
+const React = require('react');
 
-var ContextProvider = require('./component/ContextProvider');
-var Context = require('./Context');
-var componseReducer = require('./util/composeReducer');
-var invariant = require('./util/invariant');
+const ContextProvider = require('./component/ContextProvider');
+const Context = require('./Context');
+const componseReducer = require('./util/composeReducer');
+const invariant = require('./util/invariant');
 
-var events = require('./events');
+const events = require('./events');
 
 /**
  * 页面
@@ -41,12 +41,10 @@ Page.prototype = {
         this.context = new Context(
             initialState,
             componseReducer(this.reducer),
-            u.map(
-                this.middlewares,
-                function (middlewareCreator) {
+            this.middlewares.map(
+                (middlewareCreator) => {
                     return middlewareCreator(this);
-                },
-                this
+                }
             )
         );
 
@@ -223,7 +221,7 @@ Page.extend = function (proto) {
         Page.call(this, initialState);
     }
 
-    u.extend(SubPage.prototype, Page.prototype, proto);
+    assign(SubPage.prototype, Page.prototype, proto);
 
     return SubPage;
 

@@ -6,8 +6,6 @@
  */
 
 
-var u = require('underscore');
-
 var ACTION_ATTR = 'EI_ACTION_TAG';
 var ACTION_TAG = 'EI_ACTION';
 
@@ -26,7 +24,9 @@ function createFactory(type, factory) {
 
     function ActionCreator(payload) {
 
-        var action = u.isFunction(factory) ? factory.apply(null, arguments) : {};
+        var action = typeof factory === 'function'
+            ? factory.apply(null, arguments)
+            : {};
 
         action.type = type;
 
@@ -55,7 +55,7 @@ function createFactory(type, factory) {
  */
 exports.extend = function (type, factory) {
 
-    if (!u.isString(type)) {
+    if (typeof type !== 'string') {
         throw new Error('Action Creator must have a type');
     }
 

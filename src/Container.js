@@ -3,8 +3,6 @@
  * @author Leon(leon@outlook.com)
  */
 
-var u = require('underscore');
-
 /**
  * IOC窗口
  *
@@ -30,15 +28,13 @@ Container.prototype.make = function (name) {
         return this.registeredObjects[name];
     }
 
-    var args = u.toArray(arguments).slice(1);
-
     if (this.singletonCallbacks[name]) {
 
         var instances = this.instantiatedSingletons;
         var instance = instances[name];
 
         if (!instance) {
-            instance = instances[name] = this.singletonCallbacks[name].apply(this, args);
+            instance = instances[name] = this.singletonCallbacks[name].apply(this, arguments);
         }
 
         return instance;
@@ -47,7 +43,7 @@ Container.prototype.make = function (name) {
 
     var boundCallback = this.boundCallbacks[name];
 
-    return boundCallback ? boundCallback.apply(this, args) : null;
+    return boundCallback ? boundCallback.apply(this, arguments) : null;
 
 };
 
