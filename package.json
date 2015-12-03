@@ -9,8 +9,7 @@
     "test": "JASMINE_CONFIG_PATH=test/support/jasmine.json ./node_modules/.bin/jasmine",
     "build:amd": "sh tool/build-amd.sh",
     "build:cmd": "sh tool/build-cmd.sh",
-    "precommit": "npm run lint && npm test",
-    "prepublish": "npm run lint && npm test && npm run build:cmd"
+    "precommit": "npm run lint && npm test"
   },
   "author": {
     "name": "ludafa@outlook.com"
@@ -18,13 +17,14 @@
   "repository": "https://github.com/jinzhubaofu/ei",
   "license": "ISC",
   "peerDependencies": {
-    "react": "~0.14.0"
+    "react": "^0.14.3"
   },
   "dependencies": {
     "es6-promise": "^2.3.0"
   },
   "readme": "readme.md",
   "devDependencies": {
+    "react-dom": "^0.14.3",
     "babel-core": "^6.2.1",
     "babel-plugin-external-helpers-2": "^6.1.18",
     "babel-plugin-syntax-object-rest-spread": "^6.1.18",
