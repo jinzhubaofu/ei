@@ -5,8 +5,6 @@
 * @author leon <ludafa@outlook.com>
 */
 
-var u = require('underscore');
-
 /**
  * 生成dispatch调用栈函数
  *
@@ -16,26 +14,21 @@ var u = require('underscore');
  * 3. 下一个中间件函数
  *
  * @param  {module:Context}   context     上下文
- * @param  {Array.<Function>} middlewares 一个中间件函数数组
+ * @param  {?Array.<Function>} middlewares 一个中间件函数数组
  * @return {Function}
  */
-function composeMiddleware(context, middlewares) {
+function composeMiddleware(context, middlewares = []) {
 
-    var dispatch = u.bind(context.dispatch, context);
-
-    return middlewares && middlewares.length
-        ? u.reduce(
-            middlewares.reverse(),
+    return middlewares
+        .reverse()
+        .reduce(
             function (next, middleware, index) {
-
                 return function (action) {
                     return middleware(context.getState(), action, next);
                 };
-
             },
-            dispatch
-        )
-        : dispatch;
+            context.dispatch.bind(context)
+        );
 
 }
 

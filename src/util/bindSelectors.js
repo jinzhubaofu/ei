@@ -3,9 +3,9 @@
  * @author Leon(leon@outlook.com)
  */
 
-var u = require('underscore');
+const invariant = require('./invariant');
 
-var invariant = require('./invariant');
+const toString = Object.prototype.toString;
 
 /**
  * 将若干个数据选择器绑定到一个`store`上
@@ -21,32 +21,30 @@ function bindSelectors(selectors) {
 
         invariant(store, 'need store');
 
-        switch (typeof selectors) {
+        switch (toString.call(selectors).slice(8, -1).toLowerCase()) {
 
             case 'function':
-
                 return selectors(store, props);
 
             case 'object':
 
-                return u
-                    .chain(selectors)
-                    .pick(u.isFunction)
+                return Object
+                    .keys(selectors)
                     .reduce(
-                        function (result, select, name) {
-                            result[name] = select(store[name], props);
+                        function (result, name) {
+                            const select = selectors[name];
+                            if (typeof select === 'function') {
+                                result[name] = select(store[name], props);
+                            }
                             return result;
                         },
                         {}
-                    )
-                    .value();
+                    );
 
             case 'number': case 'string':
-
                 return store[selectors];
 
             case 'boolean':
-
                 return selectors ? store : {};
 
             default:

@@ -3,14 +3,13 @@
  * @author Leon(leon@outlook.com)
  */
 
-var u = require('underscore');
 var bindActions = require('../../src/util/bindActions');
 
 describe('bindActions', function () {
 
     it('bindActions', function () {
 
-        expect(u.isFunction(bindActions)).toBe(true);
+        expect(typeof bindActions === 'function').toBe(true);
 
         expect(function () {
 
@@ -19,9 +18,7 @@ describe('bindActions', function () {
         }).toThrow();
 
         expect(function () {
-
-            bindActions(function () {});
-
+            bindActions('a');
         }).toThrow();
 
         var dispatch = jasmine.createSpy();
@@ -35,9 +32,9 @@ describe('bindActions', function () {
             }
         });
 
-        expect(u.isObject(bound)).toBe(true);
-        expect(u.isFunction(bound.a)).toBe(true);
-        expect(u.isFunction(bound.b)).toBe(true);
+        expect(typeof bound === 'object').toBe(true);
+        expect(typeof bound.a === 'function').toBe(true);
+        expect(typeof bound.b === 'function').toBe(true);
 
 
         expect(function () {

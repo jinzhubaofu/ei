@@ -6,7 +6,6 @@
  * @author Leon(leon@outlook.com)
  *
  * @requires react
- * @requires underscore
  */
 
 var React = require('react');

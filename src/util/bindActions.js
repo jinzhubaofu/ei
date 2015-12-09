@@ -3,8 +3,6 @@
  * @author Leon(leon@outlook.com)
  */
 
-var u = require('underscore');
-
 var invariant = require('./invariant');
 
 /**
@@ -12,30 +10,28 @@ var invariant = require('./invariant');
  *
  * @private
  * @param  {!Function} dispatch dispatch方法
- * @param  {!Object}   actions  一个action creator的map
+ * @param  {?Object}   actions  一个action creator的map
  * @return {Object}
  */
-function bindActions(dispatch, actions) {
+function bindActions(dispatch, actions = {}) {
 
-    invariant(actions, 'need action config');
-    invariant(dispatch, 'need dispatch');
+    invariant(typeof dispatch === 'function', 'need dispatch');
 
-    return u.mapObject(
-        actions,
-        function (creator, methodName) {
+    function execute(methodName, ...args) {
+        var action = actions[methodName](...args);
+        invariant(action, 'action creator must return a object/funciton');
+        return dispatch(action);
+    }
 
-            return function () {
-
-                var action = creator.apply(null, arguments);
-
-                invariant(action, 'action creator must return a object/funciton');
-
-                return dispatch(action);
-            };
-
-        }
-    );
-
+    return Object
+        .keys(actions)
+        .reduce(
+            function (result, methodName) {
+                result[methodName] = execute.bind(null, methodName);
+                return result;
+            },
+            {}
+        );
 }
 
 module.exports = bindActions;

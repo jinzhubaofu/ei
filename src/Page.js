@@ -2,7 +2,6 @@
  * @file 页面
  * @author Leon(leon@outlook.com)
  *
- * @requires underscore
  * @requires react
  */
 
