@@ -781,6 +781,13 @@ module.exports = Hello;
 
 ```
 
+## 注意事项
+
+`ei` 需要以下 shim 支持
+
+1. es5
+2. promise
+
 ### cjs or amd?
 
 由于`nodejs`和浏览器上对于脚本资源获取方式上存在巨大不同，所以我们习惯上是在`nodejs`使用cjs格式的模块，而在浏览器端我们习惯使用amd格式的模块。

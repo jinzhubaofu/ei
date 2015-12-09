@@ -3,12 +3,9 @@ define('melon-classname/component/Page', [
     'exports',
     'module',
     'react',
-    'es6-promise',
     '../events'
 ], function (require, exports, module) {
     var React = require('react');
-    var _require = require('es6-promise');
-    var Promise = _require.Promise;
     var events = require('../events');
     var Page = React.createClass({
         displayName: 'Page',

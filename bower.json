@@ -31,7 +31,6 @@
     "example"
   ],
   "dependencies": {
-    "react": "~0.14.0",
-    "es6-promise": "~2.2.0"
+    "react": "^0.14.3"
   }
 }

@@ -4,7 +4,6 @@
  */
 
 const React = require('react');
-const {Promise} = require('es6-promise');
 const events = require('../events');
 
 const Page = React.createClass({

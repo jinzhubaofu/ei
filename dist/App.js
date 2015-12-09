@@ -2,27 +2,23 @@ define('melon-classname/App', [
     'require',
     'exports',
     'module',
-    'es6-promise',
     './util/invariant',
     './events',
     './Router',
     './env',
+    './util/assign',
     './util/createAppComponent'
 ], function (require, exports, module) {
-    var Promise = require('es6-promise').Promise;
     var invariant = require('./util/invariant');
     var events = require('./events');
     var Router = require('./Router');
     var env = require('./env');
+    var assign = require('./util/assign');
     function App() {
         var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
         invariant(options, 'App need options');
         invariant(options.routes, 'App need routes');
-        for (var _name in options) {
-            if (options.hasOwnProperty(_name)) {
-                this[_name] = options[_name];
-            }
-        }
+        assign(this, options);
         this.router = new Router(this.routes);
     }
     App.prototype.execute = function (request, initialState, needRawState) {

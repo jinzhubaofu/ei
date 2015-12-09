@@ -3,12 +3,11 @@
  * @author Leon(leon@outlook.com)
  */
 
-var Promise = require('es6-promise').Promise;
-
-var invariant = require('./util/invariant');
-var events = require('./events');
-var Router = require('./Router');
-var env = require('./env');
+const invariant = require('./util/invariant');
+const events = require('./events');
+const Router = require('./Router');
+const env = require('./env');
+const assign = require('./util/assign');
 
 /**
  * App
@@ -22,11 +21,7 @@ function App(options = {}) {
     invariant(options, 'App need options');
     invariant(options.routes, 'App need routes');
 
-    for (const name in options) {
-        if (options.hasOwnProperty(name)) {
-            this[name] = options[name];
-        }
-    }
+    assign(this, options);
 
     /**
      * 路由器
