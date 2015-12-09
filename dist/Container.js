@@ -1,4 +1,4 @@
-define('melon-classname/Container', [
+define('ei/Container', [
     'require',
     'exports',
     'module'

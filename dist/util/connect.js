@@ -1,4 +1,4 @@
-define('melon-classname/util/connect', [
+define('ei/util/connect', [
     'require',
     'exports',
     'module',

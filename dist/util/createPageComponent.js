@@ -1,4 +1,4 @@
-define('melon-classname/util/createPageComponent', [
+define('ei/util/createPageComponent', [
     'require',
     'exports',
     'module',

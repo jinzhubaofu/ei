@@ -1,4 +1,4 @@
-define('melon-classname/util/invariant', [
+define('ei/util/invariant', [
     'require',
     'exports',
     'module'

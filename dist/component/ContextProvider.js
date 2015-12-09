@@ -1,4 +1,4 @@
-define('melon-classname/component/ContextProvider', [
+define('ei/component/ContextProvider', [
     'require',
     'exports',
     'module',

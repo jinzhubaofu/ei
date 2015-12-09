@@ -1,4 +1,4 @@
-define('melon-classname/babelHelpers', [
+define('ei/babelHelpers', [
     'require',
     'exports',
     'module'

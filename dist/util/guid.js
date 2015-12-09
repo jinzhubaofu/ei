@@ -1,4 +1,4 @@
-define('melon-classname/util/guid', [
+define('ei/util/guid', [
     'require',
     'exports',
     'module'

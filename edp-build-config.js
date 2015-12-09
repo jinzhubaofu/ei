@@ -11,7 +11,7 @@
 */
 
 exports.input = __dirname;
-
+var pkg = require('./package.json');
 var path = require('path');
 exports.output = path.resolve(__dirname, 'output');
 
@@ -22,7 +22,7 @@ exports.getProcessors = function () {
     var lessProcessor = new LessCompiler();
     var cssProcessor = new CssCompressor();
     var moduleProcessor = new ModuleCompiler({
-        bizId: 'melon-classname'
+        bizId: pkg.name
     });
     var jsProcessor = new JsCompressor();
     var pathMapperProcessor = new PathMapper();

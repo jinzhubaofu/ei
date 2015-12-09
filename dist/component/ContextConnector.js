@@ -1,4 +1,4 @@
-define('melon-classname/component/ContextConnector', [
+define('ei/component/ContextConnector', [
     'require',
     'exports',
     'module',

@@ -1,4 +1,4 @@
-define('melon-classname/util/assign', [
+define('ei/util/assign', [
     'require',
     'exports',
     'module'

@@ -1,4 +1,4 @@
-define('melon-classname/Context', [
+define('ei/Context', [
     'require',
     'exports',
     'module',

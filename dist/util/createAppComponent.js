@@ -1,4 +1,4 @@
-define('melon-classname/util/createAppComponent', [
+define('ei/util/createAppComponent', [
     'require',
     'exports',
     'module',

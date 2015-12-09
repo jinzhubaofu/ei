@@ -1,4 +1,4 @@
-define('melon-classname/Emitter', [
+define('ei/Emitter', [
     'require',
     'exports',
     'module',

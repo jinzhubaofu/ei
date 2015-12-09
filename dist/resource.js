@@ -1,4 +1,4 @@
-define('melon-classname/resource', [
+define('ei/resource', [
     'require',
     'exports',
     'module',

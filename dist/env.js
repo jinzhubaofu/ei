@@ -1,4 +1,4 @@
-define('melon-classname/env', [
+define('ei/env', [
     'require',
     'exports',
     'module'
