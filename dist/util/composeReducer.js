@@ -1,4 +1,4 @@
-define('ei/util/composeReducer', [
+define('melon-classname/util/composeReducer', [
     'require',
     'exports',
     'module',

@@ -1,64 +1,94 @@
 /**
- * @file ei edp build config
- * @author leon(ludafa@outlook.com)
+ * @file config edp-build
+ * @author EFE
  */
 
-exports.input = __dirname;
-exports.output = require('path').resolve(__dirname, 'output');
+/* globals
+    LessCompiler, CssCompressor, JsCompressor,
+    PathMapper, AddCopyright, ModuleCompiler,
+    TplMerge, BabelProcessor,
+    AmdWrapper
+*/
 
-/* globals LessCompiler, CssCompressor, JsCompressor, PathMapper, AmdWrapper, AbstractProcessor */
-/* globals AddCopyright, ModuleCompiler, TplMerge, BabelProcessor, MainModule, OutputCleaner */
+exports.input = __dirname;
+
+var path = require('path');
+exports.output = path.resolve(__dirname, 'output');
+
+// var moduleEntries = 'html,htm,phtml,tpl,vm,js';
+// var pageEntries = 'html,htm,phtml,tpl,vm';
 
 exports.getProcessors = function () {
+    var lessProcessor = new LessCompiler();
+    var cssProcessor = new CssCompressor();
+    var moduleProcessor = new ModuleCompiler({
+        bizId: 'melon-classname'
+    });
+    var jsProcessor = new JsCompressor();
+    var pathMapperProcessor = new PathMapper();
+    var addCopyright = new AddCopyright();
 
-    var module = new ModuleCompiler({
-        bizId: 'ei',
+    var amdWrapper = new AmdWrapper({
         files: ['src/**/*.js']
     });
 
-    var amdPath = new PathMapper({
-        from: 'src',
-        to: 'dist'
+    var amdBabel = new BabelProcessor({
+        files: ['src/**/*.js'],
+        compileOptions: {
+            modules: 'commonStrict',
+            compact: false,
+            ast: false,
+            blacklist: ['strict'],
+            externalHelpers: true,
+            loose: 'all'
+        }
     });
 
-    var cmdPath = new PathMapper({
-        from: 'src',
-        to: 'lib'
+    var cmdBabel = new BabelProcessor({
+        files: ['src/**/*.js'],
+        compileOptions: {
+            modules: 'commonStrict',
+            compact: false,
+            ast: false,
+            blacklist: ['strict'],
+            externalHelpers: true,
+            loose: 'all'
+        }
     });
 
-    var babel = new BabelProcessor();
-
-    var amdWrapper = new AmdWrapper();
 
     return {
         amd: [
-            babel,
+            amdBabel,
             amdWrapper,
-            module,
-            amdPath
+            moduleProcessor,
+            pathMapperProcessor
         ],
-        cmd: [
-            babel,
-            cmdPath
+        commonjs: [
+            cmdBabel,
+            pathMapperProcessor
+        ],
+        release: [
+            lessProcessor, cssProcessor, moduleProcessor,
+            jsProcessor, pathMapperProcessor, addCopyright
         ]
     };
 };
 
 exports.exclude = [
-    'coverage',
-    'example',
-    'node_modules',
-    '.*',
-    '*.json',
     '*.log',
     '*.md',
-    '*.txt',
+    'dist',
+    'README',
+    '.*',
+    'bower.json',
+    'dep',
+    'example',
     'tool',
     'doc',
     'test',
-    'mock',
-    '*.conf',
-    'dep/est',
+    'module.conf',
+    'node_modules',
     'dep/packages.manifest',
     'dep/*/*/test',
     'dep/*/*/doc',
@@ -81,15 +111,11 @@ exports.exclude = [
     '*.swp'
 ];
 
+/* eslint-disable guard-for-in */
 exports.injectProcessor = function (processors) {
-
-    /* eslint-disable guard-for-in */
     for (var key in processors) {
         global[key] = processors[key];
     }
-
-    global.AmdWrapper = require('./tool/AmdWrapper.js');
-    // global.MainModule = require('./tool/MainModule.js');
     global.BabelProcessor = require('./tool/BabelProcessor.js');
-
+    global.AmdWrapper = require('./tool/AmdWrapper.js');
 };

@@ -2,5 +2,5 @@
 
 rm -rf dist
 edp build -f -s amd
-mv output/dist dist
+mv output/asset dist
 rm -rf output

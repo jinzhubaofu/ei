@@ -13,6 +13,7 @@ const ContextProvider = require('./component/ContextProvider');
 const Context = require('./Context');
 const componseReducer = require('./util/composeReducer');
 const invariant = require('./util/invariant');
+const guid = require('./util/guid');
 
 const events = require('./events');
 
@@ -47,6 +48,8 @@ Page.prototype = {
                 }
             )
         );
+
+        this.id = guid();
 
     },
 
@@ -203,6 +206,8 @@ Page.prototype = {
 
 require('./Emitter').enable(Page);
 
+const createPageComponent = require('./util/createPageComponent');
+
 /**
  * 生成Page子类
  *
@@ -221,10 +226,14 @@ Page.extend = function (proto) {
         Page.call(this, initialState);
     }
 
+    SubPage.Component = createPageComponent(SubPage);
+
     assign(SubPage.prototype, Page.prototype, proto);
 
     return SubPage;
 
 };
+
+Page.Component = require('./component/Page');
 
 module.exports = Page;

@@ -1,4 +1,4 @@
-define('ei/util/composeMiddleware', [
+define('melon-classname/util/composeMiddleware', [
     'require',
     'exports',
     'module',

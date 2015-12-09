@@ -1,10 +1,8 @@
-define('ei/Container', [
+define('melon-classname/Container', [
     'require',
     'exports',
-    'module',
-    'underscore'
+    'module'
 ], function (require, exports, module) {
-    var u = require('underscore');
     var Container = function Container() {
         this.boundCallbacks = {};
         this.singletonCallbacks = {};
@@ -15,17 +13,16 @@ define('ei/Container', [
         if (this.registeredObjects[name]) {
             return this.registeredObjects[name];
         }
-        var args = u.toArray(arguments).slice(1);
         if (this.singletonCallbacks[name]) {
             var instances = this.instantiatedSingletons;
             var instance = instances[name];
             if (!instance) {
-                instance = instances[name] = this.singletonCallbacks[name].apply(this, args);
+                instance = instances[name] = this.singletonCallbacks[name].apply(this, arguments);
             }
             return instance;
         }
         var boundCallback = this.boundCallbacks[name];
-        return boundCallback ? boundCallback.apply(this, args) : null;
+        return boundCallback ? boundCallback.apply(this, arguments) : null;
     };
     Container.prototype.bind = function (name, factory) {
         this.boundCallbacks[name] = factory;

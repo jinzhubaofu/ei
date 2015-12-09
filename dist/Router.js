@@ -1,4 +1,4 @@
-define('ei/Router', [
+define('melon-classname/Router', [
     'require',
     'exports',
     'module'

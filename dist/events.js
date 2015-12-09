@@ -1,4 +1,4 @@
-define('ei/events', [
+define('melon-classname/events', [
     'require',
     'exports',
     'module',

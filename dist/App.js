@@ -1,24 +1,28 @@
-define('ei/App', [
+define('melon-classname/App', [
     'require',
     'exports',
     'module',
     'es6-promise',
-    'underscore',
     './util/invariant',
     './events',
     './Router',
-    './env'
+    './env',
+    './util/createAppComponent'
 ], function (require, exports, module) {
     var Promise = require('es6-promise').Promise;
-    var u = require('underscore');
     var invariant = require('./util/invariant');
     var events = require('./events');
     var Router = require('./Router');
     var env = require('./env');
-    function App(options) {
+    function App() {
+        var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
         invariant(options, 'App need options');
         invariant(options.routes, 'App need routes');
-        u.extend(this, options);
+        for (var _name in options) {
+            if (options.hasOwnProperty(_name)) {
+                this[_name] = options[_name];
+            }
+        }
         this.router = new Router(this.routes);
     }
     App.prototype.execute = function (request, initialState, needRawState) {
@@ -101,5 +105,6 @@ define('ei/App', [
         }
         return config;
     };
+    App.Component = require('./util/createAppComponent')(App);
     module.exports = App;
 });

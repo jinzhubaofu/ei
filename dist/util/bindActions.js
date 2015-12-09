@@ -1,4 +1,4 @@
-define('ei/util/bindActions', [
+define('melon-classname/util/bindActions', [
     'require',
     'exports',
     'module',

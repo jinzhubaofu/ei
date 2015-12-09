@@ -8,6 +8,7 @@ const React = require('react');
 const ReactDOM = require('react-dom/server');
 const PropTypes = React.PropTypes;
 const Context = require('../../src/Context.js');
+const expect = require('expect');
 
 describe('ContextProvider', function () {
 

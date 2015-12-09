@@ -1,22 +1,26 @@
-define('ei/Page', [
+define('melon-classname/Page', [
     'require',
     'exports',
     'module',
-    'underscore',
+    './util/assign',
     'react',
     './component/ContextProvider',
     './Context',
     './util/composeReducer',
     './util/invariant',
+    './util/guid',
     './events',
-    './Emitter'
+    './Emitter',
+    './util/createPageComponent',
+    './component/Page'
 ], function (require, exports, module) {
-    var u = require('underscore');
+    var assign = require('./util/assign');
     var React = require('react');
     var ContextProvider = require('./component/ContextProvider');
     var Context = require('./Context');
     var componseReducer = require('./util/composeReducer');
     var invariant = require('./util/invariant');
+    var guid = require('./util/guid');
     var events = require('./events');
     function Page(initialState) {
         this.initialize(initialState);
@@ -24,9 +28,11 @@ define('ei/Page', [
     Page.prototype = {
         constructor: Page,
         initialize: function initialize(initialState) {
-            this.context = new Context(initialState, componseReducer(this.reducer), u.map(this.middlewares, function (middlewareCreator) {
-                return middlewareCreator(this);
-            }, this));
+            var _this = this;
+            this.context = new Context(initialState, componseReducer(this.reducer), this.middlewares.map(function (middlewareCreator) {
+                return middlewareCreator(_this);
+            }));
+            this.id = guid();
         },
         middlewares: [],
         init: function init(initialState) {
@@ -63,6 +69,7 @@ define('ei/Page', [
         }
     };
     require('./Emitter').enable(Page);
+    var createPageComponent = require('./util/createPageComponent');
     Page.extend = function (proto) {
         invariant(proto, 'create Page need options');
         invariant(proto.reducer, 'Pager must have a reducer');
@@ -70,8 +77,10 @@ define('ei/Page', [
         function SubPage(initialState) {
             Page.call(this, initialState);
         }
-        u.extend(SubPage.prototype, Page.prototype, proto);
+        SubPage.Component = createPageComponent(SubPage);
+        assign(SubPage.prototype, Page.prototype, proto);
         return SubPage;
     };
+    Page.Component = require('./component/Page');
     module.exports = Page;
 });

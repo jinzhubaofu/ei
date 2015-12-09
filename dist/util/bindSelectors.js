@@ -1,4 +1,4 @@
-define('ei/util/bindSelectors', [
+define('melon-classname/util/bindSelectors', [
     'require',
     'exports',
     'module',

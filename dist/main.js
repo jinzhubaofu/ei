@@ -1,4 +1,4 @@
-define('ei/main', [
+define('melon-classname/main', [
     'require',
     'exports',
     'module',

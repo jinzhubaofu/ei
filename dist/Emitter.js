@@ -1,12 +1,12 @@
-define('ei/Emitter', [
+define('melon-classname/Emitter', [
     'require',
     'exports',
     'module',
-    'underscore'
+    './util/assign'
 ], function (require, exports, module) {
     var EMITTER_LISTENER_POOL_ATTR = '__listeners__';
     var EMITTER_CURRENT_EVENT_ATTR = '__event__';
-    var u = require('underscore');
+    var assign = require('./util/assign');
     function Emitter() {
     }
     var mixins = {
@@ -49,10 +49,10 @@ define('ei/Emitter', [
         },
         once: function once(name, handler) {
             var me = this;
-            var onceHandler = function onceHandler() {
+            function onceHandler() {
                 me.off(name, onceHandler);
                 return handler.apply(me, arguments);
-            };
+            }
             me.on(name, onceHandler);
             return this;
         },
@@ -66,8 +66,11 @@ define('ei/Emitter', [
                 return this;
             }
             this[EMITTER_CURRENT_EVENT_ATTR] = name;
+            for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                args[_key - 1] = arguments[_key];
+            }
             for (var i = 0, len = listeners.length; i < len; ++i) {
-                listeners[i].apply(this, u.toArray(arguments).slice(1));
+                listeners[i].apply(this, args);
             }
             this[EMITTER_CURRENT_EVENT_ATTR] = null;
             return this;
@@ -89,12 +92,12 @@ define('ei/Emitter', [
             return this;
         }
     };
-    u.extend(Emitter.prototype, mixins);
+    assign(Emitter.prototype, mixins);
     Emitter.enable = function (target) {
-        if (u.isFunction(target)) {
+        if (typeof target === 'function') {
             target = target.prototype;
         }
-        return u.extend(target, mixins);
+        return assign(target, mixins);
     };
     module.exports = Emitter;
 });

@@ -1,20 +1,18 @@
-define('ei/Context', [
+define('melon-classname/Context', [
     'require',
     'exports',
     'module',
-    'underscore',
     './util/composeMiddleware',
     './util/invariant'
 ], function (require, exports, module) {
-    var u = require('underscore');
     var composeMiddleware = require('./util/composeMiddleware');
     var invariant = require('./util/invariant');
     function Context(initialState, reducer, middlewares) {
-        invariant(u.isFunction(reducer), 'Context need a reducer');
+        invariant(typeof reducer === 'function', 'Context need a reducer');
         this.reducer = reducer;
         this.store = initialState == null ? {} : initialState;
         this.dispatch = composeMiddleware(this, middlewares);
-        this.getState = u.bind(this.getState, this);
+        this.getState = this.getState.bind(this);
         this.listeners = [];
     }
     Context.prototype.reduce = function (state, action) {
@@ -28,7 +26,7 @@ define('ei/Context', [
         return this;
     };
     Context.prototype.dispatch = function (action) {
-        if (u.isFunction(action)) {
+        if (typeof action === 'function') {
             return action(this.dispatch, this.getState);
         }
         var nextState = this.reduce(this.store, action);

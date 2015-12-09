@@ -296,4 +296,6 @@ App.prototype.route = function (request) {
 
 };
 
+App.Component = require('./util/createAppComponent')(App);
+
 module.exports = App;
