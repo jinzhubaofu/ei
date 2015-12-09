@@ -1,17 +1,15 @@
 define('ei/util/composeMiddleware', [
     'require',
     'exports',
-    'module',
-    'underscore'
+    'module'
 ], function (require, exports, module) {
-    var u = require('underscore');
-    function composeMiddleware(context, middlewares) {
-        var dispatch = u.bind(context.dispatch, context);
-        return middlewares && middlewares.length ? u.reduce(middlewares.reverse(), function (next, middleware, index) {
+    function composeMiddleware(context) {
+        var middlewares = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+        return middlewares.reverse().reduce(function (next, middleware, index) {
             return function (action) {
                 return middleware(context.getState(), action, next);
             };
-        }, dispatch) : dispatch;
+        }, context.dispatch.bind(context));
     }
     module.exports = composeMiddleware;
 });

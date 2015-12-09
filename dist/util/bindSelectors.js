@@ -2,22 +2,24 @@ define('ei/util/bindSelectors', [
     'require',
     'exports',
     'module',
-    'underscore',
     './invariant'
 ], function (require, exports, module) {
-    var u = require('underscore');
     var invariant = require('./invariant');
+    var toString = Object.prototype.toString;
     function bindSelectors(selectors) {
         return function (store, props) {
             invariant(store, 'need store');
-            switch (typeof selectors) {
+            switch (toString.call(selectors).slice(8, -1).toLowerCase()) {
             case 'function':
                 return selectors(store, props);
             case 'object':
-                return u.chain(selectors).pick(u.isFunction).reduce(function (result, select, name) {
-                    result[name] = select(store[name], props);
+                return Object.keys(selectors).reduce(function (result, name) {
+                    var select = selectors[name];
+                    if (typeof select === 'function') {
+                        result[name] = select(store[name], props);
+                    }
                     return result;
-                }, {}).value();
+                }, {});
             case 'number':
             case 'string':
                 return store[selectors];

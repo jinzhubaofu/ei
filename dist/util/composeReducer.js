@@ -2,18 +2,21 @@ define('ei/util/composeReducer', [
     'require',
     'exports',
     'module',
-    'underscore'
+    '../babelHelpers'
 ], function (require, exports, module) {
-    var u = require('underscore');
-    function composeReducer(reducers) {
-        if (u.isFunction(reducers)) {
-            return reducers;
+    var babelHelpers = require('../babelHelpers');
+    function composeReducer(mainReducer) {
+        if (typeof mainReducer === 'function') {
+            return mainReducer;
         }
-        reducers = u.reduce(u.toArray(arguments), function (finalReducer, reducer) {
-            return u.extendOwn(finalReducer, reducer);
-        }, {});
+        for (var _len = arguments.length, restReducers = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+            restReducers[_key - 1] = arguments[_key];
+        }
+        var reducers = restReducers.reduce(function (finalReducer, reducer) {
+            return babelHelpers._extends({}, finalReducer, reducers);
+        }, mainReducer);
         return function (state, action) {
-            var nextState = u.clone(state);
+            var nextState = babelHelpers._extends({}, state);
             var isChanged = false;
             for (var name in reducers) {
                 if (reducers.hasOwnProperty(name)) {
