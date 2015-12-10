@@ -31,7 +31,7 @@ const ContextConnector = React.createClass({
     },
 
     getDataFromContext(context) {
-        return this.select(context.ei.store, this.props.children.props);
+        return this.select(context.ei.store, this.props.props);
     },
 
     componentDidMount() {
@@ -54,15 +54,17 @@ const ContextConnector = React.createClass({
 
     render() {
 
-        let {children, actions} = this.props;
+        let {originComponent, originProps, actions} = this.props;
         let {data} = this.state;
         let {dispatch} = this.context.ei;
 
         actions = actions ? bindActions(dispatch, actions) : null;
 
-        return React.cloneElement(
-            children,
+        return React.createElement(
+            originComponent,
             {
+                // 原有的属性
+                ...originProps,
                 // 动作们
                 ...actions,
                 // 选中 store 中的数据们
@@ -81,8 +83,9 @@ ContextConnector.contextTypes = {
 };
 
 ContextConnector.propTypes = {
-    children: PropTypes.element.isRequired,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    originComponent: PropTypes.func.isRequired,
+    originProps: PropTypes.object.isRequired
 };
 
 module.exports = ContextConnector;

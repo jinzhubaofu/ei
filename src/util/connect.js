@@ -28,9 +28,9 @@ function connect(Component, selector, actions) {
         return (
             <ContextConnector
                 selector={selector}
-                actions={actions}>
-                <Component {...props} />
-            </ContextConnector>
+                actions={actions}
+                originComponent={Component}
+                originProps={props} />
         );
     };
 
