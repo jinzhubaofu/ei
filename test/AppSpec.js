@@ -4,7 +4,6 @@
  */
 
 var App = require('../src/App');
-var u = require('underscore');
 
 var Router = require('../src/Router');
 
@@ -85,7 +84,7 @@ describe('App', function () {
 
         it('will return a promise', function () {
 
-            expect(u.isFunction(promise.then)).toBe(true);
+            expect(typeof promise.then === 'function').toBe(true);
 
         });
 
@@ -93,7 +92,7 @@ describe('App', function () {
 
             promise.then(function (Page) {
 
-                expect(u.isFunction(Page)).toBe(true);
+                expect(typeof Page === 'function').toBe(true);
 
                 expect(Page.type).toBe('test');
 

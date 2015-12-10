@@ -4,7 +4,6 @@
  */
 
 var Context = require('../src/Context.js');
-var u = require('underscore');
 
 describe('Context', function () {
 
@@ -40,7 +39,7 @@ describe('Context', function () {
 
         var context = new Context({}, function () {});
 
-        expect(u.isFunction(context.reducer)).toBe(true);
+        expect(typeof context.reducer === 'function').toBe(true);
 
     });
 
@@ -58,7 +57,7 @@ describe('Context', function () {
 
         var context = new Context({}, function () {});
 
-        expect(u.isFunction(context.dispatch)).toBe(true);
+        expect(typeof context.dispatch === 'function').toBe(true);
 
     });
 
@@ -66,7 +65,7 @@ describe('Context', function () {
 
         var context = new Context({}, function () {});
 
-        expect(u.isFunction(context.getState)).toBe(true);
+        expect(typeof context.getState === 'function').toBe(true);
 
     });
 
@@ -74,7 +73,7 @@ describe('Context', function () {
 
         var context = new Context({}, function () {});
 
-        expect(u.isArray(context.listeners)).toBe(true);
+        expect(Array.isArray(context.listeners)).toBe(true);
 
     });
 

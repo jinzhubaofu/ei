@@ -4,7 +4,6 @@
  */
 
 var Emitter = require('../src/Emitter');
-var u = require('underscore');
 
 describe('Emitter', function () {
 
@@ -14,19 +13,19 @@ describe('Emitter', function () {
 
         Emitter.enable(target);
 
-        expect(u.isFunction(target.emit)).toBe(true);
-        expect(u.isFunction(target.on)).toBe(true);
-        expect(u.isFunction(target.off)).toBe(true);
-        expect(u.isFunction(target.once)).toBe(true);
+        expect(typeof (target.emit) === 'function').toBe(true);
+        expect(typeof (target.on) === 'function').toBe(true);
+        expect(typeof (target.off) === 'function').toBe(true);
+        expect(typeof (target.once) === 'function').toBe(true);
 
         var targetFn = function () {};
 
         Emitter.enable(targetFn);
 
-        expect(u.isFunction(targetFn.prototype.emit)).toBe(true);
-        expect(u.isFunction(targetFn.prototype.on)).toBe(true);
-        expect(u.isFunction(targetFn.prototype.off)).toBe(true);
-        expect(u.isFunction(targetFn.prototype.once)).toBe(true);
+        expect(typeof (targetFn.prototype.emit) === 'function').toBe(true);
+        expect(typeof (targetFn.prototype.on) === 'function').toBe(true);
+        expect(typeof (targetFn.prototype.off) === 'function').toBe(true);
+        expect(typeof (targetFn.prototype.once) === 'function').toBe(true);
 
     });
 
@@ -52,7 +51,7 @@ describe('Emitter', function () {
             emitter.off('a');
         }).not.toThrow();
 
-        emitter.on('b', u.noop);
+        emitter.on('b', function () {});
 
         expect(function () {
             emitter.off('a');

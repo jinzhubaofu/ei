@@ -3,7 +3,6 @@
  * @author Leon(leon@outlook.com)
  */
 
-var u = require('underscore');
 var composeMiddleware = require('../../src/util/composeMiddleware.js');
 
 describe('composeMiddleware', function () {
@@ -18,7 +17,7 @@ describe('composeMiddleware', function () {
 
     it('is a function', function () {
 
-        expect(u.isFunction(composeMiddleware)).toBe(true);
+        expect(typeof (composeMiddleware) === 'function').toBe(true);
 
     });
 
@@ -70,7 +69,7 @@ describe('composeMiddleware', function () {
 
         var finalDispatch = composeMiddleware(context, middlewares);
 
-        expect(u.isFunction(finalDispatch)).toBe(true);
+        expect(typeof (finalDispatch) === 'function').toBe(true);
 
         finalDispatch(action1);
 

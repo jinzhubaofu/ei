@@ -51,8 +51,9 @@ describe('ContextConnector', function () {
                             actionB() {
 
                             }
-                        }}>
-                        <View />
+                        }}
+                        originProps={{}}
+                        originComponent={View}>
                     </ContextConnector>
                 </div>
             </ContextProvider>

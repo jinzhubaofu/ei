@@ -3,20 +3,19 @@
  * @author Leon(leon@outlook.com)
  */
 
-var u = require('underscore');
 var bindSelectors = require('../../src/util/bindSelectors.js');
 
 describe('bindSelectors', function () {
 
     it('is a function', function () {
 
-        expect(u.isFunction(bindSelectors)).toBe(true);
+        expect(typeof (bindSelectors) === 'function').toBe(true);
 
     });
 
     it('will return a function', function () {
 
-        expect(u.isFunction(bindSelectors())).toBe(true);
+        expect(typeof (bindSelectors()) === 'function').toBe(true);
 
     });
 

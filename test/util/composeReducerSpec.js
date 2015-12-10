@@ -3,20 +3,19 @@
  * @author Leon(leon@outlook.com)
  */
 
-var u = require('underscore');
 var composeReducer = require('../../src/util/composeReducer');
 
 describe('composeReducer', function () {
 
     it('is a function', function () {
 
-        expect(u.isFunction(composeReducer)).toBe(true);
+        expect(typeof (composeReducer) === 'function').toBe(true);
 
     });
 
     it('will return a function', function () {
 
-        expect(u.isFunction(composeReducer())).toBe(true);
+        expect(typeof (composeReducer()) === 'function').toBe(true);
 
     });
 
@@ -51,7 +50,7 @@ describe('composeReducer', function () {
 
         var reducer = composeReducer(reducers);
 
-        expect(u.isFunction(reducer)).toBe(true);
+        expect(typeof (reducer) === 'function').toBe(true);
 
         var state = {
             a: 1,

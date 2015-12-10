@@ -3,9 +3,8 @@
  * @author Leon(leon@outlook.com)
  */
 
-var u = require('underscore');
-var React = require('react');
-var connect = require('../src/util/connect');
+// var React = require('react');
+// var connect = require('../src/util/connect');
 
 var Page = require('../src/Page.js');
 
@@ -15,7 +14,7 @@ describe('Page', function () {
 
     it('have a static method `extend`', function () {
 
-        expect(u.isFunction(Page.extend)).toBe(true);
+        expect(typeof (Page.extend) === 'function').toBe(true);
 
     });
 
@@ -69,7 +68,7 @@ describe('Page', function () {
 
         });
 
-        expect(u.isFunction(SomePage)).toBe(true);
+        expect(typeof (SomePage) === 'function').toBe(true);
 
     });
 
@@ -108,7 +107,7 @@ describe('Page', function () {
 
     //                 render: function () {
 
-    //                     expect(u.isFunction(this.props.add)).toBe(true);
+    //                     expect(typeof (this.props.add) === 'function').toBe(true);
 
     //                     return React.createElement(
     //                         'div',

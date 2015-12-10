@@ -3,7 +3,6 @@
  * @author Leon(leon@outlook.com)
  */
 
-var u = require('underscore');
 var Router = require('../src/Router.js');
 
 describe('Router', function () {
@@ -27,7 +26,6 @@ describe('Router', function () {
 
         var route = router.route({pathname: '/a'});
 
-        expect(u.isObject(route)).toBe(true);
         expect(route.name).toBe('aaaa');
 
         route = router.route({pathname: '/b'});
@@ -38,7 +36,6 @@ describe('Router', function () {
             .addRoute({path: '/b', name: 'bbbb'})
             .route({pathname: '/b'});
 
-        expect(u.isObject(route)).toBe(true);
         expect(route.name).toBe('bbbb');
 
 
@@ -48,7 +45,7 @@ describe('Router', function () {
 
         var router = new Router();
 
-        expect(u.isFunction(router.addRoute)).toBe(true);
+        expect(typeof (router.addRoute) === 'function').toBe(true);
 
     });
 
