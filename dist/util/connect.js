@@ -11,8 +11,10 @@ define('ei/util/connect', [
         return function SelectorAndActionBinder(props) {
             return React.createElement(ContextConnector, {
                 selector: selector,
-                actions: actions
-            }, React.createElement(Component, props));
+                actions: actions,
+                originComponent: Component,
+                originProps: props
+            });
         };
     }
     module.exports = connect;

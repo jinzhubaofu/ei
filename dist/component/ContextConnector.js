@@ -20,7 +20,7 @@ define('ei/component/ContextConnector', [
             return { data: this.getDataFromContext(context) };
         },
         getDataFromContext: function getDataFromContext(context) {
-            return this.select(context.ei.store, this.props.children.props);
+            return this.select(context.ei.store, this.props.props);
         },
         componentDidMount: function componentDidMount() {
             this.context.ei.addChangeListener(this.onStoreChange);
@@ -36,19 +36,21 @@ define('ei/component/ContextConnector', [
         },
         render: function render() {
             var _props = this.props;
-            var children = _props.children;
+            var originComponent = _props.originComponent;
+            var originProps = _props.originProps;
             var actions = _props.actions;
             var data = this.state.data;
             var dispatch = this.context.ei.dispatch;
             actions = actions ? bindActions(dispatch, actions) : null;
-            return React.cloneElement(children, babelHelpers._extends({}, actions, data));
+            return React.createElement(originComponent, babelHelpers._extends({}, originProps, actions, data));
         }
     });
     var PropTypes = React.PropTypes;
     ContextConnector.contextTypes = { ei: PropTypes.object.isRequired };
     ContextConnector.propTypes = {
-        children: PropTypes.element.isRequired,
-        actions: PropTypes.object
+        actions: PropTypes.object,
+        originComponent: PropTypes.func.isRequired,
+        originProps: PropTypes.object.isRequired
     };
     module.exports = ContextConnector;
 });
