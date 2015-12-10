@@ -11,6 +11,8 @@
     "build:commonjs": "sh tool/build-commonjs.sh",
     "build": "npm run build:amd && npm run build:commonjs",
     "precommit": "npm run lint && npm test",
+    "bump": "./node_modules/.bin/mversion patch -m -n",
+    "prepublish": "npm run lint && npm test && npm run build:amd && npm run bump && npm run build:commonjs",
     "watch": "npm-watch"
   },
   "author": {
@@ -30,8 +32,7 @@
     "fecs": "^0.4.16",
     "istanbul": "^0.4.1",
     "jasmine": "^2.3.2",
-    "mocha": "^2.3.4",
     "pre-commit": "^1.1.2",
-    "underscore": "^1.8.3"
+    "mversion": "^1.10.1"
   }
 }
