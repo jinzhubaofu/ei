@@ -10,6 +10,8 @@ define('ei/Page', [
     './util/invariant',
     './util/guid',
     './events',
+    './actionCreator/page',
+    './middleware/pageActionEventProxy',
     './Emitter',
     './util/createPageComponent',
     './component/Page'
@@ -22,6 +24,8 @@ define('ei/Page', [
     var invariant = require('./util/invariant');
     var guid = require('./util/guid');
     var events = require('./events');
+    var _require = require('./actionCreator/page');
+    var _init = _require.init;
     function Page(initialState) {
         this.initialize(initialState);
     }
@@ -34,12 +38,9 @@ define('ei/Page', [
             }));
             this.id = guid();
         },
-        middlewares: [],
+        middlewares: [require('./middleware/pageActionEventProxy')],
         init: function init(initialState) {
-            this.dispatch({
-                type: 'INIT',
-                payload: initialState
-            });
+            this.dispatch(_init(initialState));
             return this;
         },
         createElement: function createElement() {
@@ -55,7 +56,7 @@ define('ei/Page', [
         },
         dispatch: function dispatch(action) {
             events.emit('page-dispatch', action);
-            this.emit('dispatch');
+            this.emit('dispatch', action);
             this.context.dispatch(action);
             return action;
         },

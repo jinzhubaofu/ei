@@ -12,34 +12,31 @@ function createAppComponent(App) {
 
         getInitialState() {
 
-            const {routes} = this.props;
+            const {routes, router, app} = this.props;
 
-            this.app = new App({
-                routes
-            });
+            this.app = app || new App({routes, router});
 
             return {};
         },
 
         getChildContext() {
 
+            const {app} = this;
+
             return {
                 route(request) {
-                    return this.app.route(request);
+                    return app.route(request);
+                },
+                loadPage(pageModuleId) {
+                    return app.loadPage(pageModuleId);
                 }
             };
 
         },
 
-        componentDidMount() {
-            const {jobRunner, jobQueue} = this;
-            jobRunner.run(jobQueue);
-        },
-
         render() {
             return this.props.children;
         }
-
 
     });
 
@@ -49,12 +46,14 @@ function createAppComponent(App) {
                 path: PropTypes.string.isRequired,
                 page: PropTypes.string.isRequired
             })
-        ).isRequired
+        ),
+        app: PropTypes.instanceOf(App),
+        router: PropTypes.object
     };
 
     AppComponent.childContextTypes = {
-        addJob: PropTypes.func,
-        getParentJob: PropTypes.func
+        route: PropTypes.func,
+        loadPage: PropTypes.func
     };
 
 

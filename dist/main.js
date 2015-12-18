@@ -8,7 +8,8 @@ define('ei/main', [
     './events',
     './resource',
     './util/composeReducer',
-    './util/connect'
+    './util/connect',
+    './actionCreator/page'
 ], function (require, exports, module) {
     exports.App = require('./App');
     exports.Page = require('./Page');
@@ -17,4 +18,5 @@ define('ei/main', [
     exports.resource = require('./resource');
     exports.composeReducer = require('./util/composeReducer');
     exports.connect = require('./util/connect');
+    exports.actions = { INIT: require('./actionCreator/page').INIT };
 });

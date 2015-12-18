@@ -41,8 +41,7 @@ define('ei/component/ContextConnector', [
             var actions = _props.actions;
             var data = this.state.data;
             var dispatch = this.context.ei.dispatch;
-            actions = actions ? bindActions(dispatch, actions) : null;
-            return React.createElement(originComponent, babelHelpers._extends({}, originProps, actions, data));
+            return React.createElement(originComponent, babelHelpers._extends({}, originProps, bindActions(dispatch, actions), data));
         }
     });
     var PropTypes = React.PropTypes;

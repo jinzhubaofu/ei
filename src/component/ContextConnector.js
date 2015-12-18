@@ -54,11 +54,9 @@ const ContextConnector = React.createClass({
 
     render() {
 
-        let {originComponent, originProps, actions} = this.props;
-        let {data} = this.state;
-        let {dispatch} = this.context.ei;
-
-        actions = actions ? bindActions(dispatch, actions) : null;
+        const {originComponent, originProps, actions} = this.props;
+        const {data} = this.state;
+        const {dispatch} = this.context.ei;
 
         return React.createElement(
             originComponent,
@@ -66,7 +64,7 @@ const ContextConnector = React.createClass({
                 // 原有的属性
                 ...originProps,
                 // 动作们
-                ...actions,
+                ...bindActions(dispatch, actions),
                 // 选中 store 中的数据们
                 ...data
             }

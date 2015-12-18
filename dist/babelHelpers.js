@@ -4,6 +4,17 @@ define('ei/babelHelpers', [
     'module'
 ], function (require, exports, module) {
     var babelHelpers = {};
+    babelHelpers.objectWithoutProperties = function (obj, keys) {
+        var target = {};
+        for (var i in obj) {
+            if (keys.indexOf(i) >= 0)
+                continue;
+            if (!Object.prototype.hasOwnProperty.call(obj, i))
+                continue;
+            target[i] = obj[i];
+        }
+        return target;
+    };
     babelHelpers._extends = Object.assign || function (target) {
         for (var i = 1; i < arguments.length; i++) {
             var source = arguments[i];

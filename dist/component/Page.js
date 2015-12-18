@@ -2,11 +2,14 @@ define('ei/component/Page', [
     'require',
     'exports',
     'module',
+    '../babelHelpers',
     'react',
-    '../events'
+    '../util/guid'
 ], function (require, exports, module) {
+    var babelHelpers = require('../babelHelpers');
     var React = require('react');
-    var events = require('../events');
+    var guid = require('../util/guid');
+    var ASYNC_PAGE_LOAD_ATTR = 'ASYNC_PAGE_LOAD_ATTR';
     var Page = React.createClass({
         displayName: 'Page',
         getInitialState: function getInitialState() {
@@ -20,133 +23,125 @@ define('ei/component/Page', [
             var _props = this.props;
             var initialState = _props.initialState;
             var request = _props.request;
-            var app = this.context.app;
-            this.renderPage(app, request, initialState);
+            this.renderPage(request, initialState);
         },
         componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-            var request = this.props.request;
+            var _props$request = this.props.request;
+            var request = _props$request === undefined ? {} : _props$request;
+            var pathname = request.pathname;
+            var search = request.search;
             var nextRequest = nextProps.request;
-            if (request.pathname !== nextRequest.pathname || request.search !== nextRequest.search) {
-                this.renderPage(this.context.app, nextRequest, null);
+            if (request !== nextRequest && (pathname !== nextRequest.pathname || search !== nextRequest.search)) {
+                this.renderPage(nextRequest, null);
             }
         },
-        componentWillUnmount: function componentWillUnmount() {
-            var page = this.state.page;
-            if (page) {
-                page.dispose();
-            }
-        },
-        renderErrorMessage: function renderErrorMessage(error) {
-            var status = error.status;
-            var statusInfo = error.statusInfo;
-            return React.createElement('div', { className: this.getPartClassName('error-message') }, React.createElement('h3', null, status), React.createElement('p', null, statusInfo));
-        },
-        renderLoading: function renderLoading() {
-            return React.createElement('div', { className: this.getPartClassName('loading') }, React.createElement('span', null, 'loading...'));
-        },
-        renderPage: function renderPage(app, request, initialState) {
-            var me = this;
-            var currentPage = me.state.page;
-            me.setState({
-                pendding: true,
-                error: null
-            });
-            var route = app.route(request);
+        renderPage: function renderPage(request, initialState) {
+            var _this = this;
+            var route = this.context.route(request);
             if (!route) {
-                me.setState({
+                this.setState({
                     ready: false,
                     error: {
                         status: 404,
-                        statusInfo: '\u554A\u54E6\uFF0C\u8FD9\u4E2A\u9875\u9762\u8FF7\u5931\u5728\u4E86\u832B\u832B\u5B87\u5B99\u4E2D\u3002\u3002\u3002'
+                        message: '\u554A\u54E6\uFF0C\u8FD9\u4E2A\u9875\u9762\u8FF7\u5931\u5728\u4E86\u832B\u832B\u5B87\u5B99\u4E2D\u3002\u3002\u3002'
                     },
                     pendding: false,
-                    page: null
+                    Page: null
                 });
                 return;
             }
-            app.loadPage(route.page).then(function (Page) {
-                var page = undefined;
-                if (currentPage && currentPage instanceof Page) {
-                    page = currentPage;
-                } else {
-                    page = new Page();
-                    page.on('*', function () {
-                        var eventName = page.getCurrentEvent().split(/[\-_]/).map(function (term) {
-                            return term.charAt(0).toUpperCase() + term.slice(1).toLowerCase();
-                        }).join('');
-                        var handlerName = 'on' + eventName;
-                        var handler = me.props[handlerName];
-                        if (typeof handler === 'function') {
-                            handler.apply(null, arguments);
-                        }
+            this.setState({
+                pendding: true,
+                error: null,
+                ready: false
+            });
+            var token = this[ASYNC_PAGE_LOAD_ATTR] = guid();
+            this.context.loadPage(route.page).then(function (Page) {
+                if (token === _this[ASYNC_PAGE_LOAD_ATTR]) {
+                    _this.setState({
+                        Page: Page,
+                        error: null,
+                        pendding: false,
+                        ready: true
                     });
                 }
-                page.route = route;
-                return page;
-            }).then(function (page) {
-                if (initialState) {
-                    page.setState(initialState);
-                    return page;
-                }
-                return Promise.resolve(page.getInitialState(request)).then(function (state) {
-                    events.emit('page-initial-state-loaded', { state: state });
-                    page.init(state);
-                    return page;
-                });
-            }).then(function (page) {
-                if (currentPage && currentPage !== page) {
-                    currentPage.dispose();
-                    events.emit('page-disposed', { page: currentPage });
-                }
-                me.setState({
-                    page: page,
-                    ready: true,
-                    pendding: false,
-                    error: null
-                }, function () {
-                    events.emit('page-render-succeed', {
-                        page: page,
-                        isChild: !me.props.main
-                    });
-                });
             })['catch'](function (error) {
-                me.setState({
-                    error: error,
-                    ready: false,
-                    pendding: false,
-                    page: null
-                });
+                if (token === _this[ASYNC_PAGE_LOAD_ATTR]) {
+                    _this.setState({
+                        error: error,
+                        ready: false,
+                        pendding: false,
+                        Page: null
+                    });
+                }
             });
         },
+        onRedirect: function onRedirect(action) {
+            var onRedirect = this.props.onRedirect;
+            if (onRedirect) {
+                onRedirect(action);
+                return;
+            }
+            this.renderPage(action.payload.location);
+        },
         render: function render() {
+            var _props2 = this.props;
+            var request = _props2.request;
+            var renderLoadingMessage = _props2.renderLoadingMessage;
+            var renderErrorMessage = _props2.renderErrorMessage;
+            var rest = babelHelpers.objectWithoutProperties(_props2, [
+                'request',
+                'renderLoadingMessage',
+                'renderErrorMessage'
+            ]);
             var _state = this.state;
             var ready = _state.ready;
-            var page = _state.page;
+            var pendding = _state.pendding;
+            var Page = _state.Page;
             var error = _state.error;
-            var content = '';
-            if (error) {
-                content = this.renderErrorMessage(error);
-            } else if (ready) {
-                try {
-                    content = page.createElement();
-                } catch (e) {
-                    content = this.renderErrorMessage('\u554A\u54E6\uFF0C\u51FA\u73B0\u4E86\u4E00\u4E9B\u95EE\u9898\uFF0C\u8BF7\u7A0D\u5019\u518D\u8BD5');
+            var content = null;
+            if (request != null) {
+                if (error) {
+                    content = renderErrorMessage(error);
+                } else if (pendding) {
+                    content = renderLoadingMessage();
+                } else if (ready) {
+                    try {
+                        content = React.createElement(Page.Component, babelHelpers._extends({}, rest, {
+                            onRedirect: this.onRedirect,
+                            request: request
+                        }));
+                    } catch (e) {
+                        content = renderErrorMessage(e);
+                    }
                 }
-            } else {
-                content = this.renderLoading();
             }
             return React.createElement('div', { className: 'ui-page' }, content);
         }
     });
     var PropTypes = React.PropTypes;
-    Page.contextTypes = { app: PropTypes.object.isRequired };
+    Page.contextTypes = {
+        route: PropTypes.func,
+        loadPage: PropTypes.func
+    };
     Page.propTypes = {
         request: PropTypes.shape({
             pathname: PropTypes.string.isRequired,
             query: PropTypes.object,
             search: PropTypes.string
-        }).isRequired,
-        initialState: PropTypes.any
+        }),
+        initialState: PropTypes.any,
+        renderLoadingMessage: PropTypes.func,
+        renderErrorMessage: PropTypes.func
+    };
+    Page.defaultProps = {
+        renderErrorMessage: function renderErrorMessage(error) {
+            var message = error.message;
+            return React.createElement('span', null, message);
+        },
+        renderLoadingMessage: function renderLoadingMessage() {
+            return React.createElement('span', null, 'loading...');
+        }
     };
     module.exports = Page;
 });

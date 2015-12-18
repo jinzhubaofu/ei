@@ -1,10 +1,11 @@
 /**
- * @file Page
+ * @file 可进行路由的 Page
  * @author leon(ludafa@outlook.com)
  */
 
 const React = require('react');
-const events = require('../events');
+const guid = require('../util/guid');
+const ASYNC_PAGE_LOAD_ATTR = 'ASYNC_PAGE_LOAD_ATTR';
 
 const Page = React.createClass({
 
@@ -21,188 +22,136 @@ const Page = React.createClass({
     componentDidMount() {
 
         let {initialState, request} = this.props;
-        let {app} = this.context;
 
-        this.renderPage(app, request, initialState);
+        this.renderPage(request, initialState);
 
     },
 
     componentWillReceiveProps(nextProps) {
 
-        let {request} = this.props;
-        let nextRequest = nextProps.request;
+        const {request = {}} = this.props;
+        const {pathname, search} = request;
+        const nextRequest = nextProps.request;
 
         if (
-            request.pathname !== nextRequest.pathname
-            || request.search !== nextRequest.search
+            request !== nextRequest
+            && (pathname !== nextRequest.pathname || search !== nextRequest.search)
         ) {
-            this.renderPage(this.context.app, nextRequest, null);
+            this.renderPage(nextRequest, null);
         }
 
     },
 
-    componentWillUnmount() {
+    renderPage(request, initialState) {
 
-        const {page} = this.state;
-
-        if (page) {
-            page.dispose();
-        }
-
-    },
-
-    renderErrorMessage(error) {
-        let {status, statusInfo} = error;
-        return (
-            <div className={this.getPartClassName('error-message')}>
-                <h3>{status}</h3>
-                <p>{statusInfo}</p>
-            </div>
-        );
-    },
-
-    renderLoading() {
-        return (
-            <div className={this.getPartClassName('loading')}>
-                <span>loading...</span>
-            </div>
-        );
-    },
-
-    renderPage(app, request, initialState) {
-
-        let me = this;
-        let currentPage = me.state.page;
-
-        me.setState({
-            pendding: true,
-            error: null
-        });
-
-        let route = app.route(request);
+        const route = this.context.route(request);
 
         if (!route) {
 
-            me.setState({
+            this.setState({
                 ready: false,
                 error: {
                     status: 404,
-                    statusInfo: '啊哦，这个页面迷失在了茫茫宇宙中。。。'
+                    message: '啊哦，这个页面迷失在了茫茫宇宙中。。。'
                 },
                 pendding: false,
-                page: null
+                Page: null
             });
 
             return;
         }
 
-        app
+        this.setState({
+            pendding: true,
+            error: null,
+            ready: false
+        });
+
+        const token = this[ASYNC_PAGE_LOAD_ATTR] = guid();
+
+        this
+            .context
             .loadPage(route.page)
-            .then(function (Page) {
+            .then((Page) => {
 
-                let page;
-
-                if (currentPage && currentPage instanceof Page) {
-                    page = currentPage;
-                }
-                else {
-                    page = new Page();
-
-                    // 添加事件代理
-                    page.on('*', function () {
-
-                        let eventName = page.getCurrentEvent()
-                            .split(/[\-_]/)
-                            .map(function (term) {
-                                return term.charAt(0).toUpperCase() + term.slice(1).toLowerCase();
-                            })
-                            .join('');
-
-                        let handlerName = `on${eventName}`;
-
-                        let handler = me.props[handlerName];
-
-                        if (typeof handler === 'function') {
-                            handler.apply(null, arguments);
-                        }
-
+                // 对照 token
+                // 如果 token 未变化，才能进行渲染
+                // 如果 token 已发生变化 ，那么吞掉渲染
+                if (token === this[ASYNC_PAGE_LOAD_ATTR]) {
+                    this.setState({
+                        Page,
+                        error: null,
+                        pendding: false,
+                        ready: true
                     });
-
                 }
-
-                page.route = route;
-
-                return page;
 
             })
-            .then(function (page) {
+            ['catch']((error) => {
 
-                if (initialState) {
-                    page.setState(initialState);
-                    return page;
-                }
-
-                return Promise
-                    .resolve(page.getInitialState(request))
-                    .then(function (state) {
-                        events.emit('page-initial-state-loaded', {state});
-                        page.init(state);
-                        return page;
-                    });
-
-            })
-            .then(function (page) {
-
-                if (currentPage && currentPage !== page) {
-                    currentPage.dispose();
-                    events.emit('page-disposed', {
-                        page: currentPage
+                // 对照 token
+                // 如果 token 未变化，才能进行渲染
+                // 如果 token 已发生变化 ，那么吞掉渲染
+                if (token === this[ASYNC_PAGE_LOAD_ATTR]) {
+                    this.setState({
+                        error: error,
+                        ready: false,
+                        pendding: false,
+                        Page: null
                     });
                 }
 
-                me.setState({
-                    page: page,
-                    ready: true,
-                    pendding: false,
-                    error: null
-                }, () => {
-                    events.emit('page-render-succeed', {
-                        page: page,
-                        isChild: !me.props.main
-                    });
-                });
-
-            })
-            ['catch'](function (error) {
-                me.setState({
-                    error: error,
-                    ready: false,
-                    pendding: false,
-                    page: null
-                });
             });
+
+    },
+
+    onRedirect(action) {
+
+        const {onRedirect} = this.props;
+
+        if (onRedirect) {
+            onRedirect(action);
+            return;
+        }
+
+        this.renderPage(action.payload.location);
 
     },
 
     render() {
 
-        const {ready, page, error} = this.state;
+        const {
+            request,
+            renderLoadingMessage,
+            renderErrorMessage,
+            ...rest
+        } = this.props;
 
-        let content = '';
+        const {ready, pendding, Page, error} = this.state;
 
-        if (error) {
-            content = this.renderErrorMessage(error);
-        }
-        else if (ready) {
-            try {
-                content = page.createElement();
+        let content = null;
+
+        // 如果 request 是空的，那么我们认为它相当于 iframe src="about:blank"
+        if (request != null) {
+            if (error) {
+                content = renderErrorMessage(error);
             }
-            catch (e) {
-                content = this.renderErrorMessage('啊哦，出现了一些问题，请稍候再试');
+            else if (pendding) {
+                content = renderLoadingMessage();
             }
-        }
-        else {
-            content = this.renderLoading();
+            else if (ready) {
+                try {
+                    content = (
+                        <Page.Component
+                            {...rest}
+                            onRedirect={this.onRedirect}
+                            request={request} />
+                    );
+                }
+                catch (e) {
+                    content = renderErrorMessage(e);
+                }
+            }
         }
 
         return (
@@ -218,7 +167,8 @@ const Page = React.createClass({
 const {PropTypes} = React;
 
 Page.contextTypes = {
-    app: PropTypes.object.isRequired
+    route: PropTypes.func,
+    loadPage: PropTypes.func
 };
 
 Page.propTypes = {
@@ -226,8 +176,25 @@ Page.propTypes = {
         pathname: PropTypes.string.isRequired,
         query: PropTypes.object,
         search: PropTypes.string
-    }).isRequired,
-    initialState: PropTypes.any
+    }),
+    initialState: PropTypes.any,
+    renderLoadingMessage: PropTypes.func,
+    renderErrorMessage: PropTypes.func
+};
+
+Page.defaultProps = {
+
+    renderErrorMessage(error) {
+        const {message} = error;
+        return (
+            <span>{message}</span>
+        );
+    },
+
+    renderLoadingMessage() {
+        return (<span>loading...</span>);
+    }
+
 };
 
 module.exports = Page;

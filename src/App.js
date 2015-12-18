@@ -19,7 +19,7 @@ const assign = require('./util/assign');
 function App(options = {}) {
 
     invariant(options, 'App need options');
-    invariant(options.routes, 'App need routes');
+    invariant(options.routes || options.router, 'App need routes/router');
 
     assign(this, options);
 
@@ -28,7 +28,7 @@ function App(options = {}) {
      *
      * @member {module:Router}
      */
-    this.router = new Router(this.routes);
+    this.router = this.router || new Router(this.routes);
 
 }
 
@@ -36,7 +36,6 @@ function App(options = {}) {
  * 处理一个请求
  *
  * @param {!Object}  request      请求
- * @param {?*}       initialState 初始数据状态
  * @param {boolean}  needRawState 是否需要未经加工的page数据
  * @return {Promise}
  *
@@ -50,7 +49,7 @@ function App(options = {}) {
  * @fires module:events~app-page-bootstrap
  * @fires module:events~app-page-bootstrap-succeed
  */
-App.prototype.execute = function (request, initialState, needRawState) {
+App.prototype.execute = function (request, needRawState) {
 
     invariant(env.isServer, 'App.execute() must run on server');
 
@@ -59,9 +58,7 @@ App.prototype.execute = function (request, initialState, needRawState) {
      */
     events.emit('app-request');
 
-    var me = this;
-
-    var route = me.route(request);
+    var route = this.route(request);
 
     if (!route) {
         return Promise.reject({
@@ -69,20 +66,20 @@ App.prototype.execute = function (request, initialState, needRawState) {
         });
     }
 
-    return me
+    return this
 
         // 加载页面模块
         .loadPage(route.page)
 
         // 加载初始化数据
-        .then(function (Page) {
+        .then((Page) => {
 
-            var page = new Page(initialState);
+            var page = new Page();
 
             return Promise
                 // 这里一定要用 Promise 包裹一下，这个接口可以返回 Promise 或者是 *
-                .resolve(initialState == null ? page.getInitialState(request) : initialState)
-                .then(function (state) {
+                .resolve(page.getInitialState(request))
+                .then((state) => {
 
                     if (needRawState) {
 
@@ -103,20 +100,13 @@ App.prototype.execute = function (request, initialState, needRawState) {
                      */
                     events.emit('app-response-in-html');
 
-                    // 如果没有传入initialState，那么我们做一次初始化归并
-                    // 如果没有带初始参数，那么我们就不触发init动作了
-                    // 因为initialState是脱水出来的store状态，并不需要归并计算
-                    if (initialState == null) {
+                    // 触发 page 的初始归并
+                    page.init(state);
 
-                        // 触发 page 的初始归并
-                        page.init(state);
-
-                        /**
-                         * @event module:events~app-page-bootstrap
-                         */
-                        events.emit('app-page-bootstrap');
-
-                    }
+                    /**
+                     * @event module:events~app-page-bootstrap
+                     */
+                    events.emit('app-page-bootstrap');
 
                     /**
                      * @event module:events~app-page-bootstrap

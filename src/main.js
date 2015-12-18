@@ -18,3 +18,6 @@ exports.composeReducer = require('./util/composeReducer');
 
 exports.connect = require('./util/connect');
 
+exports.actions = {
+    INIT: require('./actionCreator/page').INIT
+};

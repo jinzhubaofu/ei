@@ -10,21 +10,26 @@ define('ei/util/createAppComponent', [
         var AppComponent = React.createClass({
             displayName: 'AppComponent',
             getInitialState: function getInitialState() {
-                var routes = this.props.routes;
-                this.app = new App({ routes: routes });
+                var _props = this.props;
+                var routes = _props.routes;
+                var router = _props.router;
+                var app = _props.app;
+                this.app = app || new App({
+                    routes: routes,
+                    router: router
+                });
                 return {};
             },
             getChildContext: function getChildContext() {
+                var app = this.app;
                 return {
                     route: function route(request) {
-                        return this.app.route(request);
+                        return app.route(request);
+                    },
+                    loadPage: function loadPage(pageModuleId) {
+                        return app.loadPage(pageModuleId);
                     }
                 };
-            },
-            componentDidMount: function componentDidMount() {
-                var jobRunner = this.jobRunner;
-                var jobQueue = this.jobQueue;
-                jobRunner.run(jobQueue);
             },
             render: function render() {
                 return this.props.children;
@@ -34,11 +39,13 @@ define('ei/util/createAppComponent', [
             routes: PropTypes.arrayOf(PropTypes.shape({
                 path: PropTypes.string.isRequired,
                 page: PropTypes.string.isRequired
-            })).isRequired
+            })),
+            app: PropTypes.instanceOf(App),
+            router: PropTypes.object
         };
         AppComponent.childContextTypes = {
-            addJob: PropTypes.func,
-            getParentJob: PropTypes.func
+            route: PropTypes.func,
+            loadPage: PropTypes.func
         };
         return AppComponent;
     }

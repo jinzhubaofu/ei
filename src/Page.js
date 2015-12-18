@@ -16,6 +16,8 @@ const guid = require('./util/guid');
 
 const events = require('./events');
 
+const {init} = require('./actionCreator/page');
+
 /**
  * 页面
  *
@@ -52,7 +54,9 @@ Page.prototype = {
 
     },
 
-    middlewares: [],
+    middlewares: [
+        require('./middleware/pageActionEventProxy')
+    ],
 
     /**
      * 初始化
@@ -78,10 +82,7 @@ Page.prototype = {
      */
     init: function (initialState) {
 
-        this.dispatch({
-            type: 'INIT',
-            payload: initialState
-        });
+        this.dispatch(init(initialState));
 
         return this;
 
@@ -153,7 +154,7 @@ Page.prototype = {
          */
         events.emit('page-dispatch', action);
 
-        this.emit('dispatch');
+        this.emit('dispatch', action);
 
         this.context.dispatch(action);
 

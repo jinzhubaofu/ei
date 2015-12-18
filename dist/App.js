@@ -17,21 +17,20 @@ define('ei/App', [
     function App() {
         var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
         invariant(options, 'App need options');
-        invariant(options.routes, 'App need routes');
+        invariant(options.routes || options.router, 'App need routes/router');
         assign(this, options);
-        this.router = new Router(this.routes);
+        this.router = this.router || new Router(this.routes);
     }
-    App.prototype.execute = function (request, initialState, needRawState) {
+    App.prototype.execute = function (request, needRawState) {
         invariant(env.isServer, 'App.execute() must run on server');
         events.emit('app-request');
-        var me = this;
-        var route = me.route(request);
+        var route = this.route(request);
         if (!route) {
             return Promise.reject({ status: 404 });
         }
-        return me.loadPage(route.page).then(function (Page) {
-            var page = new Page(initialState);
-            return Promise.resolve(initialState == null ? page.getInitialState(request) : initialState).then(function (state) {
+        return this.loadPage(route.page).then(function (Page) {
+            var page = new Page();
+            return Promise.resolve(page.getInitialState(request)).then(function (state) {
                 if (needRawState) {
                     events.emit('app-response-in-json');
                     return {
@@ -40,10 +39,8 @@ define('ei/App', [
                     };
                 }
                 events.emit('app-response-in-html');
-                if (initialState == null) {
-                    page.init(state);
-                    events.emit('app-page-bootstrap');
-                }
+                page.init(state);
+                events.emit('app-page-bootstrap');
                 events.emit('app-page-entered');
                 return {
                     page: page,
