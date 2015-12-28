@@ -20,8 +20,7 @@
 function composeMiddleware(context, middlewares = []) {
 
     return middlewares
-        .reverse()
-        .reduce(
+        .reduceRight(
             function (next, middleware, index) {
                 return function (action) {
                     return middleware(context.getState(), action, next);
