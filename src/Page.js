@@ -38,7 +38,7 @@ Page.prototype = {
      *
      * @param {*} initialState 初始数据
      */
-    initialize: function (initialState) {
+    initialize(initialState) {
 
         this.context = new Context(
             initialState,
@@ -80,12 +80,9 @@ Page.prototype = {
      * @param {*} initialState 初始状态
      * @return {module:Page}
      */
-    init: function (initialState) {
-
+    init(initialState) {
         this.dispatch(init(initialState));
-
         return this;
-
     },
 
     /**
@@ -93,18 +90,19 @@ Page.prototype = {
      *
      * @public
      *
+     * @param {?Object} props 视图属性
+     * @notice 此参数一般不需要使用，只有在 Page 作为子组件时使用
      * @return {ReactElement}
      */
-    createElement: function () {
+    createElement(props) {
 
-        var view = this.view;
+        const context = this.context;
+        const View = this.view;
 
-        return React.createElement(
-            ContextProvider,
-            {
-                ei: this.context
-            },
-            React.createElement(view)
+        return (
+            <ContextProvider ei={context}>
+                <View {...props} />
+            </ContextProvider>
         );
 
     },
@@ -118,7 +116,7 @@ Page.prototype = {
      *
      * @return {*}
      */
-    getState: function () {
+    getState() {
         return this.context.getState();
     },
 
@@ -128,7 +126,7 @@ Page.prototype = {
      * @param {*} state 数据
      * @return {module:Page}
      */
-    setState: function (state) {
+    setState(state) {
         this.context.setState(state);
         return this;
     },
@@ -146,7 +144,7 @@ Page.prototype = {
      *
      * @fires module:events~page-dispatch
      */
-    dispatch: function (action) {
+    dispatch(action) {
 
         /**
          * @event module:events~page-dispatch
@@ -179,7 +177,7 @@ Page.prototype = {
      *
      * @return {Promise}
      */
-    getInitialState: function (request) {
+    getInitialState(request) {
         return {};
     },
 
@@ -188,7 +186,7 @@ Page.prototype = {
      *
      * @return {module:Page}
      */
-    dispose: function () {
+    dispose() {
 
         /**
          * @event module:event~page-dispose
