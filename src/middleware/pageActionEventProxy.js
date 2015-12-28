@@ -10,7 +10,7 @@ function pageActionEventProxy(page, state, action, next) {
         page.emit(event || type, action);
     }
 
-    next(action);
+    return next(action);
 
 }
 
