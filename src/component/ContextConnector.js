@@ -31,7 +31,7 @@ const ContextConnector = React.createClass({
     },
 
     getDataFromContext(context) {
-        return this.select(context.ei.store, this.props.props);
+        return this.select(context.ei.store, this.props.originProps);
     },
 
     componentDidMount() {
