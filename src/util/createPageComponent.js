@@ -8,11 +8,27 @@ const guid = require('../util/guid');
 const {PropTypes} = React;
 const PAGE_GET_INITIAL_STATE_GUID_ATTR = 'PAGE_GET_INITIAL_STATE_GUID_ATTR';
 
+const hasOwn = Object.prototype.hasOwnProperty;
+
 function createPageComponent(Page) {
+
+    function getCustomProps(props) {
+
+        const result = {};
+
+        for (const name in props) {
+            if (hasOwn.call(props, name) && !(name in PageComponent.propTypes)) {
+                result[name] = props[name];
+            }
+        }
+
+        return result;
+
+    }
 
     const PageComponent = React.createClass({
 
-        displayName: `PageComponent`,
+        displayName: 'PageComponent',
 
         getInitialState() {
 
@@ -60,16 +76,13 @@ function createPageComponent(Page) {
 
         },
 
+
         componentWillReceiveProps(nextProps) {
 
             const {request} = this.props;
             const nextRequest = nextProps.request;
-            const {pathname, search} = request;
 
-            if (
-                nextRequest !== request
-                && (pathname !== nextRequest.pathname || search !== nextRequest.search)
-            ) {
+            if (request !== nextRequest) {
                 this.handleRequest(this.page, nextRequest);
             }
 
@@ -121,29 +134,23 @@ function createPageComponent(Page) {
                 });
         },
 
-        renderLoading() {
-            return this.props.renderLoading.call(this);
-        },
-
-        renderError(error) {
-            const {renderError} = this.props;
-            return renderError.call(this, error);
-        },
-
         render() {
 
-            const {page} = this;
+            const {page, props} = this;
             const {error, stage} = this.state;
 
+            const {
+                renderLoadingMessage,
+                renderErrorMessage
+            } = props;
+
             if (error) {
-                return this.renderError(error);
+                return renderErrorMessage(error);
             }
 
-            if (stage === 'LOADED') {
-                return page.createElement();
-            }
-
-            return this.renderLoading();
+            return stage === 'LOADED'
+                ? page.createElement(getCustomProps(props))
+                : renderLoadingMessage();
 
         }
 
@@ -152,19 +159,19 @@ function createPageComponent(Page) {
     PageComponent.propTypes = {
         initialState: PropTypes.object,
         request: PropTypes.object,
-        renderLoadingHint: PropTypes.func,
-        renderError: PropTypes.func
+        renderLoadingMessage: PropTypes.func,
+        renderErrorMessage: PropTypes.func
     };
 
     PageComponent.defaultProps = {
         initialState: null,
         request: {},
-        renderLoading() {
+        renderLoadingMessage() {
             return (
                 <div>loading...</div>
             );
         },
-        renderError(error) {
+        renderErrorMessage(error) {
             return (
                 <div>{error.message}</div>
             );
