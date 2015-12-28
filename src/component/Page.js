@@ -185,9 +185,8 @@ Page.propTypes = {
 Page.defaultProps = {
 
     renderErrorMessage(error) {
-        const {message} = error;
         return (
-            <span>{message}</span>
+            <span>{error.message}</span>
         );
     },
 
