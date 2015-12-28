@@ -20,7 +20,7 @@ define('ei/component/ContextConnector', [
             return { data: this.getDataFromContext(context) };
         },
         getDataFromContext: function getDataFromContext(context) {
-            return this.select(context.ei.store, this.props.props);
+            return this.select(context.ei.store, this.props.originProps);
         },
         componentDidMount: function componentDidMount() {
             this.context.ei.addChangeListener(this.onStoreChange);

@@ -136,8 +136,7 @@ define('ei/component/Page', [
     };
     Page.defaultProps = {
         renderErrorMessage: function renderErrorMessage(error) {
-            var message = error.message;
-            return React.createElement('span', null, message);
+            return React.createElement('span', null, error.message);
         },
         renderLoadingMessage: function renderLoadingMessage() {
             return React.createElement('span', null, 'loading...');

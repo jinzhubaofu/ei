@@ -5,7 +5,7 @@ define('ei/util/composeMiddleware', [
 ], function (require, exports, module) {
     function composeMiddleware(context) {
         var middlewares = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
-        return middlewares.reverse().reduce(function (next, middleware, index) {
+        return middlewares.reduceRight(function (next, middleware, index) {
             return function (action) {
                 return middleware(context.getState(), action, next);
             };

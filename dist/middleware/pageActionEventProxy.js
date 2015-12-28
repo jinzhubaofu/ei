@@ -9,7 +9,7 @@ define('ei/middleware/pageActionEventProxy', [
             var type = action.type;
             page.emit(_event || type, action);
         }
-        next(action);
+        return next(action);
     }
     module.exports = function (page) {
         return pageActionEventProxy.bind(null, page);
