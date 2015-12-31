@@ -99,24 +99,31 @@ define('ei/component/Page', [
             var pendding = _state.pendding;
             var Page = _state.Page;
             var error = _state.error;
+            var state = 'blank';
             var content = null;
             if (request != null) {
                 if (error) {
                     content = renderErrorMessage(error);
+                    state = 'error';
                 } else if (pendding) {
                     content = renderLoadingMessage();
+                    state = 'pendding';
                 } else if (ready) {
                     try {
                         content = React.createElement(Page.Component, babelHelpers._extends({}, rest, {
+                            renderLoadingMessage: renderLoadingMessage,
+                            renderErrorMessage: renderErrorMessage,
                             onRedirect: this.onRedirect,
                             request: request
                         }));
+                        state = 'ready';
                     } catch (e) {
                         content = renderErrorMessage(e);
+                        state = 'error';
                     }
                 }
             }
-            return React.createElement('div', { className: 'ui-page' }, content);
+            return React.createElement('div', { className: 'ui-page state-' + state }, content);
         }
     });
     var PropTypes = React.PropTypes;

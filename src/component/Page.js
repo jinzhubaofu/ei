@@ -129,33 +129,41 @@ const Page = React.createClass({
 
         const {ready, pendding, Page, error} = this.state;
 
+        let state = 'blank';
         let content = null;
 
         // 如果 request 是空的，那么我们认为它相当于 iframe src="about:blank"
         if (request != null) {
+
             if (error) {
                 content = renderErrorMessage(error);
+                state = 'error';
             }
             else if (pendding) {
                 content = renderLoadingMessage();
+                state = 'pendding';
             }
             else if (ready) {
                 try {
                     content = (
                         <Page.Component
                             {...rest}
+                            renderLoadingMessage={renderLoadingMessage}
+                            renderErrorMessage={renderErrorMessage}
                             onRedirect={this.onRedirect}
                             request={request} />
                     );
+                    state = 'ready';
                 }
                 catch (e) {
                     content = renderErrorMessage(e);
+                    state = 'error';
                 }
             }
         }
 
         return (
-            <div className="ui-page">
+            <div className={`ui-page state-${state}`}>
                 {content}
             </div>
         );
