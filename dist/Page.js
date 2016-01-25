@@ -33,10 +33,10 @@ define('ei/Page', [
         constructor: Page,
         initialize: function initialize(initialState) {
             var _this = this;
+            this.id = guid();
             this.context = new Context(initialState, componseReducer(this.reducer), this.middlewares.map(function (middlewareCreator) {
                 return middlewareCreator(_this);
             }));
-            this.id = guid();
         },
         middlewares: [require('./middleware/pageActionEventProxy')],
         init: function init(initialState) {
@@ -45,7 +45,7 @@ define('ei/Page', [
         },
         createElement: function createElement(props) {
             var context = this.context;
-            var View = this.view;
+            var View = this.View;
             return React.createElement(ContextProvider, { ei: context }, React.createElement(View, props));
         },
         getState: function getState() {

@@ -16,9 +16,9 @@
  * @module resource
  */
 
-var Container = require('./Container');
+const Container = require('./Container');
 
-var container = new Container();
+const container = new Container();
 
 /**
  * 注册一个资源操作对象

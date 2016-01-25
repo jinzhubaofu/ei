@@ -80,8 +80,8 @@ define('ei/util/createPageComponent', [
                 }, function (error) {
                     if (token === _this[PAGE_GET_INITIAL_STATE_GUID_ATTR]) {
                         _this.setState({
-                            stage: 'LOADED',
-                            error: error
+                            error: error,
+                            stage: 'LOADED'
                         });
                     }
                 });

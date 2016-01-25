@@ -27,7 +27,7 @@ const mixins = {
      * @param {!Function} handler 事件处理函数
      * @return {module:Emitter}
      */
-    on: function (name, handler) {
+    on(name, handler) {
 
         let pool = this[EMITTER_LISTENER_POOL_ATTR];
 
@@ -54,9 +54,9 @@ const mixins = {
      * @param {?Function} handler 事件处理函数
      * @return {module:Emitter}
      */
-    off: function (name, handler) {
+    off(name, handler) {
 
-        var pool = this[EMITTER_LISTENER_POOL_ATTR];
+        let pool = this[EMITTER_LISTENER_POOL_ATTR];
 
         if (!pool) {
             return this;
@@ -66,7 +66,7 @@ const mixins = {
             return this.destroyEvents();
         }
 
-        var listeners = pool[name];
+        const listeners = pool[name];
 
         if (!listeners || !listeners.length) {
             return this;
@@ -80,7 +80,7 @@ const mixins = {
         }
 
         // 找到指定的回调函数，移除它
-        for (var i = listeners.length - 1; i >= 0; --i) {
+        for (let i = listeners.length - 1; i >= 0; --i) {
             if (listeners[i] === handler) {
                 listeners.splice(i, 1);
                 return this;
@@ -98,9 +98,9 @@ const mixins = {
      * @param {!Function} handler 事件处理函数
      * @return {module:Emitter}
      */
-    once: function (name, handler) {
+    once(name, handler) {
 
-        var me = this;
+        const me = this;
 
         function onceHandler() {
             me.off(name, onceHandler);
@@ -122,9 +122,9 @@ const mixins = {
      * @param {...*}   args 事件附带参数
      * @return {module:Emitter}
      */
-    emit: function (name, ...args) {
+    emit(name, ...args) {
 
-        var pool = this[EMITTER_LISTENER_POOL_ATTR];
+        let pool = this[EMITTER_LISTENER_POOL_ATTR];
 
         // 连pool都没有，那真是一个回调都没有，那么直接返回
         if (!pool) {
@@ -132,7 +132,7 @@ const mixins = {
         }
 
         // 把*和指定事件类型的事件回调合并在一起
-        var listeners = [].concat(pool[name] || [], pool['*'] || []);
+        const listeners = [].concat(pool[name] || [], pool['*'] || []);
 
         // 如果没有回调函数，那么直接返回
         if (!listeners.length) {
@@ -141,7 +141,7 @@ const mixins = {
 
         this[EMITTER_CURRENT_EVENT_ATTR] = name;
 
-        for (var i = 0, len = listeners.length; i < len; ++i) {
+        for (let i = 0, len = listeners.length; i < len; ++i) {
             listeners[i].apply(this, args);
         }
 
@@ -157,7 +157,7 @@ const mixins = {
      * @public
      * @return {?string}
      */
-    getCurrentEvent: function () {
+    getCurrentEvent() {
         return this[EMITTER_CURRENT_EVENT_ATTR];
     },
 
@@ -167,13 +167,13 @@ const mixins = {
      * @public
      * @return {module:Emitter}
      */
-    destroyEvents: function () {
+    destroyEvents() {
 
-        var pool = this[EMITTER_LISTENER_POOL_ATTR];
+        const pool = this[EMITTER_LISTENER_POOL_ATTR];
 
         if (pool) {
 
-            for (var type in pool) {
+            for (let type in pool) {
                 if (pool[type]) {
                     pool[type].length = 0;
                     pool[type] = null;

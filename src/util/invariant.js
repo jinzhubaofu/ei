@@ -30,7 +30,7 @@
  * @param {*} e 断言失败消息数据
  * @param {*} f 断言失败消息数据
  */
-var invariant = function (condition, format, a, b, c, d, e, f) {
+function invariant(condition, format, a, b, c, d, e, f) {
 
     if (condition) {
         return;
@@ -54,7 +54,7 @@ var invariant = function (condition, format, a, b, c, d, e, f) {
 
     throw new Error(message);
 
-};
+}
 
 /* eslint-enable max-params */
 

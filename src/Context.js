@@ -3,8 +3,8 @@
  * @author Leon(leon@outlook.com)
  */
 
-var composeMiddleware = require('./util/composeMiddleware');
-var invariant = require('./util/invariant');
+const composeMiddleware = require('./util/composeMiddleware');
+const invariant = require('./util/invariant');
 
 /**
  * `ei`视图上下文

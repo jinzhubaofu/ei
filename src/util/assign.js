@@ -19,7 +19,7 @@ module.exports = Object.assign || function (target, ...sources) {
             continue;
         }
 
-        for (var key in source) {
+        for (let key in source) {
             if (hasOwnProperty.call(source, key)) {
                 target[key] = source[key];
             }

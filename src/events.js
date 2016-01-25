@@ -4,8 +4,8 @@
  * @module events
  */
 
-var Emitter = require('./Emitter');
+const Emitter = require('./Emitter');
 
-var events = {};
+const events = {};
 
 module.exports = Emitter.enable(events);

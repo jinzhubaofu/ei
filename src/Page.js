@@ -40,17 +40,15 @@ Page.prototype = {
      */
     initialize(initialState) {
 
+        this.id = guid();
+
         this.context = new Context(
             initialState,
             componseReducer(this.reducer),
-            this.middlewares.map(
-                (middlewareCreator) => {
-                    return middlewareCreator(this);
-                }
-            )
+            this.middlewares.map(middlewareCreator => {
+                return middlewareCreator(this);
+            })
         );
-
-        this.id = guid();
 
     },
 
@@ -96,8 +94,7 @@ Page.prototype = {
      */
     createElement(props) {
 
-        const context = this.context;
-        const View = this.view;
+        const {context, View} = this;
 
         return (
             <ContextProvider ei={context}>

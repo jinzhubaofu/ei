@@ -3,12 +3,12 @@ define('ei/Container', [
     'exports',
     'module'
 ], function (require, exports, module) {
-    var Container = function Container() {
+    function Container() {
         this.boundCallbacks = {};
         this.singletonCallbacks = {};
         this.instantiatedSingletons = {};
         this.registeredObjects = {};
-    };
+    }
     Container.prototype.make = function (name) {
         if (this.registeredObjects[name]) {
             return this.registeredObjects[name];

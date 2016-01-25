@@ -8,12 +8,12 @@
  *
  * @constructor Container
  */
-var Container = function () {
+function Container() {
     this.boundCallbacks = {};
     this.singletonCallbacks = {};
     this.instantiatedSingletons = {};
     this.registeredObjects = {};
-};
+}
 
 /**
  * 生成一个指定的实例

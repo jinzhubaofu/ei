@@ -58,7 +58,7 @@ App.prototype.execute = function (request, needRawState) {
      */
     events.emit('app-request');
 
-    var route = this.route(request);
+    const route = this.route(request);
 
     if (!route) {
         return Promise.reject({
@@ -72,14 +72,14 @@ App.prototype.execute = function (request, needRawState) {
         .loadPage(route.page)
 
         // 加载初始化数据
-        .then((Page) => {
+        .then(Page => {
 
-            var page = new Page();
+            const page = new Page();
 
             return Promise
                 // 这里一定要用 Promise 包裹一下，这个接口可以返回 Promise 或者是 *
                 .resolve(page.getInitialState(request))
-                .then((state) => {
+                .then(state => {
 
                     if (needRawState) {
 
@@ -89,8 +89,8 @@ App.prototype.execute = function (request, needRawState) {
                         events.emit('app-response-in-json');
 
                         return {
-                            state: state,
-                            route: route
+                            state,
+                            route
                         };
 
                     }
@@ -114,8 +114,8 @@ App.prototype.execute = function (request, needRawState) {
                     events.emit('app-page-entered');
 
                     return {
-                        page: page,
-                        route: route
+                        page,
+                        route
                     };
 
                 });
@@ -157,7 +157,7 @@ App.prototype.setBasePath = function (basePath) {
  */
 App.prototype.loadPage = function (page) {
 
-    var pool = this.pool;
+    const {pool} = this;
 
     if (pool && pool[page]) {
 
@@ -189,15 +189,15 @@ App.prototype.resolveServerModule = function (moduleId) {
      */
     events.emit('app-load-page-on-server', moduleId);
 
-    var basePath = this.basePath;
+    const basePath = this.basePath;
 
     invariant(basePath, 'ei need a basePath to resolve your page');
 
-    var path = basePath + '/' + moduleId;
+    const path = basePath + '/' + moduleId;
 
-    var Page = require(path);
+    const Page = require(path);
 
-    var pool = this.pool;
+    let pool = this.pool;
 
     if (!pool) {
         pool = this.pool = {};
@@ -259,7 +259,7 @@ App.prototype.route = function (request) {
      */
     events.emit('app-route');
 
-    var config = this.router.route(request);
+    const config = this.router.route(request);
 
     if (config) {
 

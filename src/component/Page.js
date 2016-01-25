@@ -72,7 +72,7 @@ const Page = React.createClass({
         this
             .context
             .loadPage(route.page)
-            .then((Page) => {
+            .then(Page => {
 
                 // 对照 token
                 // 如果 token 未变化，才能进行渲染
@@ -87,14 +87,14 @@ const Page = React.createClass({
                 }
 
             })
-            ['catch']((error) => {
+            ['catch'](error => {
 
                 // 对照 token
                 // 如果 token 未变化，才能进行渲染
                 // 如果 token 已发生变化 ，那么吞掉渲染
                 if (token === this[ASYNC_PAGE_LOAD_ATTR]) {
                     this.setState({
-                        error: error,
+                        error,
                         ready: false,
                         pendding: false,
                         Page: null

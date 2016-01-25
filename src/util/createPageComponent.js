@@ -43,7 +43,7 @@ function createPageComponent(Page) {
 
                 const eventName = page.getCurrentEvent()
                     .split(/[\-_]/)
-                    .map((term) => {
+                    .map(term => {
                         return term.charAt(0).toUpperCase() + term.slice(1).toLowerCase();
                     })
                     .join('');
@@ -110,7 +110,7 @@ function createPageComponent(Page) {
             });
 
             Promise.resolve(page.getInitialState(request))
-                .then((state) => {
+                .then(state => {
 
                     page.init(state);
 
@@ -121,13 +121,13 @@ function createPageComponent(Page) {
                         });
                     }
 
-                }, (error) => {
+                }, error => {
 
                     // 如果不是一致的（也就是在这次请求之后又发生了一次请求，token 就更新了），就算球了~
                     if (token === this[PAGE_GET_INITIAL_STATE_GUID_ATTR]) {
                         this.setState({
-                            stage: 'LOADED',
-                            error: error
+                            error,
+                            stage: 'LOADED'
                         });
                     }
 

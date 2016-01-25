@@ -3,7 +3,7 @@
  * @author Leon(leon@outlook.com)
  */
 
-var invariant = require('./invariant');
+const invariant = require('./invariant');
 
 /**
  * 将一堆action creator绑定到一个`dispatch`方法上
@@ -18,7 +18,7 @@ function bindActions(dispatch, actions = {}) {
     invariant(typeof dispatch === 'function', 'need dispatch');
 
     function execute(methodName, ...args) {
-        var action = actions[methodName](...args);
+        const action = actions[methodName](...args);
         invariant(action, 'action creator must return a object/funciton');
         return dispatch(action);
     }

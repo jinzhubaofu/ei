@@ -8,9 +8,9 @@
  * @requires react
  */
 
-var React = require('react');
+const React = require('react');
 
-var ContextConnector = require('../component/ContextConnector');
+const ContextConnector = require('../component/ContextConnector');
 
 
 /**

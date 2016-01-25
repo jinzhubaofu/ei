@@ -18,10 +18,10 @@ define('ei/util/composeReducer', [
         return function (state, action) {
             var nextState = babelHelpers._extends({}, state);
             var isChanged = false;
-            for (var name in reducers) {
-                if (reducers.hasOwnProperty(name)) {
-                    var value = state[name];
-                    var nextValue = nextState[name] = reducers[name](value, action);
+            for (var _name in reducers) {
+                if (reducers.hasOwnProperty(_name)) {
+                    var value = state[_name];
+                    var nextValue = nextState[_name] = reducers[_name](value, action);
                     if (nextValue !== value) {
                         isChanged = true;
                     }

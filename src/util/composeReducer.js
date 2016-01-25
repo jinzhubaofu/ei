@@ -34,15 +34,15 @@ function composeReducer(mainReducer, ...restReducers) {
 
         // 针对 reducer 中指定的属性进行修改，而那些未指定的属性直接拷贝一份即可
         // 所以，这里我们先把状态浅拷贝一份
-        var nextState = {...state};
-        var isChanged = false;
+        const nextState = {...state};
+        let isChanged = false;
 
-        for (var name in reducers) {
+        for (let name in reducers) {
 
             if (reducers.hasOwnProperty(name)) {
 
-                var value = state[name];
-                var nextValue = nextState[name] = reducers[name](value, action);
+                const value = state[name];
+                const nextValue = nextState[name] = reducers[name](value, action);
 
                 if (nextValue !== value) {
                     isChanged = true;
