@@ -9,6 +9,8 @@ const Router = require('./Router');
 const env = require('./env');
 const assign = require('./util/assign');
 
+/* eslint-disable fecs-prefer-class */
+
 /**
  * App
  *
@@ -31,6 +33,8 @@ function App(options = {}) {
     this.router = this.router || new Router(this.routes);
 
 }
+
+/* eslint-enable fecs-prefer-class */
 
 /**
  * 处理一个请求

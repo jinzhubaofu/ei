@@ -18,6 +18,8 @@ const events = require('./events');
 
 const {init} = require('./actionCreator/page');
 
+/* eslint-disable fecs-prefer-class */
+
 /**
  * 页面
  *
@@ -27,6 +29,8 @@ const {init} = require('./actionCreator/page');
 function Page(initialState) {
     this.initialize(initialState);
 }
+
+/* eslint-enable fecs-prefer-class */
 
 /** @lends Page.prototype */
 Page.prototype = {
@@ -94,7 +98,8 @@ Page.prototype = {
      */
     createElement(props) {
 
-        const {context, View} = this;
+        const context = this.context;
+        const View = this.view;
 
         return (
             <ContextProvider ei={context}>

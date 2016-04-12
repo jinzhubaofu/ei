@@ -8,6 +8,9 @@ const EMITTER_CURRENT_EVENT_ATTR = '__event__';
 
 const assign = require('./util/assign');
 
+/* eslint-disable fecs-prefer-class */
+
+
 /**
  * Emitter
  *
@@ -15,6 +18,7 @@ const assign = require('./util/assign');
  */
 function Emitter() {}
 
+/* eslint-enable fecs-prefer-class */
 
 /** @lends Emitter.prototype */
 const mixins = {
@@ -102,9 +106,9 @@ const mixins = {
 
         const me = this;
 
-        function onceHandler() {
+        function onceHandler(...args) {
             me.off(name, onceHandler);
-            return handler.apply(me, arguments);
+            return handler.apply(me, args);
         }
 
         me.on(name, onceHandler);

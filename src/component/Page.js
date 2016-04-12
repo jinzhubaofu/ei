@@ -7,6 +7,8 @@ const React = require('react');
 const guid = require('../util/guid');
 const ASYNC_PAGE_LOAD_ATTR = 'ASYNC_PAGE_LOAD_ATTR';
 
+/* eslint-disable fecs-prefer-class */
+
 const Page = React.createClass({
 
     displayName: 'Page',

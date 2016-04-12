@@ -51,7 +51,10 @@ define('ei/Emitter', [
             var me = this;
             function onceHandler() {
                 me.off(name, onceHandler);
-                return handler.apply(me, arguments);
+                for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                    args[_key] = arguments[_key];
+                }
+                return handler.apply(me, args);
             }
             me.on(name, onceHandler);
             return this;
@@ -66,8 +69,8 @@ define('ei/Emitter', [
                 return this;
             }
             this[EMITTER_CURRENT_EVENT_ATTR] = name;
-            for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                args[_key - 1] = arguments[_key];
+            for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                args[_key2 - 1] = arguments[_key2];
             }
             for (var i = 0, len = listeners.length; i < len; ++i) {
                 listeners[i].apply(this, args);

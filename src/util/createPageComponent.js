@@ -39,7 +39,7 @@ function createPageComponent(Page) {
             const page = me.page = new Page(initialState);
 
             // 添加事件代理
-            page.on('*', function () {
+            page.on('*', function (...args) {
 
                 const eventName = page.getCurrentEvent()
                     .split(/[\-_]/)
@@ -51,7 +51,7 @@ function createPageComponent(Page) {
                 const handler = props[`on${eventName}`];
 
                 if (typeof handler === 'function') {
-                    handler.apply(me, arguments);
+                    handler.apply(me, args);
                 }
 
             });

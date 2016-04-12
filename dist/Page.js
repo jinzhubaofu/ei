@@ -45,7 +45,7 @@ define('ei/Page', [
         },
         createElement: function createElement(props) {
             var context = this.context;
-            var View = this.View;
+            var View = this.view;
             return React.createElement(ContextProvider, { ei: context }, React.createElement(View, props));
         },
         getState: function getState() {
