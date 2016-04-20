@@ -57,6 +57,9 @@ define('ei/App', [
         return this;
     };
     App.prototype.loadPage = function (page) {
+        if (typeof page === 'function') {
+            return Promise.resolve(page);
+        }
         var pool = this.pool;
         if (pool && pool[page]) {
             events.emit('app-page-loaded');

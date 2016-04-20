@@ -38,7 +38,10 @@ define('ei/util/createAppComponent', [
         AppComponent.propTypes = {
             routes: PropTypes.arrayOf(PropTypes.shape({
                 path: PropTypes.string.isRequired,
-                page: PropTypes.string.isRequired
+                page: PropTypes.oneOfType([
+                    PropTypes.string,
+                    PropTypes.func
+                ]).isRequired
             })),
             app: PropTypes.instanceOf(App),
             router: PropTypes.object

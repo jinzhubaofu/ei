@@ -161,6 +161,10 @@ App.prototype.setBasePath = function (basePath) {
  */
 App.prototype.loadPage = function (page) {
 
+    if (typeof page === 'function') {
+        return Promise.resolve(page);
+    }
+
     const {pool} = this;
 
     if (pool && pool[page]) {
