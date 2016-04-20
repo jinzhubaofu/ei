@@ -10,7 +10,8 @@
     "build:amd": "sh tool/build-amd.sh",
     "build:commonjs": "sh tool/build-commonjs.sh",
     "build": "npm test && npm run build:amd && npm run build:commonjs",
-    "precommit": "npm run lint && npm test"
+    "precommit": "npm run lint && npm test",
+    "prepublish": "npm run build"
   },
   "author": {
     "name": "ludafa@outlook.com"
