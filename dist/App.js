@@ -57,6 +57,7 @@ define('ei/App', [
         return this;
     };
     App.prototype.loadPage = function (page) {
+        var _this = this;
         if (typeof page === 'function') {
             return Promise.resolve(page);
         }
@@ -65,7 +66,16 @@ define('ei/App', [
             events.emit('app-page-loaded');
             return Promise.resolve(pool[page]);
         }
-        return env.isServer ? this.resolveServerModule(page) : this.resolveClientModule(page);
+        var loadMethodName = env.isServer ? 'resolveServerModule' : 'resolveClientModule';
+        return this[loadMethodName](page).then(function (Page) {
+            return _this.resolvePage(Page);
+        });
+    };
+    App.prototype.resolvePage = function (Page) {
+        if (typeof Page === 'function') {
+            return Page;
+        }
+        return Page['default'];
     };
     App.prototype.resolveServerModule = function (moduleId) {
         events.emit('app-load-page-on-server', moduleId);

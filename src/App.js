@@ -177,7 +177,33 @@ App.prototype.loadPage = function (page) {
         return Promise.resolve(pool[page]);
     }
 
-    return env.isServer ? this.resolveServerModule(page) : this.resolveClientModule(page);
+    const loadMethodName = env.isServer ? 'resolveServerModule' : 'resolveClientModule';
+
+    return this[loadMethodName](page).then(Page => {
+        return this.resolvePage(Page);
+    });
+
+};
+
+/**
+ * 解析 Page 类
+ *
+ * @protected
+ *
+ * @param {Object|Function} Page 页面模块
+ *
+ * @return {Promise}
+ */
+App.prototype.resolvePage = function (Page) {
+
+    // @hack
+    // 这种是 commonjs/amd 直接返回的 Page
+    if (typeof Page === 'function') {
+        return Page;
+    }
+
+    // 这种是 export default 输出的
+    return Page.default;
 
 };
 
