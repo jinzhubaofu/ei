@@ -16,7 +16,10 @@ define('ei/component/ContextConnector', [
         getInitialState: function getInitialState() {
             var props = this.props;
             var context = this.context;
-            this.select = bindSelectors(props.selector);
+            var selector = props.selector;
+            var actions = props.actions;
+            this.select = bindSelectors(selector);
+            this.actions = bindActions(context.ei.dispatch, actions);
             return { data: this.getDataFromContext(context) };
         },
         getDataFromContext: function getDataFromContext(context) {
@@ -38,10 +41,7 @@ define('ei/component/ContextConnector', [
             var _props = this.props;
             var originComponent = _props.originComponent;
             var originProps = _props.originProps;
-            var actions = _props.actions;
-            var data = this.state.data;
-            var dispatch = this.context.ei.dispatch;
-            return React.createElement(originComponent, babelHelpers._extends({}, originProps, bindActions(dispatch, actions), data));
+            return React.createElement(originComponent, babelHelpers._extends({}, originProps, this.actions, this.state.data));
         }
     });
     var PropTypes = React.PropTypes;
