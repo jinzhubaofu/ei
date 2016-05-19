@@ -24,8 +24,7 @@ define('ei/Page', [
     var invariant = require('./util/invariant');
     var guid = require('./util/guid');
     var events = require('./events');
-    var _require = require('./actionCreator/page');
-    var _init = _require.init;
+    var _init = require('./actionCreator/page').init;
     function Page(initialState) {
         this.initialize(initialState);
     }

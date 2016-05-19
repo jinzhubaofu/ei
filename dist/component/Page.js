@@ -26,8 +26,7 @@ define('ei/component/Page', [
             this.renderPage(request, initialState);
         },
         componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-            var _props$request = this.props.request;
-            var request = _props$request === undefined ? {} : _props$request;
+            var request = this.props.request || {};
             var pathname = request.pathname;
             var search = request.search;
             var nextRequest = nextProps.request;

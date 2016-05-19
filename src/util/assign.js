@@ -19,11 +19,13 @@ module.exports = Object.assign || function (target, ...sources) {
             continue;
         }
 
+        /* eslint-disable fecs-use-for-of */
         for (let key in source) {
             if (hasOwnProperty.call(source, key)) {
                 target[key] = source[key];
             }
         }
+        /* eslint-enable fecs-use-for-of */
 
     }
 

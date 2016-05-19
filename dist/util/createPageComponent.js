@@ -11,15 +11,6 @@ define('ei/util/createPageComponent', [
     var PAGE_GET_INITIAL_STATE_GUID_ATTR = 'PAGE_GET_INITIAL_STATE_GUID_ATTR';
     var hasOwn = Object.prototype.hasOwnProperty;
     function createPageComponent(Page) {
-        function getCustomProps(props) {
-            var result = {};
-            for (var _name in props) {
-                if (hasOwn.call(props, _name) && !(_name in PageComponent.propTypes)) {
-                    result[_name] = props[_name];
-                }
-            }
-            return result;
-        }
         var PageComponent = React.createClass({
             displayName: 'PageComponent',
             getInitialState: function getInitialState() {
@@ -64,9 +55,9 @@ define('ei/util/createPageComponent', [
             componentWillUnmount: function componentWillUnmount() {
                 var page = this.page;
                 if (page) {
-                    this.page.dispose();
-                    this.page = null;
+                    page.dispose();
                 }
+                this.page = null;
             },
             handleRequest: function handleRequest(page, request) {
                 var _this = this;
@@ -119,6 +110,15 @@ define('ei/util/createPageComponent', [
                 return React.createElement('div', null, error.message);
             }
         };
+        function getCustomProps(props) {
+            var result = {};
+            for (var _name in props) {
+                if (hasOwn.call(props, _name) && !(_name in PageComponent.propTypes)) {
+                    result[_name] = props[_name];
+                }
+            }
+            return result;
+        }
         return PageComponent;
     }
     module.exports = createPageComponent;

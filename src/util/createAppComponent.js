@@ -4,7 +4,7 @@
  */
 
 const React = require('react');
-const {PropTypes} = React;
+const PropTypes = React.PropTypes;
 
 function createAppComponent(App) {
 
@@ -21,7 +21,7 @@ function createAppComponent(App) {
 
         getChildContext() {
 
-            const {app} = this;
+            const app = this.app;
 
             return {
                 route(request) {

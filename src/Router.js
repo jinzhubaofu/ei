@@ -3,6 +3,8 @@
  * @author Leon(leon@outlook.com)
  */
 
+/* eslint-disable fecs-prefer-class */
+
 /**
  * 简易的路由器
  *
@@ -22,9 +24,9 @@ function Router(routes) {
  */
 Router.prototype.route = function (request) {
 
-    for (var i = this.routes.length - 1; i >= 0; i--) {
+    for (let i = this.routes.length - 1; i >= 0; i--) {
 
-        var route = this.routes[i];
+        let route = this.routes[i];
 
         if (route.path === request.pathname) {
             return route;

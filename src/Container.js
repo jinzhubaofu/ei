@@ -3,6 +3,8 @@
  * @author Leon(leon@outlook.com)
  */
 
+/* eslint-disable fecs-prefer-class */
+/* eslint-disable prefer-rest-params */
 /**
  * IOC窗口
  *
@@ -30,8 +32,8 @@ Container.prototype.make = function (name) {
 
     if (this.singletonCallbacks[name]) {
 
-        var instances = this.instantiatedSingletons;
-        var instance = instances[name];
+        const instances = this.instantiatedSingletons;
+        let instance = instances[name];
 
         if (!instance) {
             instance = instances[name] = this.singletonCallbacks[name].apply(this, arguments);
@@ -41,7 +43,7 @@ Container.prototype.make = function (name) {
     }
 
 
-    var boundCallback = this.boundCallbacks[name];
+    const boundCallback = this.boundCallbacks[name];
 
     return boundCallback ? boundCallback.apply(this, arguments) : null;
 

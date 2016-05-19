@@ -165,7 +165,7 @@ App.prototype.loadPage = function (page) {
         return Promise.resolve(page);
     }
 
-    const {pool} = this;
+    const pool = this.pool;
 
     if (pool && pool[page]) {
 
@@ -179,9 +179,7 @@ App.prototype.loadPage = function (page) {
 
     const loadMethodName = env.isServer ? 'resolveServerModule' : 'resolveClientModule';
 
-    return this[loadMethodName](page).then(Page => {
-        return this.resolvePage(Page);
-    });
+    return this[loadMethodName](page).then(Page => this.resolvePage(Page));
 
 };
 

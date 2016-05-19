@@ -177,12 +177,14 @@ const mixins = {
 
         if (pool) {
 
+            /* eslint-disable fecs-use-for-of */
             for (let type in pool) {
                 if (pool[type]) {
                     pool[type].length = 0;
                     pool[type] = null;
                 }
             }
+            /* eslint-enable fecs-use-for-of */
 
             this[EMITTER_LISTENER_POOL_ATTR] = null;
 

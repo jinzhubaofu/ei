@@ -43,10 +43,10 @@ function invariant(condition, format, a, b, c, d, e, f) {
         );
     }
 
-    var args = [a, b, c, d, e, f];
-    var argIndex = 0;
+    const args = [a, b, c, d, e, f];
+    let argIndex = 0;
 
-    var message = ''
+    const message = ''
         + 'Invariant Violation: '
         + format.replace(/%s/g, function () {
             return args[argIndex++];

@@ -6,6 +6,8 @@
 const composeMiddleware = require('./util/composeMiddleware');
 const invariant = require('./util/invariant');
 
+/* eslint-disable fecs-prefer-class */
+
 /**
  * `ei`视图上下文
  *
@@ -95,7 +97,7 @@ Context.prototype.dispatch = function (action) {
         return action(this.dispatch, this.getState);
     }
 
-    var nextState = this.reduce(this.store, action);
+    const nextState = this.reduce(this.store, action);
 
     this.setState(nextState);
 
@@ -104,8 +106,8 @@ Context.prototype.dispatch = function (action) {
     // 而我们通知回调（通知有数据更新）也需要从父组件到子组件。子组件可能在父组件处理数据变更后就被卸载掉了，再回调它是没有意义的。
     // 2: 一定要对 listener 的存在性做确认。这是为了解决上边提到的情况，父组件数据变更后卸载了子组件；
     // 子组件的数据变更侦听函数实际上已经被移除了。此时不应该再触发它的执行。
-    for (var listeners = this.listeners.slice(), i = 0, len = listeners.length; i < len; ++i) {
-        var listener = listeners[i];
+    for (let listeners = this.listeners.slice(), i = 0, len = listeners.length; i < len; ++i) {
+        const listener = listeners[i];
         if (this.listeners.indexOf(listener) !== -1) {
             listener();
         }
@@ -135,7 +137,7 @@ Context.prototype.addChangeListener = function (handler) {
  */
 Context.prototype.removeChangeListener = function (handler) {
 
-    for (var listeners = this.listeners, i = listeners.length - 1; i >= 0; --i) {
+    for (let listeners = this.listeners, i = listeners.length - 1; i >= 0; --i) {
         if (listeners[i] === handler) {
             listeners.splice(i, 1);
             return this;

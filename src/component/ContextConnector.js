@@ -75,7 +75,7 @@ const ContextConnector = React.createClass({
 
 });
 
-const {PropTypes} = React;
+const PropTypes = React.PropTypes;
 
 ContextConnector.contextTypes = {
     ei: PropTypes.object.isRequired

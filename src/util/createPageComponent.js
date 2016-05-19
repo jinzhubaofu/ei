@@ -5,26 +5,12 @@
 
 const React = require('react');
 const guid = require('../util/guid');
-const {PropTypes} = React;
+const PropTypes = React.PropTypes;
 const PAGE_GET_INITIAL_STATE_GUID_ATTR = 'PAGE_GET_INITIAL_STATE_GUID_ATTR';
 
 const hasOwn = Object.prototype.hasOwnProperty;
 
 function createPageComponent(Page) {
-
-    function getCustomProps(props) {
-
-        const result = {};
-
-        for (const name in props) {
-            if (hasOwn.call(props, name) && !(name in PageComponent.propTypes)) {
-                result[name] = props[name];
-            }
-        }
-
-        return result;
-
-    }
 
     const PageComponent = React.createClass({
 
@@ -33,8 +19,8 @@ function createPageComponent(Page) {
         getInitialState() {
 
             const me = this;
-            const {props} = me;
-            const {initialState} = props;
+            const props = me.props;
+            const initialState = props.initialState;
 
             const page = me.page = new Page(initialState);
 
@@ -43,9 +29,7 @@ function createPageComponent(Page) {
 
                 const eventName = page.getCurrentEvent()
                     .split(/[\-_]/)
-                    .map(term => {
-                        return term.charAt(0).toUpperCase() + term.slice(1).toLowerCase();
-                    })
+                    .map(term => term.charAt(0).toUpperCase() + term.slice(1).toLowerCase())
                     .join('');
 
                 const handler = props[`on${eventName}`];
@@ -66,7 +50,7 @@ function createPageComponent(Page) {
         componentDidMount() {
 
             const {handleRequest, page, props} = this;
-            const {stage} = this.state;
+            const stage = this.state.stage;
 
             if (stage === 'LOADED') {
                 return;
@@ -79,7 +63,7 @@ function createPageComponent(Page) {
 
         componentWillReceiveProps(nextProps) {
 
-            const {request} = this.props;
+            const request = this.props.request;
             const nextRequest = nextProps.request;
 
             if (request !== nextRequest) {
@@ -89,11 +73,11 @@ function createPageComponent(Page) {
         },
 
         componentWillUnmount() {
-            const {page} = this;
+            const page = this.page;
             if (page) {
-                this.page.dispose();
-                this.page = null;
+                page.dispose();
             }
+            this.page = null;
         },
 
         handleRequest(page, request) {
@@ -177,6 +161,22 @@ function createPageComponent(Page) {
             );
         }
     };
+
+    function getCustomProps(props) {
+
+        const result = {};
+
+        /* eslint-disable fecs-use-for-of */
+        for (const name in props) {
+            if (hasOwn.call(props, name) && !(name in PageComponent.propTypes)) {
+                result[name] = props[name];
+            }
+        }
+        /* eslint-enable fecs-use-for-of */
+
+        return result;
+
+    }
 
     return PageComponent;
 

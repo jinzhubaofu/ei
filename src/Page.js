@@ -16,7 +16,7 @@ const guid = require('./util/guid');
 
 const events = require('./events');
 
-const {init} = require('./actionCreator/page');
+const init = require('./actionCreator/page').init;
 
 /* eslint-disable fecs-prefer-class */
 
@@ -49,9 +49,7 @@ Page.prototype = {
         this.context = new Context(
             initialState,
             componseReducer(this.reducer),
-            this.middlewares.map(middlewareCreator => {
-                return middlewareCreator(this);
-            })
+            this.middlewares.map(middlewareCreator => middlewareCreator(this))
         );
 
     },

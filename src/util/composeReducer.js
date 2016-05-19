@@ -37,6 +37,7 @@ function composeReducer(mainReducer, ...restReducers) {
         const nextState = {...state};
         let isChanged = false;
 
+        /* eslint-disable fecs-use-for-of */
         for (let name in reducers) {
 
             if (reducers.hasOwnProperty(name)) {
@@ -51,6 +52,7 @@ function composeReducer(mainReducer, ...restReducers) {
             }
 
         }
+        /* eslint-enable fecs-use-for-of */
 
         return isChanged ? nextState : state;
 

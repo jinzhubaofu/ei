@@ -31,7 +31,7 @@ const Page = React.createClass({
 
     componentWillReceiveProps(nextProps) {
 
-        const {request = {}} = this.props;
+        const request = this.props.request || {};
         const {pathname, search} = request;
         const nextRequest = nextProps.request;
 
@@ -109,7 +109,7 @@ const Page = React.createClass({
 
     onRedirect(action) {
 
-        const {onRedirect} = this.props;
+        const onRedirect = this.props.onRedirect;
 
         if (onRedirect) {
             onRedirect(action);
@@ -174,7 +174,7 @@ const Page = React.createClass({
 
 });
 
-const {PropTypes} = React;
+const PropTypes = React.PropTypes;
 
 Page.contextTypes = {
     route: PropTypes.func,

@@ -5,7 +5,7 @@
  * @requires react
  */
 
-let React = require('react');
+const React = require('react');
 
 /**
  * ei上下文提供组件
@@ -45,7 +45,7 @@ const ContextProvider = React.createClass({
 
 });
 
-const {PropTypes} = React;
+const PropTypes = React.PropTypes;
 
 /**
  * 子控件上下文属性类型描述符

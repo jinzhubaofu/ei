@@ -1,17 +1,16 @@
 {
   "name": "ei",
-  "version": "1.3.9",
+  "version": "1.3.10",
   "main": "lib/main.js",
   "scripts": {
-    "lint": "./node_modules/.bin/fecs src",
+    "lint": "./node_modules/.bin/fecs src --rule --reporter=baidu",
     "coverage": "JASMINE_CONFIG_PATH=test/support/jasmine.json ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine",
     "coveralls": "JASMINE_CONFIG_PATH=test/support/jasmine.json ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test": "npm run lint && JASMINE_CONFIG_PATH=test/support/jasmine.json ./node_modules/.bin/jasmine",
     "build:amd": "sh tool/build-amd.sh",
     "build:commonjs": "sh tool/build-commonjs.sh",
     "build": "npm test && npm run build:amd && npm run build:commonjs",
-    "precommit": "npm run lint && npm test",
-    "prepublish": "npm run build"
+    "precommit": "npm run lint && npm test"
   },
   "author": {
     "name": "ludafa@outlook.com"
@@ -27,7 +26,7 @@
     "babel-core": "^5.8.34",
     "coveralls": "^2.11.3",
     "expect": "^1.13.0",
-    "fecs": "0.*",
+    "fecs": ">=0.7",
     "istanbul": "^0.4.1",
     "jasmine": "^2.3.2",
     "pre-commit": "^1.1.2"
