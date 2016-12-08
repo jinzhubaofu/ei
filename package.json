@@ -1,15 +1,15 @@
 {
   "name": "ei",
-  "version": "1.3.10",
-  "main": "lib/main.js",
+  "version": "2.0.0-alpha.1",
+  "main": "lib/ei.js",
   "scripts": {
-    "lint": "./node_modules/.bin/fecs src --rule --reporter=baidu",
-    "coverage": "JASMINE_CONFIG_PATH=test/support/jasmine.json ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine",
-    "coveralls": "JASMINE_CONFIG_PATH=test/support/jasmine.json ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
-    "test": "npm run lint && JASMINE_CONFIG_PATH=test/support/jasmine.json ./node_modules/.bin/jasmine",
-    "build:amd": "sh tool/build-amd.sh",
-    "build:commonjs": "sh tool/build-commonjs.sh",
-    "build": "npm test && npm run build:amd && npm run build:commonjs",
+    "lint": "ecs src --rule --reporter=baidu",
+    "coveralls": "cat coverage/lcov.info | coveralls",
+    "test-client": "NODE_ENV=test karma start ./test/client/karma.local.conf.js",
+    "test-server": "NODE_ENV=test JASMINE_CONFIG_PATH=test/server/jasmine.json babel-istanbul cover --dir test/server/coverage jasmine",
+    "test": "npm run test-client",
+    "test-ci": "NODE_ENV=test karma start ./test/karma.travis.conf.js",
+    "build": "rimraf lib && NODE_ENV=production gulp",
     "precommit": "npm run lint && npm test"
   },
   "author": {
@@ -18,17 +18,91 @@
   "repository": "https://github.com/jinzhubaofu/ei",
   "license": "ISC",
   "peerDependencies": {
-    "react": "^0.14.3",
-    "react-dom": "^0.14.3"
+    "react": "^0.14.0||^15.4.0"
   },
   "readme": "readme.md",
   "devDependencies": {
-    "babel-core": "^5.8.34",
-    "coveralls": "^2.11.3",
-    "expect": "^1.13.0",
-    "fecs": ">=0.7",
-    "istanbul": "^0.4.1",
-    "jasmine": "^2.3.2",
-    "pre-commit": "^1.1.2"
+    "babel-istanbul": "^0.11.0",
+    "babel-loader": "^6.2.5",
+    "babel-plugin-external-helpers": "^6.8.0",
+    "babel-plugin-external-helpers-insert-require": "^1.0.2",
+    "babel-plugin-istanbul": "^3.0.0",
+    "babel-plugin-transform-es2015-modules-umd": "^6.12.0",
+    "babel-plugin-transform-es3-member-expression-literals": "^6.8.0",
+    "babel-plugin-transform-es3-property-literals": "^6.8.0",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-react": "^6.11.1",
+    "babel-preset-stage-2": "^6.13.0",
+    "babel-register": "^6.14.0",
+    "babelify": "^7.3.0",
+    "coveralls": "^2.11.12",
+    "esdoc": "^0.4.8",
+    "esdoc-es7-plugin": "0.0.3",
+    "fecs": "^0.8.7",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-babel-external-helpers": "^2.0.2",
+    "gulp-clean": "^0.3.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-webpack": "^1.5.0",
+    "istanbul-lib-coverage": "^1.0.0",
+    "jasmine": "^2.4.1",
+    "karma": "^1.2.0",
+    "karma-babel-preprocessor": "^6.0.1",
+    "karma-browserstack-launcher": "^1.1.1",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.1.1",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-webpack": "^1.8.0",
+    "lcov-result-merger": "^1.2.0",
+    "pre-commit": "^1.1.2",
+    "react": "^0.14.0||^15.4.0",
+    "react-addons-test-utils": "^0.14.0||^15.4.0",
+    "react-dom": "^0.14.0||^15.4.0",
+    "vinyl-named": "^1.1.0",
+    "watchify": "^3.7.0",
+    "webpack": "^1.13.2",
+    "webpack-babel-external-helpers": "^0.1.0",
+    "webpack-stream": "^3.2.0"
+  },
+  "babel": {
+    "env": {
+      "dev": {
+        "presets": [
+          "es2015",
+          "stage-2",
+          "react"
+        ]
+      },
+      "test": {
+        "presets": [
+          "es2015",
+          "stage-2",
+          "react"
+        ],
+        "plugins": [
+          "istanbul"
+        ]
+      },
+      "production": {
+        "presets": [
+          [
+            "es2015",
+            {
+              "loose": true,
+              "modules": "umd"
+            }
+          ],
+          "stage-2",
+          "react"
+        ],
+        "plugins": [
+          "transform-es3-property-literals",
+          "transform-es3-member-expression-literals"
+        ]
+      }
+    }
   }
 }

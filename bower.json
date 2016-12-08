@@ -1,11 +1,11 @@
 {
   "name": "ei",
-  "version": "1.3.10",
+  "version": "2.0.0-alpha.1",
   "authors": [
     "ludafa@outlook.com"
   ],
   "description": "ei",
-  "main": "lib/main.js",
+  "main": "lib/ei.js",
   "keywords": [
     "ei"
   ],

@@ -15,8 +15,13 @@ const invariant = require('./util/invariant');
 const guid = require('./util/guid');
 
 const events = require('./events');
+const pageActionCreator = require('./actionCreator/page');
+const init = pageActionCreator.init;
+const Emitter = require('./Emitter');
+const PageComponent = require('./component/Page');
+const pageActionEventProxy = require('./middleware/pageActionEventProxy');
+const createPageComponent = require('./util/createPageComponent');
 
-const init = require('./actionCreator/page').init;
 
 /* eslint-disable fecs-prefer-class */
 
@@ -55,7 +60,7 @@ Page.prototype = {
     },
 
     middlewares: [
-        require('./middleware/pageActionEventProxy')
+        pageActionEventProxy
     ],
 
     /**
@@ -202,9 +207,7 @@ Page.prototype = {
 
 };
 
-require('./Emitter').enable(Page);
-
-const createPageComponent = require('./util/createPageComponent');
+Emitter.enable(Page);
 
 /**
  * 生成Page子类
@@ -220,6 +223,12 @@ Page.extend = function (proto) {
 
     invariant(proto.view, 'Pager must have a view');
 
+    /**
+     * SubPage
+     *
+     * @class
+     * @param {*} initialState 脱水状态
+     */
     function SubPage(initialState) {
         Page.call(this, initialState);
     }
@@ -232,6 +241,6 @@ Page.extend = function (proto) {
 
 };
 
-Page.Component = require('./component/Page');
+Page.Component = PageComponent;
 
 module.exports = Page;

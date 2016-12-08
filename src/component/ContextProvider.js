@@ -30,7 +30,7 @@ const ContextProvider = React.createClass({
      */
     getChildContext() {
         return {
-            ei: this.props.ei
+            store: this.props.store
         };
     },
 
@@ -53,7 +53,7 @@ const PropTypes = React.PropTypes;
  * @type {Object}
  */
 ContextProvider.childContextTypes = {
-    ei: PropTypes.object.isRequired
+    store: PropTypes.object.isRequired
 };
 
 
@@ -65,7 +65,7 @@ ContextProvider.childContextTypes = {
  * @type {Object}
  */
 ContextProvider.propTypes = {
-    ei: React.PropTypes.object.isRequired
+    store: React.PropTypes.object.isRequired
 };
 
 

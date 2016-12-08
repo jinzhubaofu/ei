@@ -8,6 +8,7 @@ const events = require('./events');
 const Router = require('./Router');
 const env = require('./env');
 const assign = require('./util/assign');
+const createAppComponent = require('./util/createAppComponent');
 
 /* eslint-disable fecs-prefer-class */
 
@@ -227,17 +228,26 @@ App.prototype.resolveServerModule = function (moduleId) {
 
     const path = basePath + '/' + moduleId;
 
-    const Page = require(path);
+    return new Promise((resolve, reject) => {
 
-    let pool = this.pool;
+        try {
+            const Page = require(path);
 
-    if (!pool) {
-        pool = this.pool = {};
-    }
+            let pool = this.pool;
 
-    pool[moduleId] = Page;
+            if (!pool) {
+                pool = this.pool = {};
+            }
 
-    return Promise.resolve(Page);
+            pool[moduleId] = Page;
+
+            resolve(Page);
+        }
+        catch (e) {
+            reject(e);
+        }
+
+    });
 
 };
 
@@ -313,6 +323,6 @@ App.prototype.route = function (request) {
 
 };
 
-App.Component = require('./util/createAppComponent')(App);
+App.Component = createAppComponent(App);
 
 module.exports = App;

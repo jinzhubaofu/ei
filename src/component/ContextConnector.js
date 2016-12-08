@@ -25,7 +25,7 @@ const ContextConnector = React.createClass({
         const {selector, actions} = props;
 
         this.select = bindSelectors(selector);
-        this.actions = bindActions(context.ei.dispatch, actions);
+        this.actions = bindActions(context.store.dispatch, actions);
 
         return {
             data: this.getDataFromContext(context)
@@ -34,15 +34,15 @@ const ContextConnector = React.createClass({
     },
 
     getDataFromContext(context) {
-        return this.select(context.ei.store, this.props.originProps);
+        return this.select(context.store.store, this.props.originProps);
     },
 
     componentDidMount() {
-        this.context.ei.addChangeListener(this.onStoreChange);
+        this.context.store.addChangeListener(this.onStoreChange);
     },
 
     componentWillUnmount() {
-        this.context.ei.removeChangeListener(this.onStoreChange);
+        this.context.store.removeChangeListener(this.onStoreChange);
     },
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -78,7 +78,7 @@ const ContextConnector = React.createClass({
 const PropTypes = React.PropTypes;
 
 ContextConnector.contextTypes = {
-    ei: PropTypes.object.isRequired
+    store: PropTypes.object.isRequired
 };
 
 ContextConnector.propTypes = {

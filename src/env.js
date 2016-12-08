@@ -5,17 +5,20 @@
  * @inner
  */
 
+let isServer = false;
+
 try {
-
-    /**
-     * 是否为服务器端环境
-     *
-     * @member {boolean}
-     */
-    exports.isServer = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
+    isServer = typeof window === 'undefined';
 }
-catch (e) {}
+catch (e) {
+}
 
+/**
+ * 是否为服务器端环境
+ *
+ * @member {boolean}
+ */
+exports.isServer = isServer;
 
 
 
