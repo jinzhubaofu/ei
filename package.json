@@ -7,7 +7,7 @@
     "coveralls": "cat coverage/lcov.info | coveralls",
     "test-client": "NODE_ENV=test karma start ./test/client/karma.local.conf.js",
     "test-server": "NODE_ENV=test JASMINE_CONFIG_PATH=test/server/jasmine.json babel-istanbul cover --dir test/server/coverage jasmine",
-    "test": "npm run test-client",
+    "test": "npm run test-client --single-run",
     "test-ci": "NODE_ENV=test karma start ./test/karma.travis.conf.js",
     "build": "rimraf lib && NODE_ENV=production gulp",
     "precommit": "npm run lint && npm test"
