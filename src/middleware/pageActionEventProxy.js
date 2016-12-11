@@ -5,7 +5,7 @@
 
 module.exports = function (page) {
 
-    return function pageActionEventProxy(state, action, next) {
+    return store => next => action => {
 
         if (typeof action !== 'function') {
             let {event, type} = action;

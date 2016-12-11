@@ -3,11 +3,11 @@
   "version": "2.0.0-alpha.1",
   "main": "lib/ei.js",
   "scripts": {
-    "lint": "ecs src --rule --reporter=baidu",
+    "lint": "fecs src --rule --reporter=baidu",
     "coveralls": "cat coverage/lcov.info | coveralls",
     "test-client": "NODE_ENV=test karma start ./test/client/karma.local.conf.js",
     "test-server": "NODE_ENV=test JASMINE_CONFIG_PATH=test/server/jasmine.json babel-istanbul cover --dir test/server/coverage jasmine",
-    "test": "npm run test-client --single-run",
+    "test": "npm run test-client",
     "test-ci": "NODE_ENV=test karma start ./test/karma.travis.conf.js",
     "build": "rimraf lib && NODE_ENV=production gulp",
     "precommit": "npm run lint && npm test"
@@ -37,6 +37,7 @@
     "babel-register": "^6.14.0",
     "babelify": "^7.3.0",
     "coveralls": "^2.11.12",
+    "enzyme": "^2.6.0",
     "esdoc": "^0.4.8",
     "esdoc-es7-plugin": "0.0.3",
     "fecs": "^0.8.7",
@@ -48,6 +49,7 @@
     "gulp-webpack": "^1.5.0",
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine": "^2.4.1",
+    "json-loader": "^0.5.4",
     "karma": "^1.2.0",
     "karma-babel-preprocessor": "^6.0.1",
     "karma-browserstack-launcher": "^1.1.1",
@@ -104,5 +106,9 @@
         ]
       }
     }
+  },
+  "dependencies": {
+    "react-redux": "^4.4.6",
+    "redux": "^3.6.0"
   }
 }

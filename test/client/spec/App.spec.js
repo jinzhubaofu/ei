@@ -4,6 +4,7 @@
  */
 
 const App = require('../../../src/App');
+const Page = require('../../../src/Page');
 const Router = require('../../../src/Router');
 
 describe('App', function () {
@@ -26,7 +27,7 @@ describe('App', function () {
 
     it('have a router', function () {
 
-        var app = new App({
+        let app = new App({
             routes: []
         });
 
@@ -36,20 +37,20 @@ describe('App', function () {
 
     it('can route a request', function () {
 
-        var app = new App({
+        let app = new App({
             routes: [{
                 path: '/a',
-                name: 'a'
+                page: 'a'
             }]
         });
 
-        var request = {
+        let request = {
             pathname: '/a'
         };
 
-        var route = app.route(request);
+        let route = app.route(request);
 
-        expect(route.name).toBe('a');
+        expect(route.page).toBe('a');
 
         request.pathname = '/b';
 

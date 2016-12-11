@@ -16,8 +16,8 @@ module.exports = {
     ],
 
     browsers: [
-        'Chrome',
-        'Firefox'
+        // 'Firefox',
+        'Chrome'
     ],
 
     preprocessors: {
@@ -27,13 +27,24 @@ module.exports = {
 
     webpack: {
         module: {
-            preLoaders: [{
-                test: /\.js$/,
-                loader: 'babel',
-                exclude: /node_modules/
-            }]
+            loaders: [
+                {
+                    test: /\.js$/,
+                    loader: 'babel',
+                    exclude: /node_modules/
+                },
+                {
+                    test: /\.json$/,
+                    loaders: ['json']
+                }
+            ]
         },
-        devtool: 'inline-source-map'
+        devtool: 'inline-source-map',
+        externals: {
+            'react/lib/ExecutionEnvironment': true,
+            'react/lib/ReactContext': true,
+            'react/addons': true
+        }
     },
 
     autoWatch: true,

@@ -5,23 +5,21 @@
  * @requires react
  */
 
+ /* eslint-disable fecs-min-vars-per-destructure */
 const assign = require('./util/assign');
 const React = require('react');
-
-const ContextProvider = require('./component/ContextProvider');
-const Context = require('./Context');
-const componseReducer = require('./util/composeReducer');
+const {REPLACE, replace} = require('./actionCreator/page');
+const {Provider} = require('react-redux');
+const {createStore, applyMiddleware, combineReducers} = require('redux');
 const invariant = require('./util/invariant');
 const guid = require('./util/guid');
-
 const events = require('./events');
-const pageActionCreator = require('./actionCreator/page');
-const init = pageActionCreator.init;
+const {init} = require('./actionCreator/page');
 const Emitter = require('./Emitter');
 const PageComponent = require('./component/Page');
 const pageActionEventProxy = require('./middleware/pageActionEventProxy');
 const createPageComponent = require('./util/createPageComponent');
-
+ /* eslint-enable fecs-min-vars-per-destructure */
 
 /* eslint-disable fecs-prefer-class */
 
@@ -51,10 +49,21 @@ Page.prototype = {
 
         this.id = guid();
 
-        this.context = new Context(
+        let reducer = typeof this.reducer === 'function'
+            ? this.reducer
+            : combineReducers(this.reducer);
+
+        this.context = createStore(
+            (state, action) => {
+                if (action.type === REPLACE) {
+                    return action.payload;
+                }
+                return reducer(state, action);
+            },
             initialState,
-            componseReducer(this.reducer),
-            this.middlewares.map(middlewareCreator => middlewareCreator(this))
+            applyMiddleware(
+                ...this.middlewares.map(middleware => middleware(this))
+            )
         );
 
     },
@@ -105,9 +114,9 @@ Page.prototype = {
         const View = this.view;
 
         return (
-            <ContextProvider ei={context}>
+            <Provider store={context}>
                 <View {...props} />
-            </ContextProvider>
+            </Provider>
         );
 
     },
@@ -132,7 +141,7 @@ Page.prototype = {
      * @return {module:Page}
      */
     setState(state) {
-        this.context.setState(state);
+        this.context.dispatch(replace(state));
         return this;
     },
 

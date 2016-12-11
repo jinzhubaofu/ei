@@ -4,21 +4,22 @@
  * @module ei
  */
 
-const App = require('./App');
+let App = require('./App');
 
-const Page = require('./Page');
+let Page = require('./Page');
 
-const Container = require('./Container');
+let Container = require('./Container');
 
-const events = require('./events');
+let events = require('./events');
 
-const resource = require('./resource');
+let resource = require('./resource');
 
-const composeReducer = require('./util/composeReducer');
-
-const connect = require('./util/connect');
-
-const pageActionCreators = require('./actionCreator/page');
+const {
+    INIT,
+    REPLACE,
+    init,
+    replace
+} = require('./actionCreator/page');
 
 module.exports = {
     App,
@@ -26,7 +27,12 @@ module.exports = {
     Container,
     events,
     resource,
-    composeReducer,
-    connect,
-    INIT: pageActionCreators.INIT
+    actionTypes: {
+        INIT,
+        REPLACE
+    },
+    actions: {
+        init,
+        replace
+    }
 };

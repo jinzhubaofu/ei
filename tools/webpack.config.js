@@ -26,7 +26,9 @@ const config = {
     ],
     externals: {
         'react': reactExternal,
-        'react-dom': reactDomExternal
+        'react-dom': reactDomExternal,
+        'redux': true,
+        'react-redux': true
     },
     output: {
         library: 'ei',

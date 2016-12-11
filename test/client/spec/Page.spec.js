@@ -3,8 +3,10 @@
  * @author Leon(leon@outlook.com)
  */
 
-var Page = require('../../../src/Page.js');
-
+import Page from '../../../src/Page.js';
+import React from 'react';
+import {connect} from 'react-redux';
+import {shallow, mount} from 'enzyme';
 
 describe('Page', function () {
 
@@ -36,11 +38,11 @@ describe('Page', function () {
 
             Page.extend({
 
-                reducer: function () {
+                reducer() {
 
                 },
 
-                view: function () {
+                view() {
 
                 }
 
@@ -53,13 +55,13 @@ describe('Page', function () {
 
     it('`extend` will create a new sub class of Page', function () {
 
-        var SomePage = Page.extend({
+        let SomePage = Page.extend({
 
-            reducer: function () {
+            reducer() {
 
             },
 
-            view: function () {
+            view() {
 
             }
 
@@ -69,76 +71,175 @@ describe('Page', function () {
 
     });
 
-    it('`dispatch` an action will trigger the reducer to run', function () {
+    it('`combineReducers` will auto added', () => {
 
-        var spy = jasmine.createSpy('reducer');
+        let SomePage = Page.extend({
 
-        var SomePage = Page.extend({
+            reducer: {
+                form(state = {name: 'test'}, action) {
+                    return state;
+                }
+            },
 
-            reducer: spy,
-
-            view: function () {
+            view() {
 
             }
 
         });
 
-        var page = new SomePage();
+        let page = new SomePage();
+
+        expect(page.context.getState()).toEqual({
+            form: {
+                name: 'test'
+            }
+        });
+
+    });
+
+    it('`getState`', () => {
+
+        let SomePage = Page.extend({
+
+            reducer(state, action) {
+                return state;
+            },
+
+            view() {
+
+            }
+
+        });
+
+        let page = new SomePage({name: 'test'});
+
+        expect(page.getState()).toEqual({name: 'test'});
+
+    });
+
+    it('`setState`', () => {
+
+        let SomePage = Page.extend({
+
+            reducer(state, action) {
+                return state;
+            },
+
+            view() {
+
+            }
+
+        });
+
+        let page = new SomePage({name: 'test'});
+
+        expect(page.context.getState()).toEqual({name: 'test'});
+
+        page.setState({text: 'haha'});
+
+        expect(page.context.getState()).toEqual({text: 'haha'});
+
+    });
+
+    it('`dispatch` an action will trigger the reducer to run', function () {
+
+        let spy = jasmine.createSpy('reducer');
+
+        let SomePage = Page.extend({
+
+            reducer: spy,
+
+            view() {
+
+            }
+
+        });
+
+        let page = new SomePage();
 
         page.dispatch({type: 'add'});
 
         expect(spy).toHaveBeenCalled();
 
     });
-    // TODO: 补充新的render测试
-    // it('`renderToString`', function () {
 
-    //     var spy = jasmine.createSpy('reducer');
+    it('`createElement`', function () {
 
-    //     var SomePage = Page.extend({
+        let View = React.createClass({
 
-    //         reducer: spy,
+            render() {
 
-    //         view: connect(
-    //             React.createClass({
+                let add = this.props.add;
 
-    //                 render: function () {
+                expect(typeof (add) === 'function').toBe(true);
 
-    //                     expect(typeof (this.props.add) === 'function').toBe(true);
+                return (
+                    <div onClick={() => add()}>
+                        {this.props.name}
+                    </div>
+                );
 
-    //                     return React.createElement(
-    //                         'div',
-    //                         null,
-    //                         this.props.name
-    //                     );
+            }
 
-    //                 }
+        });
 
-    //             }),
-    //             true,
-    //             {
-    //                 add: function () {
-    //                     return {
-    //                         type: 'add'
-    //                     };
-    //                 }
-    //             }
-    //         )
+        let SomePage = Page.extend({
 
-    //     });
+            reducer(state = {}, {type, payload}) {
 
-    //     var page = new SomePage({
+                switch (type) {
+                    case 'test':
+                        return {
+                            ...state,
+                            name: payload
+                        };
+                    case 'test2':
+                        return {
+                            ...state,
+                            name: payload
+                        };
+                    default:
+                        return state;
+                }
 
-    //         name: 'ludafa'
+            },
 
-    //     });
+            view: connect(
+                state => state,
+                {
+                    add() {
+                        return {
+                            type: 'test2',
+                            payload: 'test2'
+                        };
+                    }
+                }
+            )(View)
 
-    //     var string = page.renderToString();
+        });
 
-    //     expect(string).toMatch(/<div[^>]*?>ludafa<\/div>/);
+        let page = new SomePage({
+            name: 'ludafa'
+        });
 
+        let wrapper = mount(page.createElement());
 
-    // });
+        expect(wrapper.prop('store')).toBe(page.context);
+        expect(wrapper.find('div').length).toBe(1);
+        expect(wrapper.find('div').text()).toBe('ludafa');
+
+        page.dispatch({
+            type: 'test',
+            payload: 'test'
+        });
+
+        expect(wrapper.find('div').text()).toBe('test');
+
+        wrapper.find('div').simulate('click');
+
+        expect(wrapper.find('div').text()).toBe('test2');
+
+    });
 
 
 });

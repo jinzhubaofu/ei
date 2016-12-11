@@ -3,7 +3,7 @@
  * @author Leon(leon@outlook.com)
  */
 
-var invariant = require('../../../../src/util/invariant.js');
+let invariant = require('../../../../src/util/invariant.js');
 
 describe('invariant', function () {
 
