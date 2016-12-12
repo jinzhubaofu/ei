@@ -24,9 +24,9 @@ module.exports = function (config) {
                     bs_chrome_mac: {
                         base: 'BrowserStack',
                         browser: 'chrome',
-                        browser_version: '54.0',
+                        browser_version: '55.0',
                         os: 'OS X',
-                        os_version: 'El Captain'
+                        os_version: 'Sierra'
                     }
                 },
                 /* eslint-enable fecs-camelcase */
