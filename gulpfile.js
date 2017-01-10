@@ -4,24 +4,26 @@
  */
 
 const gulp = require('gulp');
-const babel = require('gulp-babel');
-const clean = require('gulp-clean');
-const babelHelpers = require('gulp-babel-external-helpers');
 const webpack = require('webpack-stream');
-const conf = require('./tools/webpack.config');
+const devConf = require('./tools/webpack');
+const prodConf = require('./tools/webpack.min');
 
-gulp.task('compile', function () {
-    return gulp.src('src/**/*.js')
-        .pipe(babel())
-        .pipe(babelHelpers('babelHelpers.js', 'umd'))
-        .pipe(gulp.dest('output'));
-});
+gulp.task(
+    'dev',
+    () => gulp
+        .src('src/index.js')
+        .pipe(webpack(devConf))
+        .pipe(gulp.dest('lib'))
+);
 
-gulp.task('package', ['compile'], () => gulp
-    .src('output/index.js')
-    .pipe(webpack(conf))
-    .pipe(gulp.dest('lib')));
+gulp.task(
+    'prod',
+    () => gulp
+        .src('src/index.js')
+        .pipe(webpack(prodConf))
+        .pipe(gulp.dest('lib'))
+);
 
-gulp.task('build', ['package'], () => gulp.src('output').pipe(clean()));
+gulp.task('build', ['dev', 'prod']);
 
 gulp.task('default', ['build']);

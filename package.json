@@ -1,6 +1,6 @@
 {
   "name": "ei",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-alpha.2",
   "main": "lib/ei.js",
   "scripts": {
     "lint": "fecs src --rule --reporter=baidu",
@@ -109,6 +109,7 @@
   },
   "dependencies": {
     "react-redux": "^4.4.6",
-    "redux": "^3.6.0"
+    "redux": "^3.6.0",
+    "rimraf": "^2.5.4"
   }
 }

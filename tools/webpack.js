@@ -22,7 +22,7 @@ const reactDomExternal = {
 
 const config = {
     entry: [
-        path.join(__dirname, '../output/index.js')
+        path.join(__dirname, '../src/index.js')
     ],
     externals: {
         'react': reactExternal,
@@ -51,17 +51,9 @@ const config = {
     },
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(),
-        new webpack.optimize.UglifyJsPlugin({
-            minimize: true,
-            compress: {
-                warnings: false
-            }
-        }),
         new webpack.BannerPlugin('2016 Baidu Inc. All Rights Reserved'),
         new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: '"production"'
-            }
+            'process.env.NODE_ENV': '"dev"'
         })
     ]
     // devtool: 'source-map'

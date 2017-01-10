@@ -10,7 +10,7 @@ const assign = require('./util/assign');
 const React = require('react');
 const {REPLACE, replace} = require('./actionCreator/page');
 const {Provider} = require('react-redux');
-const {createStore, applyMiddleware, combineReducers} = require('redux');
+const {createStore, applyMiddleware, combineReducers, compose} = require('redux');
 const invariant = require('./util/invariant');
 const guid = require('./util/guid');
 const events = require('./events');
@@ -53,6 +53,15 @@ Page.prototype = {
             ? this.reducer
             : combineReducers(this.reducer);
 
+        let enhancer = compose;
+
+        if (
+            process.env.NODE_ENV === 'dev'
+            && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+        ) {
+            enhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+        }
+
         this.context = createStore(
             (state, action) => {
                 if (action.type === REPLACE) {
@@ -61,8 +70,10 @@ Page.prototype = {
                 return reducer(state, action);
             },
             initialState,
-            applyMiddleware(
-                ...this.middlewares.map(middleware => middleware(this))
+            enhancer(
+                applyMiddleware(
+                    ...this.middlewares.map(middleware => middleware(this))
+                )
             )
         );
 
