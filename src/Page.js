@@ -56,10 +56,13 @@ Page.prototype = {
         let enhancer = compose;
 
         if (
-            process.env.NODE_ENV === 'dev'
+            process.env.NODE_ENV !== 'production'
+            && window
             && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
         ) {
-            enhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+            enhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+                name: `ei-page@${this.id}`
+            });
         }
 
         this.context = createStore(
