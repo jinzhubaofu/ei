@@ -1,0 +1,39 @@
+{
+  "env": {
+    "dev": {
+      "presets": [
+        "es2015",
+        "stage-2",
+        "react"
+      ]
+    },
+    "test": {
+      "presets": [
+        "es2015",
+        "stage-2",
+        "react"
+      ],
+      "plugins": [
+        "istanbul"
+      ]
+    },
+    "production": {
+      "presets": [
+        [
+          "es2015",
+          {
+            "loose": true,
+            "modules": false
+          }
+        ],
+        "stage-2",
+        "react"
+      ],
+      "plugins": [
+        "transform-es3-property-literals",
+        "transform-es3-member-expression-literals",
+        "external-helpers"
+      ]
+    }
+  }
+}

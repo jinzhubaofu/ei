@@ -16,7 +16,7 @@
  * @module resource
  */
 
-const Container = require('./Container');
+import Container from './Container';
 
 const container = new Container();
 
@@ -30,10 +30,10 @@ const container = new Container();
  *
  * @return {module:Resource}
  */
-exports.register = function (type, resource) {
+export function register(type, resource) {
     container.register(type, resource);
     return this;
-};
+}
 
 /**
  * 获取一个资源操作对象
@@ -44,6 +44,6 @@ exports.register = function (type, resource) {
  *
  * @return {(Object | Function)}
  */
-exports.get = function (type) {
+export function get(type) {
     return container.make(type);
-};
+}

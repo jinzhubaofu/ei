@@ -3,21 +3,43 @@
  * @author leon(ludafa@outlook.com)
  */
 
-const React = require('react');
-const PropTypes = React.PropTypes;
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 
-function createAppComponent(App) {
+export default function createAppComponent(App) {
 
-    const AppComponent = React.createClass({
+    class AppComponent extends PureComponent {
 
-        getInitialState() {
+        static propTypes = {
+            routes: PropTypes.arrayOf(
+                PropTypes.shape({
+                    path: PropTypes.string.isRequired,
+                    page: PropTypes.oneOfType([
+                        PropTypes.string,
+                        PropTypes.func
+                    ]).isRequired
+                })
+            ),
+            app: PropTypes.instanceOf(App),
+            router: PropTypes.object
+        };
+
+        static childContextTypes = {
+            route: PropTypes.func,
+            loadPage: PropTypes.func
+        };
+
+        constructor() {
+
+            super();
 
             const {routes, router, app} = this.props;
 
             this.app = app || new App({routes, router});
 
-            return {};
-        },
+            this.state = {};
+
+        }
 
         getChildContext() {
 
@@ -32,36 +54,13 @@ function createAppComponent(App) {
                 }
             };
 
-        },
+        }
 
         render() {
             return this.props.children;
         }
-
-    });
-
-    AppComponent.propTypes = {
-        routes: PropTypes.arrayOf(
-            PropTypes.shape({
-                path: PropTypes.string.isRequired,
-                page: PropTypes.oneOfType([
-                    PropTypes.string,
-                    PropTypes.func
-                ]).isRequired
-            })
-        ),
-        app: PropTypes.instanceOf(App),
-        router: PropTypes.object
-    };
-
-    AppComponent.childContextTypes = {
-        route: PropTypes.func,
-        loadPage: PropTypes.func
-    };
-
+    }
 
     return AppComponent;
 
 }
-
-module.exports = createAppComponent;

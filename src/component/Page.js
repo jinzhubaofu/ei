@@ -3,31 +3,58 @@
  * @author leon(ludafa@outlook.com)
  */
 
-const React = require('react');
-const guid = require('../util/guid');
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
+import guid from '../util/guid';
+
 const ASYNC_PAGE_LOAD_ATTR = 'ASYNC_PAGE_LOAD_ATTR';
 
 /* eslint-disable fecs-prefer-class */
 
-const Page = React.createClass({
+export default class Page extends PureComponent {
 
-    displayName: 'Page',
+    static displayName = 'Page';
 
-    getInitialState() {
-        return {
-            pendding: false,
-            ready: false,
-            error: null
-        };
-    },
+    static contextTypes = {
+        route: PropTypes.func,
+        loadPage: PropTypes.func
+    };
+
+    static propTypes = {
+        request: PropTypes.shape({
+            pathname: PropTypes.string.isRequired,
+            query: PropTypes.object,
+            search: PropTypes.string
+        }),
+        initialState: PropTypes.any,
+        renderLoadingMessage: PropTypes.func,
+        renderErrorMessage: PropTypes.func
+    };
+
+    static defaultProps = {
+
+        renderErrorMessage(error) {
+            return (
+                <span>{error.message}</span>
+            );
+        },
+
+        renderLoadingMessage() {
+            return (<span>loading...</span>);
+        }
+
+    };
+
+    state = {
+        pendding: false,
+        ready: false,
+        error: null
+    };
 
     componentDidMount() {
-
         let {initialState, request} = this.props;
-
         this.renderPage(request, initialState);
-
-    },
+    }
 
     componentWillReceiveProps(nextProps) {
 
@@ -42,7 +69,7 @@ const Page = React.createClass({
             this.renderPage(nextRequest, null);
         }
 
-    },
+    }
 
     renderPage(request, initialState) {
 
@@ -105,7 +132,7 @@ const Page = React.createClass({
 
             });
 
-    },
+    }
 
     onRedirect(action) {
 
@@ -118,7 +145,7 @@ const Page = React.createClass({
 
         this.renderPage(action.payload.location);
 
-    },
+    }
 
     render() {
 
@@ -172,38 +199,4 @@ const Page = React.createClass({
 
     }
 
-});
-
-const PropTypes = React.PropTypes;
-
-Page.contextTypes = {
-    route: PropTypes.func,
-    loadPage: PropTypes.func
-};
-
-Page.propTypes = {
-    request: PropTypes.shape({
-        pathname: PropTypes.string.isRequired,
-        query: PropTypes.object,
-        search: PropTypes.string
-    }),
-    initialState: PropTypes.any,
-    renderLoadingMessage: PropTypes.func,
-    renderErrorMessage: PropTypes.func
-};
-
-Page.defaultProps = {
-
-    renderErrorMessage(error) {
-        return (
-            <span>{error.message}</span>
-        );
-    },
-
-    renderLoadingMessage() {
-        return (<span>loading...</span>);
-    }
-
-};
-
-module.exports = Page;
+}

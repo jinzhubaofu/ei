@@ -5,40 +5,68 @@
  * @requires react
  */
 
- /* eslint-disable fecs-min-vars-per-destructure */
-const assign = require('./util/assign');
-const React = require('react');
-const {REPLACE, replace} = require('./actionCreator/page');
-const {Provider} = require('react-redux');
-const {createStore, applyMiddleware, combineReducers, compose} = require('redux');
-const invariant = require('./util/invariant');
-const guid = require('./util/guid');
-const events = require('./events');
-const {init} = require('./actionCreator/page');
-const Emitter = require('./Emitter');
-const PageComponent = require('./component/Page');
-const pageActionEventProxy = require('./middleware/pageActionEventProxy');
-const createPageComponent = require('./util/createPageComponent');
- /* eslint-enable fecs-min-vars-per-destructure */
+import React from 'react';
+import assign from './util/assign';
+import {REPLACE, replace} from './actionCreator/page';
+import {Provider} from 'react-redux';
+import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
+import invariant from './util/invariant';
+import guid from './util/guid';
+import events from './events';
+import {init} from './actionCreator/page';
+import Emitter from './Emitter';
+import PageComponent from './component/Page';
+import pageActionEventProxy from './middleware/pageActionEventProxy';
+import createPageComponent from './util/createPageComponent';
 
-/* eslint-disable fecs-prefer-class */
+export default class Page extends Emitter {
 
-/**
- * 页面
- *
- * @constructor
- * @param {*} initialState 初始数据状态
- */
-function Page(initialState) {
-    this.initialize(initialState);
-}
+    /**
+     * 生成Page子类
+     *
+     * @param {!Object} proto 扩展Page的配置
+     * @return {Function}
+     */
+    static extend = function (proto) {
 
-/* eslint-enable fecs-prefer-class */
+        invariant(proto, 'create Page need options');
 
-/** @lends Page.prototype */
-Page.prototype = {
+        invariant(proto.reducer, 'Pager must have a reducer');
 
-    constructor: Page,
+        invariant(proto.view, 'Pager must have a view');
+
+        /**
+         * SubPage
+         *
+         * @class
+         * @param {*} initialState 脱水状态
+         */
+        class SubPage extends Page {
+        }
+
+        assign(SubPage.prototype, proto);
+
+        SubPage.Component = createPageComponent(SubPage);
+
+        return SubPage;
+
+    };
+
+    static Component = PageComponent;
+
+    /**
+     * 页面
+     *
+     * @constructor
+     * @param {*} initialState 初始数据状态
+     */
+    constructor(initialState) {
+        super();
+        this.middlewares = [
+            pageActionEventProxy
+        ];
+        this.initialize(initialize);
+    }
 
     /**
      * 构造函数
@@ -80,11 +108,7 @@ Page.prototype = {
             )
         );
 
-    },
-
-    middlewares: [
-        pageActionEventProxy
-    ],
+    }
 
     /**
      * 初始化
@@ -111,7 +135,7 @@ Page.prototype = {
     init(initialState) {
         this.dispatch(init(initialState));
         return this;
-    },
+    }
 
     /**
      * 使用当前上下文中的数据，创建一个可提渲染使用的react元素
@@ -133,7 +157,7 @@ Page.prototype = {
             </Provider>
         );
 
-    },
+    }
 
     /**
      * 返回当前上下文中的所有数据
@@ -146,7 +170,7 @@ Page.prototype = {
      */
     getState() {
         return this.context.getState();
-    },
+    }
 
     /**
      * 设置当前上下文中的所有数据
@@ -157,7 +181,7 @@ Page.prototype = {
     setState(state) {
         this.context.dispatch(replace(state));
         return this;
-    },
+    }
 
     /**
      * 派发一个动作，激活相应的数据剪切和视图更新
@@ -186,7 +210,7 @@ Page.prototype = {
 
         return action;
 
-    },
+    }
 
     /**
      * 获取页面初始数据
@@ -207,7 +231,7 @@ Page.prototype = {
      */
     getInitialState(request) {
         return {};
-    },
+    }
 
     /**
      * 销毁页面
@@ -228,42 +252,4 @@ Page.prototype = {
         return this;
     }
 
-};
-
-Emitter.enable(Page);
-
-/**
- * 生成Page子类
- *
- * @param {!Object} proto 扩展Page的配置
- * @return {Function}
- */
-Page.extend = function (proto) {
-
-    invariant(proto, 'create Page need options');
-
-    invariant(proto.reducer, 'Pager must have a reducer');
-
-    invariant(proto.view, 'Pager must have a view');
-
-    /**
-     * SubPage
-     *
-     * @class
-     * @param {*} initialState 脱水状态
-     */
-    function SubPage(initialState) {
-        Page.call(this, initialState);
-    }
-
-    SubPage.Component = createPageComponent(SubPage);
-
-    assign(SubPage.prototype, Page.prototype, proto);
-
-    return SubPage;
-
-};
-
-Page.Component = PageComponent;
-
-module.exports = Page;
+}

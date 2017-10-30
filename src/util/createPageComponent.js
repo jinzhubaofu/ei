@@ -3,49 +3,49 @@
  * @author leon(ludafa@outlook.com)
  */
 
-const React = require('react');
-const guid = require('../util/guid');
-const PropTypes = React.PropTypes;
-const PAGE_GET_INITIAL_STATE_GUID_ATTR = 'PAGE_GET_INITIAL_STATE_GUID_ATTR';
+import React, {PureComponent} from 'react';
+import guid from '../util/guid';
+import PropTypes from 'prop-types';
 
+const PAGE_GET_INITIAL_STATE_GUID_ATTR = 'PAGE_GET_INITIAL_STATE_GUID_ATTR';
 const hasOwn = Object.prototype.hasOwnProperty;
 
-function createPageComponent(Page) {
+export default function createPageComponent(Page) {
 
-    const PageComponent = React.createClass({
+    class PageComponent extends PureComponent {
 
-        displayName: 'PageComponent',
+        static displayName = 'PageComponent';
 
-        getInitialState() {
+        constructor() {
 
-            const me = this;
-            const props = me.props;
-            const initialState = props.initialState;
+            super();
 
-            const page = me.page = new Page(initialState);
+            const {initialState} = this.props;
+
+            const page = this.page = new Page(initialState);
 
             // 添加事件代理
-            page.on('*', function (...args) {
+            page.on('*', (...args) => {
 
                 const eventName = page.getCurrentEvent()
                     .split(/[\-_]/)
                     .map(term => term.charAt(0).toUpperCase() + term.slice(1).toLowerCase())
                     .join('');
 
-                const handler = props[`on${eventName}`];
+                const handler = this.props[`on${eventName}`];
 
                 if (typeof handler === 'function') {
-                    handler.apply(me, args);
+                    handler.apply(this, args);
                 }
 
             });
 
-            return {
+            this.state = {
                 stage: initialState == null ? 'INITED' : 'LOADED',
                 error: null
             };
 
-        },
+        }
 
         componentDidMount() {
 
@@ -58,7 +58,7 @@ function createPageComponent(Page) {
 
             handleRequest(page, props.request);
 
-        },
+        }
 
 
         componentWillReceiveProps(nextProps) {
@@ -70,7 +70,7 @@ function createPageComponent(Page) {
                 this.handleRequest(this.page, nextRequest);
             }
 
-        },
+        }
 
         componentWillUnmount() {
             const page = this.page;
@@ -78,7 +78,7 @@ function createPageComponent(Page) {
                 page.dispose();
             }
             this.page = null;
-        },
+        }
 
         handleRequest(page, request) {
 
@@ -116,7 +116,7 @@ function createPageComponent(Page) {
                     }
 
                 });
-        },
+        }
 
         render() {
 
@@ -138,7 +138,7 @@ function createPageComponent(Page) {
 
         }
 
-    });
+    }
 
     PageComponent.propTypes = {
         initialState: PropTypes.object,
@@ -181,5 +181,3 @@ function createPageComponent(Page) {
     return PageComponent;
 
 }
-
-module.exports = createPageComponent;
