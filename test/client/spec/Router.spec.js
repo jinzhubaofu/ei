@@ -3,7 +3,7 @@
  * @author Leon(leon@outlook.com)
  */
 
-var Router = require('../../../src/Router.js');
+import Router from '../../../src/Router';
 
 describe('Router', function () {
 

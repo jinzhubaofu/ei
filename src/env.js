@@ -5,20 +5,33 @@
  * @inner
  */
 
-try {
-
-    /**
-     * 是否为服务器端环境
-     *
-     * @member {boolean}
-     */
-    exports.isServer = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
-}
-catch (e) {}
+/**
+ * 是否为服务器端环境
+ *
+ * @member {boolean}
+ */
+let isServer = false;
 
 /**
  * 是否为客户端环境
  *
  * @member {boolean}
  */
-exports.isClient = !exports.isServer;
+let isClient = false;
+
+try {
+    isServer = (
+        'object' === typeof process
+        && Object.prototype.toString.call(process) === '[object process]'
+    );
+    isClient = !isServer;
+}
+catch (e) {
+    isClient = true;
+}
+
+
+export {
+    isServer,
+    isClient
+};

@@ -4,35 +4,33 @@
  * @module ei
  */
 
-let App = require('./App');
+import App from './App';
+import Page from './Page';
+import Container from './Container';
+import events from './events';
+import * as resource from './resource';
 
-let Page = require('./Page');
-
-let Container = require('./Container');
-
-let events = require('./events');
-
-let resource = require('./resource');
-
-const {
+import {
     INIT,
     REPLACE,
     init,
     replace
-} = require('./actionCreator/page');
+} from './actionCreator/page';
 
-module.exports = {
+export {
     App,
     Page,
     Container,
     events,
-    resource,
-    actionTypes: {
-        INIT,
-        REPLACE
-    },
-    actions: {
-        init,
-        replace
-    }
+    resource
+};
+
+export const actionTypes = {
+    INIT,
+    REPLACE
+};
+
+export const actions = {
+    init,
+    replace
 };

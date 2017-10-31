@@ -3,7 +3,7 @@
  * @author leon(ludafa@outlook.com)
  */
 
-module.exports = function (page) {
+export default function (page) {
 
     return store => next => action => {
 
@@ -16,4 +16,4 @@ module.exports = function (page) {
 
     };
 
-};
+}

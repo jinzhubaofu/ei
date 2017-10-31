@@ -30,7 +30,7 @@
  * @param {*} e 断言失败消息数据
  * @param {*} f 断言失败消息数据
  */
-function invariant(condition, format, a, b, c, d, e, f) {
+export default function invariant(condition, format, a, b, c, d, e, f) {
 
     if (condition) {
         return;
@@ -57,5 +57,3 @@ function invariant(condition, format, a, b, c, d, e, f) {
 }
 
 /* eslint-enable max-params */
-
-module.exports = invariant;

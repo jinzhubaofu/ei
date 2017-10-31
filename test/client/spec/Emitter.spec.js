@@ -3,31 +3,9 @@
  * @author Leon(leon@outlook.com)
  */
 
-var Emitter = require('../../../src/Emitter');
+import Emitter from '../../../src/Emitter';
 
 describe('Emitter', function () {
-
-    it('enable', function () {
-
-        var target = {};
-
-        Emitter.enable(target);
-
-        expect(typeof (target.emit) === 'function').toBe(true);
-        expect(typeof (target.on) === 'function').toBe(true);
-        expect(typeof (target.off) === 'function').toBe(true);
-        expect(typeof (target.once) === 'function').toBe(true);
-
-        var targetFn = function () {};
-
-        Emitter.enable(targetFn);
-
-        expect(typeof (targetFn.prototype.emit) === 'function').toBe(true);
-        expect(typeof (targetFn.prototype.on) === 'function').toBe(true);
-        expect(typeof (targetFn.prototype.off) === 'function').toBe(true);
-        expect(typeof (targetFn.prototype.once) === 'function').toBe(true);
-
-    });
 
     it('on', function () {
 

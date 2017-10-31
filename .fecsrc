@@ -1,0 +1,6 @@
+files:
+    - src
+    - test/**/*.spec.js
+eslint:
+    rules:
+        fecs-min-vars-per-destructure: -1

@@ -4,8 +4,6 @@
  * @module events
  */
 
-const Emitter = require('./Emitter');
+import Emitter from './Emitter';
 
-const events = {};
-
-module.exports = Emitter.enable(events);
+export default new Emitter();

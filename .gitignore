@@ -4,3 +4,4 @@ dep
 output
 .bower.json
 lcov.info
+.DS_Store

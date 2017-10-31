@@ -6,22 +6,7 @@
 const EMITTER_LISTENER_POOL_ATTR = '__listeners__';
 const EMITTER_CURRENT_EVENT_ATTR = '__event__';
 
-const assign = require('./util/assign');
-
-/* eslint-disable fecs-prefer-class */
-
-
-/**
- * Emitter
- *
- * @constructor
- */
-function Emitter() {}
-
-/* eslint-enable fecs-prefer-class */
-
-/** @lends Emitter.prototype */
-const mixins = {
+export default class Emitter {
 
     /**
      * 添加事件处理函数
@@ -48,7 +33,7 @@ const mixins = {
         listeners.push(handler);
 
         return this;
-    },
+    }
 
     /**
      * 取消事件处理
@@ -92,7 +77,7 @@ const mixins = {
         }
 
         return this;
-    },
+    }
 
     /**
      * 添加一个只回调一次的事件处理函数
@@ -115,7 +100,7 @@ const mixins = {
 
         return this;
 
-    },
+    }
 
 
     /**
@@ -153,7 +138,7 @@ const mixins = {
 
         return this;
 
-    },
+    }
 
     /**
      * 获取当前正在派发的事件
@@ -163,7 +148,7 @@ const mixins = {
      */
     getCurrentEvent() {
         return this[EMITTER_CURRENT_EVENT_ATTR];
-    },
+    }
 
     /**
      * 销毁所有的事件
@@ -194,28 +179,4 @@ const mixins = {
 
     }
 
-};
-
-assign(Emitter.prototype, mixins);
-
-/**
- * 激活一个对象，使它获得Emitter的所有技能
- *
- * 如果被激活的对象是一个函数，那么它的实例会拥有Emitter的技能
- *
- * @note 我们在激活一个函数时，会对它的原型对象进行修改
- *
- * @param {!(Object | Function)} target 即将被激活的对象
- * @return {Object}
- */
-Emitter.enable = function (target) {
-
-    if (typeof target === 'function') {
-        target = target.prototype;
-    }
-
-    return assign(target, mixins);
-
-};
-
-module.exports = Emitter;
+}

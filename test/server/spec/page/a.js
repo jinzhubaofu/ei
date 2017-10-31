@@ -3,26 +3,18 @@
  * @author Leon(leon@outlook.com)
  */
 
-var Page = require('../../../../src/Page');
+import Page from '../../../../src/Page';
+import React from 'react';
 
-var React = require('react');
-
-var TestPage = Page.extend({
-
-    view: React.createClass({
-
-        render: function () {
-            return React.createElement('div');
-        }
-
-    }),
-
+const TestPage = Page.extend({
+    view: props => (12321),
     reducer: function (store) {
         return store;
     }
-
 });
 
 TestPage.type = 'test';
 
-module.exports = TestPage;
+export {
+    TestPage as default
+}

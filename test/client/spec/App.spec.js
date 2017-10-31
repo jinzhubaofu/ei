@@ -3,9 +3,9 @@
  * @author Leon(leon@outlook.com)
  */
 
-const App = require('../../../src/App');
-const Page = require('../../../src/Page');
-const Router = require('../../../src/Router');
+import App from '../../../src/App';
+import Page from '../../../src/Page';
+import Router from '../../../src/Router';
 
 describe('App', function () {
 

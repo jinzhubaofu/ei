@@ -11,7 +11,7 @@ module.exports = function (config) {
             {},
             karmaConfig,
             {
-                singleRun: true
+                singleRun: false
             }
         )
     );

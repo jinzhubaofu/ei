@@ -5,7 +5,7 @@
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
-module.exports = Object.assign || function (target, ...sources) {
+export default Object.assign || function (target, ...sources) {
 
     if (target == null) {
         throw new Error('assign target cannot be null');

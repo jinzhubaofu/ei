@@ -1,5 +1,4 @@
 node_modules
-src
 gulefile.js
 bower.json
 coverage
@@ -9,5 +8,6 @@ test
 tool
 .coeralls.yml
 .travis.yml
-edp-build-config.js
 module.conf
+.bowerrc
+package-lock.json
