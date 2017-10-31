@@ -232,7 +232,10 @@ export default class App {
         return new Promise((resolve, reject) => {
 
             try {
+
+                /* eslint-disable */
                 const Page = require(path);
+                /* eslint-enable */
 
                 let pool = this.pool;
 

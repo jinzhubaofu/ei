@@ -12,28 +12,14 @@ module.exports = function (config) {
             {},
             karmaConfig,
             {
-
-                browserStack: {
-                    username: 'leonlu2',
-                    accessKey: 'ps6dvCJdxhJGWWSTrWM4'
-                },
-
-                /* eslint-disable fecs-camelcase */
-                // define browsers
                 customLaunchers: {
-                    bs_chrome_mac: {
-                        base: 'BrowserStack',
-                        browser: 'chrome',
-                        browser_version: '55.0',
-                        os: 'OS X',
-                        os_version: 'Sierra'
+                    ChromeTravis: {
+                        base: 'Chrome',
+                        flags: ['--no-sandbox']
                     }
                 },
-                /* eslint-enable fecs-camelcase */
-
-                browsers: [
-                    'bs_chrome_mac'
-                ],
+                browsers: ['ChromeTravis'],
+                reporters: ['coverage', 'mocha', 'dots'],
                 // if true, Karma captures browsers, runs the tests and exits
                 singleRun: true
             }

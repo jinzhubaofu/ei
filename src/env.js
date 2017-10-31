@@ -34,4 +34,4 @@ catch (e) {
 export {
     isServer,
     isClient
-}
+};

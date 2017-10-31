@@ -7,13 +7,12 @@
 
 import React from 'react';
 import assign from './util/assign';
-import {REPLACE, replace} from './actionCreator/page';
+import {REPLACE, replace, init} from './actionCreator/page';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
 import invariant from './util/invariant';
 import guid from './util/guid';
 import events from './events';
-import {init} from './actionCreator/page';
 import Emitter from './Emitter';
 import PageComponent from './component/Page';
 import pageActionEventProxy from './middleware/pageActionEventProxy';

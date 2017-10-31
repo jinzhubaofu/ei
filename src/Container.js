@@ -16,6 +16,7 @@ export default class Container {
         this.instantiatedSingletons = {};
         this.registeredObjects = {};
     }
+
     /**
      * 生成一个指定的实例
      *
@@ -24,6 +25,8 @@ export default class Container {
      * @return {*}
      */
     make(name) {
+
+        /* eslint-disable prefer-rest-params */
 
         if (this.registeredObjects[name]) {
             return this.registeredObjects[name];
@@ -35,7 +38,9 @@ export default class Container {
             let instance = instances[name];
 
             if (!instance) {
-                instance = instances[name] = this.singletonCallbacks[name].apply(this, arguments);
+                instance
+                    = instances[name]
+                    = this.singletonCallbacks[name].apply(this, arguments);
             }
 
             return instance;
@@ -45,6 +50,8 @@ export default class Container {
         const boundCallback = this.boundCallbacks[name];
 
         return boundCallback ? boundCallback.apply(this, arguments) : null;
+
+        /* eslint-enable prefer-rest-params */
 
     }
 
@@ -61,7 +68,7 @@ export default class Container {
     bind(name, factory) {
         this.boundCallbacks[name] = factory;
         return this;
-    };
+    }
 
     /**
      * 注册一个单例资源
@@ -93,4 +100,5 @@ export default class Container {
         this.registeredObjects[name] = object;
         return this;
     }
+
 }

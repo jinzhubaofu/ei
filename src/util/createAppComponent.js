@@ -3,7 +3,7 @@
  * @author leon(ludafa@outlook.com)
  */
 
-import React, {PureComponent} from 'react';
+import {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 
 export default function createAppComponent(App) {

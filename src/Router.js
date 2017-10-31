@@ -14,6 +14,7 @@ export default class Router {
     constructor(routes = []) {
         this.routes = routes;
     }
+
     /**
      * 对一个请求进行路由
      *
