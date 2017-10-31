@@ -54,6 +54,8 @@ export default class Page extends Emitter {
 
     static Component = PageComponent;
 
+    static middlewares = [];
+
     /**
      * 页面
      *
@@ -62,9 +64,6 @@ export default class Page extends Emitter {
      */
     constructor(initialState) {
         super();
-        this.middlewares = [
-            pageActionEventProxy
-        ];
         this.initialize(initialState);
     }
 
@@ -76,6 +75,13 @@ export default class Page extends Emitter {
     initialize(initialState) {
 
         this.id = guid();
+
+        let middlewares = this.middlewares || this.constructor.middlewares;
+
+        this.middlewares = [
+            pageActionEventProxy,
+            ...middlewares
+        ];
 
         let reducer = this.reducer || this.constructor.reducer;
 

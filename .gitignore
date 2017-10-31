@@ -1,7 +1,7 @@
 node_modules
 coverage
-dep
 output
 .bower.json
 lcov.info
 .DS_Store
+lib
