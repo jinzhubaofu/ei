@@ -6,8 +6,12 @@ dist
 .bower.json
 test
 tool
-.coeralls.yml
+.coveralls.yml
 .travis.yml
 module.conf
 .bowerrc
 package-lock.json
+example
+tools
+.fecsrc
+.babelrc
