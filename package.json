@@ -4,7 +4,7 @@
   "main": "lib/ei.js",
   "scripts": {
     "lint": "fecs --rule",
-    "coveralls": "cat coverage/lcov.info | coveralls",
+    "coveralls": "cat test/client/coverage/lcov/lcov.info | coveralls",
     "test-client": "NODE_ENV=test karma start ./test/client/karma.local.conf.js",
     "test-server": "NODE_ENV=test JASMINE_CONFIG_PATH=./test/server/jasmine.json jasmine",
     "test": "npm run test-client",
