@@ -6,7 +6,7 @@
 import Page from '../../../src/Page.js';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {shallow, mount} from 'enzyme';
+import {mount} from 'enzyme';
 
 describe('Page', function () {
 
@@ -21,17 +21,23 @@ describe('Page', function () {
         };
 
         let View = props => (<div>{props.message}</div>);
+        let middleware = page => store => next => action => {
+            console.log(action);
+            return next(action);
+        };
 
         class MyPage extends Page {
             static view = View;
-            static reducer = (state = INITIAL_STATE, action) => {
-                return state;
-            }
+            static reducer = (state = INITIAL_STATE, action) => state;
+            static middlewares = [
+                middleware
+            ]
         }
 
         let page = new MyPage();
 
         expect(page.context.getState()).toEqual(INITIAL_STATE);
+        expect(page.middlewares.length).toBe(2);
         let wrapper = page.createElement();
         expect(wrapper.props.store).toBe(page.context);
         expect(wrapper.props.children.type).toBe(View);
@@ -93,6 +99,41 @@ describe('Page', function () {
         });
 
         expect(typeof (SomePage) === 'function').toBe(true);
+        expect(new SomePage().middlewares.length).toBe(1);
+
+    });
+
+    it('`merge middlewares`', () => {
+
+        let testAction = {
+            type: 'test'
+        };
+
+        let middleware = page => store => next => action => {
+            expect(action).toBe(testAction);
+            expect(page).toBe(page);
+            return next(action);
+        };
+
+        let MyPage = Page.extend({
+
+            reducer() {
+
+            },
+
+            view() {
+
+            },
+
+            middlewares: [middleware]
+
+        });
+
+        let page = new MyPage();
+
+        expect(page.middlewares.length).toBe(2);
+        expect(page.middlewares[1]).toBe(middleware);
+        page.dispatch(testAction);
 
     });
 
