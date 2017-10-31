@@ -3,7 +3,7 @@
  * @author leon <ludafa@outlook.com>
  */
 
-const App  = require('../../../src/App.js');
+import App from '../../../src/App';
 
 /* eslint-disable max-nested-callbacks */
 
@@ -60,60 +60,22 @@ describe('App', function () {
     it('execute a request and return html', function () {
 
         const app = new App({
-
             basePath: require('path').join(__dirname, 'page'),
-
             routes: [{
-
                 path: '/a',
                 page: 'a'
-
             }]
-
         });
 
         const request = {
-            path: '/a'
+            pathname: '/a'
         };
 
 
         app.execute(request).then(function (result) {
-
             expect(result.page).not.toBeFalsy();
-
         }, function (error) {
-
-            // console.error(error);
-
-        });
-
-    });
-
-    it('execute a request and return json', function () {
-
-        const app = new App({
-
-            basePath: require('path').join(__dirname, 'page'),
-
-            routes: [{
-
-                path: '/a',
-                page: 'a'
-
-            }]
-
-        });
-
-        const request = {
-            path: '/a',
-            xhr: true
-        };
-
-
-        app.execute(request).then(function (result) {
-
-            expect(result.page).toBeFalsy();
-
+            console.log(error);
         });
 
     });
@@ -160,7 +122,7 @@ describe('App', function () {
         });
 
         const request = {
-            path: '/b'
+            pathname: '/b'
         };
 
         app.execute(request).catch(function (error) {

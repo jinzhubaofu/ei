@@ -3,11 +3,11 @@
  * @author Leon(leon@outlook.com)
  */
 
-var Page = require('../../../../src/Page');
+import Page from '../../../../src/Page';
 
-var React = require('react');
+import React from 'react';
 
-var TestPage = Page.extend({
+export default const TestPage = Page.extend({
 
     view: React.createClass({
 
@@ -24,6 +24,3 @@ var TestPage = Page.extend({
 });
 
 TestPage.type = 'test';
-
-
-module.exports = TestPage;

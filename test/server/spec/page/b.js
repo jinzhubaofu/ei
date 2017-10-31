@@ -3,19 +3,14 @@
  * @author Leon(leon@outlook.com)
  */
 
-var Page = require('../../../../src/Page');
+import Page from '../../../../src/Page';
+import React from 'react';
 
-var React = require('react');
+export default var TestPage = Page.extend({
 
-var TestPage = Page.extend({
-
-    view: React.createClass({
-
-        render: function () {
-            throw new Error('hehe');
-        }
-
-    }),
+    view: props => {
+        throw new Error('hehe')
+    },
 
     reducer: function (store) {
         throw new Error('cannot reduce');
@@ -24,5 +19,3 @@ var TestPage = Page.extend({
 });
 
 TestPage.type = 'test';
-
-module.exports = TestPage;

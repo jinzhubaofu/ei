@@ -18,6 +18,7 @@ import Emitter from './Emitter';
 import PageComponent from './component/Page';
 import pageActionEventProxy from './middleware/pageActionEventProxy';
 import createPageComponent from './util/createPageComponent';
+import * as env from './env';
 
 export default class Page extends Emitter {
 
@@ -65,7 +66,7 @@ export default class Page extends Emitter {
         this.middlewares = [
             pageActionEventProxy
         ];
-        this.initialize(initialize);
+        this.initialize(initialState);
     }
 
     /**
@@ -77,14 +78,17 @@ export default class Page extends Emitter {
 
         this.id = guid();
 
-        let reducer = typeof this.reducer === 'function'
-            ? this.reducer
-            : combineReducers(this.reducer);
+        let reducer = this.reducer || this.constructor.reducer;
+
+        if (typeof reducer === 'object') {
+            reducer = combineReducers(this.reducer);
+        }
 
         let enhancer = compose;
 
         if (
             process.env.NODE_ENV !== 'production'
+            && env.isClient
             && window
             && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
         ) {
@@ -149,7 +153,7 @@ export default class Page extends Emitter {
     createElement(props) {
 
         const context = this.context;
-        const View = this.view;
+        const View = this.view || this.constructor.view;
 
         return (
             <Provider store={context}>

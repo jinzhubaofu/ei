@@ -4,17 +4,42 @@
  */
 
 import Page from '../../../src/Page.js';
-import React from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {shallow, mount} from 'enzyme';
 
 describe('Page', function () {
 
+    it('is a `Class`', () => {
+        expect(typeof Page === 'function' && Page.prototype.constructor === Page).toBe(true);
+    });
+
+    it('can be `extends`', () => {
+
+        let INITIAL_STATE = {
+            message: 'hello world'
+        };
+
+        let View = props => (<div>{props.message}</div>);
+
+        class MyPage extends Page {
+            static view = View;
+            static reducer = (state = INITIAL_STATE, action) => {
+                return state;
+            }
+        }
+
+        let page = new MyPage();
+
+        expect(page.context.getState()).toEqual(INITIAL_STATE);
+        let wrapper = page.createElement();
+        expect(wrapper.props.store).toBe(page.context);
+        expect(wrapper.props.children.type).toBe(View);
+
+    });
 
     it('have a static method `extend`', function () {
-
         expect(typeof (Page.extend) === 'function').toBe(true);
-
     });
 
     it('`extend` need a options with reducer and view', function () {
@@ -165,23 +190,17 @@ describe('Page', function () {
 
     it('`createElement`', function () {
 
-        let View = React.createClass({
-
+        class View extends Component {
             render() {
-
                 let add = this.props.add;
-
                 expect(typeof (add) === 'function').toBe(true);
-
                 return (
                     <div onClick={() => add()}>
                         {this.props.name}
                     </div>
                 );
-
             }
-
-        });
+        }
 
         let SomePage = Page.extend({
 

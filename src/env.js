@@ -20,12 +20,11 @@ let isServer = false;
 let isClient = false;
 
 try {
-
-
-    isServer = 'object' === (
-        typeof process
+    isServer = (
+        'object' === typeof process
         && Object.prototype.toString.call(process) === '[object process]'
     );
+    isClient = !isServer;
 }
 catch (e) {
     isClient = true;

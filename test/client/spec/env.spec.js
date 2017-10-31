@@ -3,7 +3,7 @@
  * @author Leon(leon@outlook.com)
  */
 
-const env = require('../../../src/env.js');
+import * as env from '../../../src/env';
 
 describe('env', function () {
 

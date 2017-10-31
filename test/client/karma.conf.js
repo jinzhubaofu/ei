@@ -12,17 +12,16 @@ module.exports = {
     frameworks: ['jasmine'],
 
     files: [
-        'test/client/spec/**/*.spec.js'
+        'test/client/index.js'
     ],
 
     browsers: [
-        // 'Firefox',
         'Chrome'
     ],
 
     preprocessors: {
-        'src/**/*.js': ['coverage'],
-        'test/**/*.js': ['webpack']
+        'src/**/*.js': ['coverage', 'sourcemap'],
+        'test/**/*.js': ['webpack', 'sourcemap']
     },
 
     webpack: {
@@ -39,17 +38,12 @@ module.exports = {
                 }
             ]
         },
-        devtool: 'inline-source-map',
-        externals: {
-            'react/lib/ExecutionEnvironment': true,
-            'react/lib/ReactContext': true,
-            'react/addons': true
-        }
+        devtool: 'inline-source-map'
     },
 
     autoWatch: true,
 
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress', 'coverage', 'mocha'],
 
     coverageReporter: {
         dir: path.join(__dirname, './coverage'),
